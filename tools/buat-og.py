@@ -9,7 +9,7 @@ diganti kalau situs pindah alamat).
     pip install playwright        # driver-nya saja; Chrome yang terpasang dipakai
     python tools/buat-og.py
 
-Fontnya (Archivo, JetBrains Mono) diambil dari Google Fonts saat dirender, jadi butuh
+Fontnya (Archivo) diambil dari Google Fonts saat dirender, jadi butuh
 internet. Kalau gagal dimuat, skrip ini berhenti alih-alih diam-diam menyimpan kartu
 dengan font pengganti.
 """
@@ -38,10 +38,10 @@ def main():
         page = b.new_page(viewport={"width": 1200, "height": 630}, device_scale_factor=1)
         page.goto("file:///" + SUMBER.replace("\\", "/"), wait_until="networkidle")
         page.evaluate("document.fonts.ready")
-        ok = page.evaluate("document.fonts.check('800 40px Archivo') && document.fonts.check('600 20px \"JetBrains Mono\"')")
+        ok = page.evaluate("document.fonts.check('900 40px Archivo')")
         if not ok:
             b.close()
-            sys.exit("Font Archivo / JetBrains Mono tidak termuat (offline?) — kartu tidak disimpan.")
+            sys.exit("Font Archivo tidak termuat (offline?) — kartu tidak disimpan.")
         page.wait_for_timeout(400)
         page.screenshot(path=HASIL, type="jpeg", quality=88, clip={"x": 0, "y": 0, "width": 1200, "height": 630})
         b.close()
