@@ -3,7 +3,7 @@
 
 Bahan infografis, poster, dan konten Instagram. Modelnya sama persis dengan
 yang ada di bagian 04 situs — mesin 3D tim, casing dari OBJ hasil cetak,
-elektronik dari data Gerber papan yang sebenarnya.
+part lain berukuran asli. Jalur tembaga PCB sengaja tidak ada.
 
     python 5-WEBSITE/serve.py              # terminal lain
     python 5-WEBSITE/tools/render-3d.py
