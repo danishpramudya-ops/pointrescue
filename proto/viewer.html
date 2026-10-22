@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POINT RESCUE · 3D assembly</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "../vendor/three/build/three.module.min.js",
+    "three/addons/controls/OrbitControls.js": "../vendor/three/examples/jsm/controls/OrbitControls.js",
+    "three/addons/loaders/OBJLoader.js": "../vendor/three/examples/jsm/loaders/OBJLoader.js",
+    "three/addons/exporters/OBJExporter.js": "../vendor/three/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "../vendor/three/examples/jsm/exporters/GLTFExporter.js"
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#03101f; --navy:#093261; --blue:#2f7fe0; --blue-lt:#6fb0ff;
+         --paper:#eef2f7; --line:rgba(140,190,255,.16);
+         --f:"Archivo",system-ui,sans-serif; --m:"JetBrains Mono",monospace; }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{ margin:0; background:var(--ink); color:var(--paper); font:400 14px/1.6 var(--f); overflow:hidden; }
+  three-d-stage{ display:block; width:100%; height:100%; }
+
+  .shell{ display:grid; grid-template-columns:minmax(0,1fr) 268px; height:100%; }
+  #viewport{ position:relative; min-width:0; }
+  #leaders{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:4; }
+  #labels{ position:absolute; inset:0; z-index:5; pointer-events:none; }
+
+  /* markup label dari site.js: .lbl > .hd > (em + b), lalu span */
+  .lbl{ position:absolute; left:0; top:0; width:186px; line-height:1.4;
+        letter-spacing:.04em; text-transform:uppercase; }
+  .lbl .hd{ display:flex; align-items:baseline; gap:7px; width:fit-content;
+            background:rgba(4,20,40,.82); box-shadow:0 0 0 4px rgba(4,20,40,.82); }
+  .lbl em{ flex:none; font-style:normal; font-size:8.5px; letter-spacing:.14em;
+           padding:1px 4px; border:1px solid rgba(140,190,255,.45); color:var(--blue-lt); }
+  .lbl b{ font-weight:700; font-size:11px; letter-spacing:.05em; color:#fff; }
+  .lbl span{ display:block; width:fit-content; font-size:9.5px; letter-spacing:.02em;
+             text-transform:none; color:rgba(200,222,255,.66);
+             background:rgba(4,20,40,.82); box-shadow:0 0 0 4px rgba(4,20,40,.82); }
+  .lbl.gutter-l{ text-align:right; }
+  .lbl.gutter-l .hd{ flex-direction:row-reverse; }
+  .lbl.gutter-l .hd, .lbl.gutter-l span{ margin-left:auto; }
+  #leaders polyline{ stroke:rgba(111,176,255,.45) !important; }
+
+  .plate{ position:absolute; left:18px; top:16px; display:grid; gap:3px; pointer-events:none; z-index:3; }
+  .plate b{ font:700 10.5px/1 var(--m); letter-spacing:.18em; text-transform:uppercase; color:var(--blue-lt); }
+  .plate span{ font:500 10px/1.4 var(--m); color:rgba(200,222,255,.42); }
+
+  #iso{ position:absolute; right:18px; top:16px; z-index:7; font:700 10px/1 var(--m);
+        letter-spacing:.14em; text-transform:uppercase; color:var(--ink);
+        background:var(--blue); padding:7px 11px; border-radius:99px; }
+
+  .dock{ position:absolute; left:18px; right:18px; bottom:16px; display:grid; gap:9px; z-index:6; }
+  .dock .row{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+  .btn{ font:700 10px/1 var(--m); letter-spacing:.13em; text-transform:uppercase; cursor:pointer;
+        color:var(--paper); background:rgba(8,32,64,.82); border:1px solid var(--line);
+        padding:9px 13px; border-radius:99px; transition:.2s; backdrop-filter:blur(6px); }
+  .btn:hover{ background:var(--navy); border-color:var(--blue); }
+  .btn[data-on="1"]{ background:var(--blue); border-color:var(--blue); color:var(--ink); }
+  .sep{ width:1px; height:18px; background:var(--line); }
+  #slide{ flex:1; min-width:130px; accent-color:var(--blue); }
+  #pct{ font:700 10px/1 var(--m); color:rgba(200,222,255,.6); min-width:36px; text-align:right; }
+
+  aside{ border-left:1px solid var(--line); overflow-y:auto; background:rgba(5,22,44,.6); }
+  aside h2{ margin:0; padding:16px 16px 10px; font:700 10px/1 var(--m);
+            letter-spacing:.2em; text-transform:uppercase; color:rgba(200,222,255,.5); }
+  #partlist{ display:flex; flex-direction:column; }
+  /* baris dari site.js: <button class="row"><em>ID</em><span><b>nama</b>spek</span></button> */
+  #partlist .row{ display:flex; gap:10px; align-items:flex-start; text-align:left; width:100%;
+    padding:10px 16px; border:0; border-top:1px solid rgba(140,190,255,.10);
+    background:none; color:inherit; font:inherit; cursor:pointer; transition:background .18s; }
+  #partlist .row:hover{ background:rgba(120,180,255,.08); }
+  #partlist .row[data-on="1"]{ background:var(--blue); }
+  #partlist .row[data-on="1"] em{ border-color:var(--ink); color:var(--ink); }
+  #partlist .row[data-on="1"] span, #partlist .row[data-on="1"] b{ color:var(--ink); }
+  #partlist em{ flex:none; font-style:normal; font:700 9px/1 var(--m); letter-spacing:.12em;
+    padding:3px 5px; margin-top:2px; border:1px solid var(--line); color:var(--blue-lt); }
+  #partlist span{ display:block; font-size:10px; line-height:1.45; color:rgba(200,222,255,.55); }
+  /* INI yang bikin nama & spek menyatu kalau hilang */
+  #partlist b{ display:block; font:700 11.5px/1.3 var(--f); letter-spacing:.02em;
+    text-transform:uppercase; color:var(--paper); margin-bottom:2px; }
+  .hint{ margin:0; padding:12px 16px 18px; font:500 9.5px/1.6 var(--m); color:rgba(200,222,255,.32); }
+  .hidden{ display:none !important; }
+  @media (max-width:860px){ .shell{ grid-template-columns:1fr; grid-template-rows:1fr auto; }
+    aside{ border-left:0; border-top:1px solid var(--line); max-height:36%; } }
+</style>
+</head>
+<body>
+<div class="shell" id="model">
+  <div id="viewport">
+    <three-d-stage name="pointrescue-assembly" background="transparent"></three-d-stage>
+    <svg id="leaders"></svg>
+    <div id="labels"></div>
+    <div class="plate">
+      <b>POINTRESCUE · full assembly</b>
+      <span>17 part · casing dari OBJ, part lain sesuai ukuran asli</span>
+    </div>
+    <div id="iso" hidden></div>
+    <div class="dock">
+      <div class="row">
+        <button class="btn" id="play">Explode</button>
+        <input type="range" id="slide" min="0" max="1000" value="0" aria-label="Explode">
+        <span id="pct">0%</span>
+      </div>
+      <div class="row">
+        <button class="btn" id="labelsBtn">Labels</button>
+        <button class="btn" id="ghost">Ghost</button>
+        <button class="btn" id="spin">Spin</button>
+        <span class="sep"></span>
+        <button class="btn" data-view="iso">Iso</button>
+        <button class="btn" data-view="front">Depan</button>
+        <button class="btn" data-view="side">Samping</button>
+        <button class="btn" data-view="top">Atas</button>
+      </div>
+    </div>
+  </div>
+  <aside>
+    <h2>Urutan bongkar</h2>
+    <div id="partlist"></div>
+    <p class="hint">Hover = sorot part · klik = isolasi. Drag untuk orbit, scroll untuk zoom, spasi untuk explode.</p>
+  </aside>
+</div>
+
+<!-- dibutuhkan site.js, tidak ditampilkan di halaman ini -->
+<table class="hidden"><tbody id="bomBody"></tbody></table>
+<button class="hidden" id="dlObj"></button>
+<button class="hidden" id="dlGlb"></button>
+<button class="hidden" id="dlAnim"></button>
+
+<script type="application/json" id="pcb-data">{"board":{"w":59.796,"h":80.857,"t":1.6},"pads":[[-10.954,37.148,1.482,1.482],[-10.954,34.66,1.482,1.376],[0.847,30.85,1.587,1.587],[26.247,30.85,1.587,1.587],[-24.871,29.792,1.799,2.646],[-21.325,29.792,1.693,2.646],[-17.833,29.845,1.693,2.54],[0.847,28.31,1.587,1.587],[26.247,28.31,1.587,1.587],[0.847,25.77,1.587,1.587],[19.156,25.77,1.587,1.587],[26.247,25.77,1.587,1.587],[6.191,25.718,1.482,1.482],[0.847,23.23,1.587,1.587],[19.156,23.23,1.587,1.587],[26.247,23.23,1.587,1.587],[6.191,23.178,1.482,1.482],[0.847,20.69,1.587,1.587],[19.156,20.69,1.587,1.587],[26.247,20.69,1.587,1.587],[6.085,20.637,1.482,1.482],[0.847,18.15,1.587,1.587],[26.247,18.15,1.587,1.587],[0.847,15.61,1.587,1.587],[26.247,15.61,1.587,1.587],[0.847,13.07,1.587,1.587],[19.156,13.07,1.587,1.587],[26.247,13.07,1.587,1.587],[0.847,10.53,1.587,1.587],[19.156,10.53,1.587,1.587],[26.247,10.53,1.587,1.587],[-19.473,8.361,1.799,1.693],[-16.933,8.361,1.799,1.693],[-14.393,8.361,1.587,1.693],[-11.853,8.361,1.587,1.693],[0.847,7.99,1.587,1.587],[19.156,7.99,1.587,1.587],[26.247,7.99,1.587,1.587],[0.847,5.45,1.587,1.587],[19.156,5.45,1.587,1.587],[26.247,5.45,1.587,1.587],[5.556,5.397,1.482,1.482],[0.847,2.91,1.587,1.587],[19.156,2.91,1.587,1.587],[26.247,2.91,1.587,1.587],[5.556,2.857,1.482,1.482],[0.847,0.37,1.587,1.587],[19.156,0.37,1.587,1.587],[26.247,0.37,1.587,1.587],[5.556,0.318,1.482,1.482],[0.847,-2.17,1.587,1.587],[19.156,-2.17,1.587,1.587],[26.247,-2.17,1.587,1.587],[5.556,-2.223,1.482,1.482],[0.847,-4.71,1.587,1.587],[19.156,-4.71,1.587,1.587],[26.247,-4.71,1.587,1.587],[0.476,-19.209,1.905,2.011],[25.876,-19.209,1.905,2.011],[0.476,-21.749,1.905,2.011],[25.876,-21.749,1.905,2.011],[0.476,-24.289,1.905,2.011],[25.876,-24.289,1.905,2.011],[0.476,-26.829,1.905,2.011],[25.876,-26.829,1.905,2.011],[0.476,-29.369,1.905,2.011],[25.876,-29.369,1.905,2.011],[0.476,-31.909,1.905,2.011],[25.876,-31.909,1.905,2.011],[0.476,-34.449,1.905,2.011],[25.876,-34.449,1.905,2.011],[0.476,-36.989,1.905,2.011],[25.876,-36.989,1.905,2.011]],"holes":[[-10.954,37.148,0.423],[-10.954,34.66,0.45],[0.847,30.85,0.476],[26.247,30.85,0.476],[-24.871,29.845,0.556],[-21.378,29.845,0.556],[-17.833,29.845,0.529],[0.847,28.31,0.476],[26.247,28.31,0.476],[0.847,25.77,0.476],[6.191,25.77,0.45],[19.156,25.77,0.476],[26.247,25.77,0.476],[0.847,23.23,0.476],[6.191,23.23,0.45],[19.156,23.23,0.476],[26.247,23.23,0.476],[0.847,20.69,0.476],[6.032,20.69,0.476],[19.156,20.69,0.476],[26.247,20.69,0.476],[0.847,18.15,0.476],[26.247,18.15,0.476],[0.847,15.61,0.476],[26.247,15.61,0.476],[0.847,13.07,0.476],[19.156,13.07,0.476],[26.247,13.07,0.476],[0.847,10.53,0.476],[19.156,10.53,0.476],[26.247,10.53,0.476],[-19.473,8.361,0.503],[-16.933,8.361,0.45],[-14.393,8.361,0.45],[-11.853,8.361,0.45],[0.847,7.99,0.476],[19.156,7.99,0.476],[26.247,7.99,0.476],[0.847,5.45,0.476],[5.556,5.45,0.45],[19.156,5.45,0.476],[26.247,5.45,0.476],[0.847,2.91,0.476],[5.556,2.91,0.45],[19.156,2.91,0.476],[26.247,2.91,0.476],[0.847,0.37,0.476],[5.556,0.37,0.45],[19.156,0.37,0.476],[26.247,0.37,0.476],[0.847,-2.17,0.476],[5.556,-2.17,0.45],[19.156,-2.17,0.476],[26.247,-2.17,0.476],[0.847,-4.71,0.476],[19.156,-4.71,0.476],[26.247,-4.71,0.476],[0.476,-19.209,0.397],[25.876,-19.209,0.397],[0.476,-21.749,0.397],[25.876,-21.749,0.397],[0.476,-24.289,0.397],[25.876,-24.289,0.397],[0.476,-26.829,0.397],[25.876,-26.829,0.397],[0.476,-29.369,0.397],[25.876,-29.369,0.397],[0.476,-31.909,0.397],[25.876,-31.909,0.397],[0.476,-34.449,0.397],[25.876,-34.449,0.397],[0.476,-36.989,0.397],[25.876,-36.989,0.397]],"mounts":[[-25.929,7.038,1.355],[-5.397,7.038,1.355],[-25.929,-23.654,1.355],[-5.609,-23.76,1.355]],"top":[],"bottom":[]}</script>
+<script src="./three-d-stage.js"></script>
+<script type="module" src="./site.js"></script>
+</body>
+</html>

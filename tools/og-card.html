@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Point Rescue — kartu pratinjau</title>
+<!-- Dirender tools/buat-og.py menjadi assets/img/og-card.jpg (1200 × 630).
+     Gambar inilah yang muncul saat tautan situs dibagikan di WhatsApp, Instagram, LinkedIn. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{ --ink:#03101f; --navy-900:#051a33; --navy:#093261; --navy-600:#0f4489; --blue:#2f7fe0; --blue-lt:#6fb0ff; --orange:#e45a07; --paper:#eef2f7; }
+*{ box-sizing:border-box; }
+html,body{ margin:0; width:1200px; height:630px; overflow:hidden; background:var(--ink); color:var(--paper);
+  font-family:"Archivo",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+.kartu{ position:relative; width:1200px; height:630px; overflow:hidden;
+  background:
+    radial-gradient(62% 95% at 18% 4%, rgba(47,127,224,.46), transparent 62%),
+    radial-gradient(60% 85% at 102% 104%, rgba(15,68,137,.7), transparent 66%),
+    var(--ink); }
+.kontur{ position:absolute; inset:0; opacity:.62;
+  background:url("../assets/img/kontur-gelap.svg") 30% 12% / 135% auto no-repeat;
+  -webkit-mask-image:linear-gradient(100deg,#000 12%,transparent 88%); mask-image:linear-gradient(100deg,#000 12%,transparent 88%); }
+
+/* cincin sinyal di belakang foto */
+.cincin{ position:absolute; right:268px; top:315px; width:0; height:0; }
+.cincin i{ position:absolute; border-radius:50%; border:2px solid rgba(111,176,255,.34); transform:translate(-50%,-50%); }
+.cincin i:nth-child(1){ width:420px; height:420px; }
+.cincin i:nth-child(2){ width:640px; height:640px; border-color:rgba(111,176,255,.22); }
+.cincin i:nth-child(3){ width:880px; height:880px; border-color:rgba(111,176,255,.13); }
+
+.foto{ position:absolute; right:72px; top:52px; width:392px; height:480px; border-radius:28px; overflow:hidden;
+  border:1.5px solid rgba(160,205,255,.42); box-shadow:0 36px 90px -34px rgba(0,0,0,.9), 0 0 0 10px rgba(47,127,224,.08); }
+.foto img{ width:100%; height:100%; object-fit:cover; object-position:50% 18%; filter:saturate(.62) contrast(1.06) brightness(.95); }
+.foto::after{ content:""; position:absolute; inset:0;
+  background:linear-gradient(165deg, rgba(47,127,224,.42), rgba(5,26,51,.62)); mix-blend-mode:multiply; }
+
+.kiri{ position:absolute; left:72px; top:70px; width:650px; }
+.logo{ display:flex; align-items:center; gap:20px; }
+.logo img{ width:104px; height:104px; object-fit:contain; filter:drop-shadow(0 0 30px rgba(47,127,224,.6)); }
+.logo span{ font:600 19px/1 "JetBrains Mono",monospace; letter-spacing:.3em; text-transform:uppercase; color:rgba(215,232,250,.72); }
+.nama{ margin:34px 0 0; font:800 102px/.94 "Archivo",sans-serif; font-variation-settings:"wdth" 84; letter-spacing:-.028em; color:#fff; }
+.nama em{ font-style:normal; color:var(--orange); }
+.slogan{ margin:26px 0 0; font:600 24px/1 "JetBrains Mono",monospace; letter-spacing:.26em; text-transform:uppercase; color:rgba(215,232,250,.66); }
+.slogan b{ color:var(--orange); font-weight:700; }
+.chips{ list-style:none; margin:34px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:10px; }
+.chips li{ font:500 17px/1 "JetBrains Mono",monospace; letter-spacing:.14em; text-transform:uppercase; color:rgba(205,226,255,.82);
+  border:1.5px solid rgba(140,190,255,.34); border-radius:99px; padding:11px 17px; background:rgba(120,180,255,.08); }
+
+/* police line di dasar kartu */
+.pita{ position:absolute; left:-6%; right:-6%; height:43px; background:url("../assets/img/policeline.png") repeat-x 0 center; background-size:auto 43px;
+  filter:drop-shadow(0 12px 26px rgba(0,0,0,.55)); }
+.pita.a{ bottom:30px; transform:rotate(-1.8deg); background-position-x:-180px; }
+.pita.b{ bottom:-2px; transform:rotate(1.4deg); background-position-x:-520px; }
+</style>
+</head>
+<body>
+<div class="kartu">
+  <div class="kontur"></div>
+  <div class="cincin"><i></i><i></i><i></i></div>
+  <div class="foto"><img src="../assets/photo/proto-hand.jpg" alt=""></div>
+  <div class="kiri">
+    <div class="logo"><img src="../assets/img/logo-mark.png" alt=""><span>PKM-KC 2026</span></div>
+    <h1 class="nama" style="margin-bottom:0">POINT<em>RESCUE</em></h1>
+    <p class="slogan">Signal Lost. <b>Lives Found.</b></p>
+    <ul class="chips"><li>LoRa 433 MHz</li><li>Mesh</li><li>Universitas Brawijaya</li></ul>
+  </div>
+  <div class="pita a"></div>
+  <div class="pita b"></div>
+</div>
+</body>
+</html>

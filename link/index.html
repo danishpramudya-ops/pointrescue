@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Point Rescue — Tautan Resmi</title>
+<meta name="description" content="Tautan resmi Point Rescue: situs, Instagram, film PKM-KC, data uji lapangan, dashboard dan aplikasi, serta tim. Pelacak taktis wearable untuk wilayah tanpa sinyal.">
+<meta name="theme-color" content="#051a33">
+<link rel="canonical" href="https://danishpramudya-ops.github.io/pointrescue/link/">
+<link rel="icon" href="../assets/img/logo-mark.png">
+<link rel="apple-touch-icon" href="../assets/img/logo-mark.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Point Rescue">
+<meta property="og:title" content="Point Rescue — Tautan Resmi">
+<meta property="og:description" content="Situs, Instagram, film PKM-KC, data uji lapangan, dashboard, aplikasi, dan tim Point Rescue — Signal Lost. Lives Found.">
+<meta property="og:url" content="https://danishpramudya-ops.github.io/pointrescue/link/">
+<meta property="og:image" content="https://danishpramudya-ops.github.io/pointrescue/assets/img/og-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="id_ID">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   Tautan resmi Point Rescue — satu halaman, ditulis untuk layar ponsel.
+   Identitasnya sama dengan situs: palet biru dari logo, merah & oranye hanya
+   aksen, police line selalu ada. Tidak ada pustaka, tidak ada pelacak.
+   ========================================================================== */
+:root{
+  --ink:#03101f; --navy-900:#051a33; --navy-800:#07264a; --navy:#093261; --navy-600:#0f4489;
+  --blue:#2f7fe0; --blue-lt:#6fb0ff; --red:#d30e10; --orange:#e45a07; --paper:#eef2f7;
+  --line:rgba(140,190,255,.2);
+  --f-disp:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --ease:cubic-bezier(.22,.68,.16,1);
+}
+*,*::before,*::after{ box-sizing:border-box; }
+html{ background:var(--ink); color-scheme:dark; }
+body{
+  margin:0; min-height:100vh; min-height:100svh; color:var(--paper);
+  font:400 16px/1.5 var(--f-body); font-variation-settings:"wdth" 100;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  background:
+    radial-gradient(95% 52% at 50% -8%, rgba(47,127,224,.34), transparent 64%),
+    radial-gradient(75% 46% at 88% 102%, rgba(15,68,137,.5), transparent 66%),
+    var(--ink);
+}
+/* garis kontur topografi — bahasa visual peta pencarian */
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.55;
+  background:url("../assets/img/kontur-gelap.svg") 50% 0 / 190% auto no-repeat;
+  -webkit-mask-image:linear-gradient(#000 8%, transparent 78%);
+          mask-image:linear-gradient(#000 8%, transparent 78%);
+}
+a{ color:inherit; }
+em{ font-style:normal; color:var(--orange); }
+
+/* ── police line: pita asli dari dashboard, dua helai disilangkan ───────── */
+.tape{ position:relative; z-index:3; height:96px; overflow:hidden; pointer-events:none; }
+.tape span{
+  position:absolute; left:-10%; right:-10%; height:43px;
+  background:url("../assets/img/policeline.png") repeat-x left center; background-size:auto 43px;
+  filter:drop-shadow(0 10px 22px rgba(0,0,0,.5)); will-change:background-position;
+}
+.tape .a{ top:calc(50% - 38px); transform:rotate(-1.7deg); animation:tapeL 26s linear infinite; }
+.tape .b{ top:calc(50% - 4px);  transform:rotate(1.5deg);  animation:tapeR 32s linear infinite; }
+.tape--bawah .a{ transform:rotate(1.9deg);  animation-name:tapeR; }
+.tape--bawah .b{ transform:rotate(-1.3deg); animation-name:tapeL; }
+@keyframes tapeL{ to{ background-position-x:-1024px; } }
+@keyframes tapeR{ to{ background-position-x: 1024px; } }
+
+/* ── kartu ──────────────────────────────────────────────────────────────── */
+.card{ position:relative; z-index:2; width:min(100% - 40px, 440px); margin:0 auto; padding:0 0 8px; }
+
+.lang{
+  display:flex; width:max-content; margin:0 0 6px auto; padding:3px; gap:2px;
+  border:1px solid var(--line); border-radius:99px; background:rgba(120,180,255,.07);
+}
+.lang button{
+  all:unset; cursor:pointer; min-width:44px; padding:8px 0; text-align:center; border-radius:99px;
+  font:700 11px/1 var(--f-mono); letter-spacing:.16em; color:rgba(210,228,250,.7);
+  transition:color .25s, background .25s;
+}
+.lang button:hover{ color:#fff; }
+.lang button[aria-pressed="true"]{ color:#fff; background:var(--blue); }
+.lang button:focus-visible{ outline:2px solid var(--blue-lt); outline-offset:2px; }
+
+.head{ display:grid; justify-items:center; text-align:center; padding:6px 0 30px; }
+
+/* logo + cincin sinyal yang memancar */
+.mark{ position:relative; width:96px; height:96px; margin-bottom:22px; }
+.mark i{
+  position:absolute; inset:0; border-radius:50%; border:1.5px solid rgba(111,176,255,.55);
+  animation:ping 3.9s var(--ease) infinite; animation-delay:calc(var(--n) * 1.3s); opacity:0;
+}
+.mark img{ position:relative; width:100%; height:100%; object-fit:contain;
+  filter:drop-shadow(0 0 26px rgba(47,127,224,.55)); }
+@keyframes ping{ 0%{ transform:scale(.88); opacity:.85; } 100%{ transform:scale(2.7); opacity:0; } }
+
+.name{
+  margin:0; font:800 clamp(40px, 12.5vw, 52px)/1 var(--f-disp); font-variation-settings:"wdth" 84;
+  letter-spacing:-.025em; color:#fff;
+}
+.slogan{ margin:14px 0 0; font:500 11.5px/1 var(--f-mono); letter-spacing:.28em; text-transform:uppercase; color:rgba(215,232,250,.6); }
+.slogan b{ font-weight:700; color:var(--orange); }
+.desc{ margin:18px 0 0; max-width:30ch; text-wrap:balance; font-size:16.5px; line-height:1.5; color:rgba(225,236,250,.86); }
+.chips{ list-style:none; margin:20px 0 0; padding:0; display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+.chips li{
+  font:500 10px/1 var(--f-mono); letter-spacing:.14em; text-transform:uppercase;
+  color:rgba(200,222,255,.78); border:1px solid var(--line); border-radius:99px; padding:7px 11px;
+  background:rgba(120,180,255,.06);
+}
+
+/* ── rantai tautan: tiap tombol sebuah simpul, paket merayap di sela-selanya ─ */
+.chain{ position:relative; list-style:none; margin:0; padding:0; display:grid; gap:18px; }
+.chain::before{            /* kabel putus-putus di sela tombol */
+  content:""; position:absolute; left:50%; top:-26px; bottom:-26px; width:2px; margin-left:-1px;
+  background:repeating-linear-gradient(to bottom, rgba(111,176,255,.38) 0 5px, transparent 5px 11px);
+}
+.chain::after{             /* paket — tertutup tombol, jadi hanya tampak di sela-sela */
+  content:""; position:absolute; left:50%; top:-26px; width:8px; height:8px; margin-left:-4px; border-radius:50%;
+  background:var(--orange); box-shadow:0 0 12px 3px rgba(228,90,7,.65); opacity:0;
+  animation:paket 5.2s linear 1.6s infinite;
+}
+@keyframes paket{ 0%{ top:-26px; opacity:0; } 6%{ opacity:1; } 94%{ opacity:1; } 100%{ top:calc(100% + 26px); opacity:0; } }
+.chain > li{ position:relative; z-index:1; animation:naik .7s var(--ease) both; animation-delay:calc(var(--i) * 80ms + 150ms); }
+@keyframes naik{ from{ opacity:0; transform:translateY(16px); } }
+
+.btn{
+  position:relative; display:grid; grid-template-columns:48px minmax(0,1fr) 22px; align-items:center; gap:14px;
+  min-height:68px; padding:10px 16px 10px 10px; border-radius:18px; text-decoration:none; color:var(--paper);
+  background:linear-gradient(rgba(120,180,255,.075), rgba(120,180,255,.075)), #061f3d;   /* dasar buram: menutup kabel di belakangnya */
+  border:1px solid var(--line);
+  transition:transform .35s var(--ease), border-color .3s, box-shadow .35s;
+}
+.btn:hover, .btn:focus-visible{ transform:translateY(-2px); border-color:var(--blue-lt); box-shadow:0 16px 38px -20px rgba(47,127,224,.85); }
+.btn:focus-visible{ outline:3px solid var(--blue-lt); outline-offset:3px; }
+.btn__i{ width:48px; height:48px; border-radius:13px; display:grid; place-items:center; color:var(--blue-lt); background:rgba(47,127,224,.17); }
+.btn__i svg{ width:24px; height:24px; fill:currentColor; }
+.btn b{ display:block; font:700 17px/1.2 var(--f-body); letter-spacing:-.005em; color:#fff; text-wrap:balance; }
+.btn small{ display:block; margin-top:4px; font:500 10.5px/1.45 var(--f-mono); letter-spacing:.09em; text-transform:uppercase; color:rgba(200,222,255,.66); text-wrap:balance; }
+.btn__go{ width:22px; height:22px; fill:var(--blue-lt); transition:transform .35s var(--ease); }
+.btn:hover .btn__go, .btn:focus-visible .btn__go{ transform:translateX(4px); }
+
+.btn--utama{
+  min-height:88px; border-color:rgba(160,205,255,.55);
+  background:linear-gradient(135deg, rgba(47,127,224,.98), rgba(15,68,137,.98)), #0f4489;
+  box-shadow:0 18px 44px -24px rgba(47,127,224,.95);
+}
+.btn--utama .btn__i{ background:rgba(255,255,255,.19); color:#fff; }
+.btn--utama b{ font-size:19px; }
+.btn--utama small{ color:rgba(236,246,255,.86); }
+.btn--utama .btn__go{ fill:#fff; }
+
+.foot{ margin:34px 0 0; text-align:center; font:500 10.5px/1.7 var(--f-mono); letter-spacing:.14em; text-transform:uppercase; color:rgba(190,214,245,.5); }
+
+/* bahasa: tiap teks punya dua <span lang>; yang tak aktif disembunyikan */
+html[lang="id"] [lang="en"], html[lang="en"] [lang="id"]{ display:none; }
+
+@media (prefers-reduced-motion:reduce){
+  *, *::before, *::after{ animation:none !important; transition:none !important; }
+  .mark i{ opacity:.28; transform:scale(1.55); } .mark i:nth-child(2){ transform:scale(2.1); opacity:.16; } .mark i:nth-child(3){ display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ikon: Material Design Icons (Apache 2.0) + ikon Instagram yang sama dengan situs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-web" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.93 6h-2.95a15.65 15.65 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14a8.2 8.2 0 0 1 0-4h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.99 7.99 0 0 1 5.08 16zm2.95-8H5.08a7.99 7.99 0 0 1 4.33-3.56A15.65 15.65 0 0 0 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.1.65.16 1.32.16 2s-.06 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38a8.2 8.2 0 0 1 0 4h-3.38z"/></symbol>
+    <symbol id="i-ig" viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.89 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07c-4.36.2-6.78 2.62-6.98 6.98C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></symbol>
+    <symbol id="i-film" viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/></symbol>
+    <symbol id="i-demo" viewBox="0 0 24 24"><path d="M3 4h18a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-7v2h3v2H7v-2h3v-2H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm1 2v9h16V6H4z"/></symbol>
+    <symbol id="i-tim" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></symbol>
+    <symbol id="i-go" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></symbol>
+  </defs>
+</svg>
+
+<div class="tape" aria-hidden="true"><span class="a"></span><span class="b"></span></div>
+
+<main class="card">
+  <div class="lang" role="group" aria-label="Bahasa / Language">
+    <button type="button" data-lang="id" aria-pressed="true" aria-label="Bahasa Indonesia">ID</button>
+    <button type="button" data-lang="en" aria-pressed="false" aria-label="English">EN</button>
+  </div>
+
+  <header class="head">
+    <div class="mark" aria-hidden="true">
+      <i style="--n:0"></i><i style="--n:1"></i><i style="--n:2"></i>
+      <img src="../assets/img/logo-mark.png" alt="" width="96" height="96">
+    </div>
+    <h1 class="name">POINT<em>RESCUE</em></h1>
+    <p class="slogan">Signal Lost. <b>Lives Found.</b></p>
+    <p class="desc">
+      <span lang="id">Pelacak taktis wearable untuk wilayah tanpa sinyal.</span>
+      <span lang="en">A wearable tactical tracker for places with no signal.</span>
+    </p>
+    <ul class="chips">
+      <li>PKM-KC 2026</li>
+      <li>Universitas Brawijaya</li>
+      <li>LoRa 433 MHz</li>
+    </ul>
+  </header>
+
+  <nav aria-label="Tautan resmi">
+    <ul class="chain">
+      <li style="--i:0">
+        <a class="btn btn--utama" href="../" data-href-en="../en/">
+          <span class="btn__i"><svg aria-hidden="true"><use href="#i-web"/></svg></span>
+          <span>
+            <b><span lang="id">Situs resmi Point Rescue</span><span lang="en">Official Point Rescue website</span></b>
+            <small><span lang="id">Bedah perangkat 3D · dashboard · data uji</span><span lang="en">Take it apart in 3D · dashboard · field data</span></small>
+          </span>
+          <svg class="btn__go" aria-hidden="true"><use href="#i-go"/></svg>
+        </a>
+      </li>
+      <li style="--i:1">
+        <a class="btn" href="https://instagram.com/pointrescue" target="_blank" rel="noopener noreferrer">
+          <span class="btn__i"><svg aria-hidden="true"><use href="#i-ig"/></svg></span>
+          <span>
+            <b>Instagram @pointrescue</b>
+            <small><span lang="id">Kabar terbaru dari tim</span><span lang="en">Latest from the team</span></small>
+          </span>
+          <svg class="btn__go" aria-hidden="true"><use href="#i-go"/></svg>
+        </a>
+      </li>
+      <li style="--i:2">
+        <a class="btn" href="../assets/video/pkm-point-rescue.mp4">
+          <span class="btn__i"><svg aria-hidden="true"><use href="#i-film"/></svg></span>
+          <span>
+            <b><span lang="id">Tonton film PKM-KC</span><span lang="en">Watch the PKM-KC film</span></b>
+            <small><span lang="id">3 mnt 28 dtk · narasi berbahasa Indonesia</span><span lang="en">3 min 28 s · narrated in Indonesian</span></small>
+          </span>
+          <svg class="btn__go" aria-hidden="true"><use href="#i-go"/></svg>
+        </a>
+      </li>
+      <li style="--i:3">
+        <a class="btn" href="../#dashboard" data-href-en="../en/#dashboard">
+          <span class="btn__i"><svg aria-hidden="true"><use href="#i-demo"/></svg></span>
+          <span>
+            <b><span lang="id">Coba dashboard &amp; aplikasi</span><span lang="en">Try the dashboard &amp; app</span></b>
+            <small><span lang="id">Berjalan langsung di halaman</span><span lang="en">Running live in the page</span></small>
+          </span>
+          <svg class="btn__go" aria-hidden="true"><use href="#i-go"/></svg>
+        </a>
+      </li>
+      <li style="--i:4">
+        <a class="btn" href="../#pengujian" data-href-en="../en/#pengujian">
+          <span class="btn__i"><svg aria-hidden="true"><use href="#i-chart"/></svg></span>
+          <span>
+            <b><span lang="id">Data uji lapangan</span><span lang="en">Field-test data</span></b>
+            <small><span lang="id">8 sesi · 754 titik ukur · apa adanya</span><span lang="en">8 sessions · 754 measurements · as recorded</span></small>
+          </span>
+          <svg class="btn__go" aria-hidden="true"><use href="#i-go"/></svg>
+        </a>
+      </li>
+      <li style="--i:5">
+        <a class="btn" href="../#tim" data-href-en="../en/#tim">
+          <span class="btn__i"><svg aria-hidden="true"><use href="#i-tim"/></svg></span>
+          <span>
+            <b><span lang="id">Kenalan dengan tim</span><span lang="en">Meet the team</span></b>
+            <small><span lang="id">Siapa mengerjakan apa · dosen pembimbing</span><span lang="en">Who built what · supervisor</span></small>
+          </span>
+          <svg class="btn__go" aria-hidden="true"><use href="#i-go"/></svg>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <p class="foot">
+    <span lang="id">PKM-KC 2026 · Fakultas Ilmu Komputer<br>Universitas Brawijaya</span>
+    <span lang="en">PKM-KC 2026 · Faculty of Computer Science<br>Universitas Brawijaya</span>
+  </p>
+</main>
+
+<div class="tape tape--bawah" aria-hidden="true"><span class="a"></span><span class="b"></span></div>
+
+<script>
+/* Bahasa: pilihan terakhir pengunjung, kalau tidak ada ikut bahasa peramban. Tautan ke situs
+   mengikuti bahasanya (../ atau ../en/). Tanpa JavaScript halaman tetap utuh, berbahasa Indonesia. */
+(function () {
+  var KEY = 'pr-link-lang', html = document.documentElement;
+  function baca() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+  function simpan(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+  function pasang(l) {
+    html.lang = l;
+    document.title = l === 'en' ? 'Point Rescue — Official Links' : 'Point Rescue — Tautan Resmi';
+    [].forEach.call(document.querySelectorAll('[data-lang]'), function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === l));
+    });
+    [].forEach.call(document.querySelectorAll('a[data-href-en]'), function (a) {
+      if (!a.getAttribute('data-href-id')) a.setAttribute('data-href-id', a.getAttribute('href'));
+      a.setAttribute('href', a.getAttribute(l === 'en' ? 'data-href-en' : 'data-href-id'));
+    });
+  }
+  var awal = baca();
+  if (awal !== 'id' && awal !== 'en') awal = /^en/i.test(navigator.language || '') ? 'en' : 'id';
+  pasang(awal);
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-lang]');
+    if (b) { var l = b.getAttribute('data-lang'); simpan(l); pasang(l); }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Point Rescue Tracking Command Center — Real-time GPS Search & Rescue Monitoring System">
+
+    <title>POINT RESCUE — Mission Command Center</title>
+
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <link rel="stylesheet" href="vendor/fonts/fonts.css">
+
+    <link rel="stylesheet" href="vendor/fonts/material-icons.css">
+
+    <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <div class="branding-strip" aria-label="Signal Lost Lives Found — Point Rescue"></div>
+
+    <div class="dashboard-wrapper">
+
+        <header class="header" id="header">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <span class="material-icons-round">menu</span>
+            </button>
+
+            <div class="header-logo">
+                <img src="assets/logo.png" alt="Point Rescue Logo" class="header-logo-img" draggable="false">
+            </div>
+
+            <div class="header-title">
+                <h1 class="logo-text">
+                    <span class="title-point">PO<span class="logo-i">I<span class="material-icons-round logo-signal">sensors</span></span>NT</span><span class="title-rescue">RESCUE</span>
+                </h1>
+                <span class="header-subtitle" data-i18n="subtitle">Mission Command Center</span>
+            </div>
+
+            <div class="header-right">
+                <div class="connection-status mission-pill" id="missionPill">
+                    <span class="pulse-dot"></span>
+                    <span class="status-text" id="missionLabel">STANDBY</span>
+                    <span class="mission-elapsed" id="missionElapsed"></span>
+                </div>
+
+                <button class="header-ticker" id="headerTicker" style="display: none;"></button>
+
+                <div class="header-device-count online-ratio" id="onlineRatio">
+                    <span class="material-icons-round">sensors</span>
+                    <span id="onlineRatioText">0/0 ONLINE</span>
+                </div>
+
+                <button class="header-addr" id="headerAddr" title="Alamat dashboard untuk dibuka di HP — klik untuk salin" style="display: none;">
+                    <span class="material-icons-round">smartphone</span>
+                    <span id="headerAddrText"></span>
+                </button>
+
+                <div class="header-clock" id="clock"></div>
+
+                <button class="theme-toggle lang-toggle" id="langToggleBtn" aria-label="Language" title="Bahasa / Language">EN</button>
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme" title="Toggle Theme">
+                    <span class="material-icons-round theme-icon">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="dashboard-body">
+
+            <aside class="sidebar" id="sidebar">
+
+                <div class="sidebar-brand compact">
+                    <div class="sidebar-radar-bg" aria-hidden="true">
+                        <svg viewBox="0 0 160 160" class="radar-svg">
+                            <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.8"/>
+                            <circle cx="80" cy="80" r="50" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.6"/>
+                            <circle cx="80" cy="80" r="30" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.6"/>
+                            <circle cx="80" cy="80" r="10" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+                            <line x1="80" y1="8" x2="80" y2="152" stroke="rgba(255,255,255,0.025)" stroke-width="0.5"/>
+                            <line x1="8" y1="80" x2="152" y2="80" stroke="rgba(255,255,255,0.025)" stroke-width="0.5"/>
+                            <line x1="25" y1="25" x2="135" y2="135" stroke="rgba(255,255,255,0.015)" stroke-width="0.4"/>
+                            <line x1="135" y1="25" x2="25" y2="135" stroke="rgba(255,255,255,0.015)" stroke-width="0.4"/>
+                            <line class="radar-sweep" x1="80" y1="80" x2="80" y2="10" stroke="rgba(249,115,22,0.45)" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <img src="assets/logo.png" alt="Point Rescue" class="sidebar-logo-img" draggable="false">
+                    <div class="sidebar-brand-text">
+                        <span class="brand-title">POINTRESCUE</span>
+                        <span class="brand-sub">SAR Tracking System</span>
+                    </div>
+                </div>
+
+                <div class="roster-tools">
+                    <div class="roster-search">
+                        <span class="material-icons-round">search</span>
+                        <input type="text" id="rosterSearch" placeholder="Search nodes…" data-i18n="search_nodes" data-i18n-attr="placeholder" autocomplete="off">
+                    </div>
+                    <div class="roster-chips" id="rosterChips">
+                        <button class="roster-chip active" data-filter="all"><span data-i18n="f_all">All</span> <b id="chipAll">0</b></button>
+                        <button class="roster-chip" data-filter="online"><span data-i18n="f_online">Online</span> <b id="chipOnline">0</b></button>
+                        <button class="roster-chip" data-filter="offline"><span data-i18n="f_offline">Offline</span> <b id="chipOffline">0</b></button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="device-list" id="rosterList"></div>
+                </div>
+
+                <div class="sidebar-footer">
+                    <img src="assets/logo.png" alt="" class="footer-logo" draggable="false">
+                    <span>Point Rescue v2.0</span>
+                </div>
+
+            </aside>
+
+            <div class="main-content" id="mainContent">
+                <div class="map-container">
+                    <div id="map"></div>
+
+                    <div class="offline-map-badge" id="offlineMapBadge" style="display:none">
+                        PETA OFFLINE — latar grid, posisi tetap akurat
+                    </div>
+
+                    <div class="map-overlay-info" id="mapOverlayInfo">
+                        <img src="assets/logo.png" alt="" class="overlay-logo" draggable="false">
+                        <span id="mapOverlayText">Initializing map...</span>
+                    </div>
+
+                    <div class="matrix-panel" id="matrixPanel" style="display: none;">
+                        <div class="matrix-header">
+                            <span class="material-icons-round">social_distance</span>
+                            <span class="matrix-title" data-i18n="node_distances">Node Distances</span>
+                            <span class="distance-count" id="distanceCount"></span>
+                            <button class="matrix-close" id="matrixCloseBtn" aria-label="Close">
+                                <span class="material-icons-round">close</span>
+                            </button>
+                        </div>
+                        <div class="distance-list" id="distanceList"></div>
+                    </div>
+
+                    <div class="base-panel" id="basePanel" style="display: none;">
+                        <div class="matrix-header">
+                            <span class="material-icons-round">home_pin</span>
+                            <span class="matrix-title" data-i18n="command_post">Command Post</span>
+                            <button class="matrix-close" id="baseCloseBtn" aria-label="Close">
+                                <span class="material-icons-round">close</span>
+                            </button>
+                        </div>
+                        <div class="base-body">
+                            <div class="base-status" id="baseStatus">
+                                <span class="material-icons-round">location_off</span>
+                                <span data-i18n="not_set">Command Post not set</span>
+                            </div>
+                            <button class="mc-btn base-gps-btn" id="baseGpsBtn">
+                                <span class="material-icons-round">my_location</span>
+                                <span data-i18n="use_phone_gps">Use this device location</span>
+                            </button>
+                            <button class="mc-btn base-pin-btn" id="basePinBtn">
+                                <span class="material-icons-round">ads_click</span>
+                                <span data-i18n="click_map">Click point on map</span>
+                            </button>
+                            <div class="base-manual">
+                                <span class="base-manual-label" data-i18n="or_type_coord">or type coordinates</span>
+                                <div class="base-manual-row">
+                                    <input type="text" id="baseLatInput" class="base-input" placeholder="Latitude" autocomplete="off">
+                                    <input type="text" id="baseLngInput" class="base-input" placeholder="Longitude" autocomplete="off">
+                                </div>
+                                <div class="base-actions">
+                                    <button class="mc-btn" id="baseSaveBtn"><span class="material-icons-round">save</span><span data-i18n="save">Save</span></button>
+                                    <button class="mc-btn btn-danger" id="baseResetBtn"><span class="material-icons-round">delete</span><span data-i18n="reset">Reset</span></button>
+                                </div>
+                            </div>
+                            <div class="base-hint" id="baseHint" data-i18n="base_hint">The Command Post is the reference for distances &amp; nearest team. A phone can also send its GPS here over local WiFi.</div>
+                        </div>
+                    </div>
+
+                    <div class="measure-history-panel" id="measureHistoryPanel" style="display: none;">
+                        <div class="measure-history-header" id="measureHistoryHeader">
+                            <span class="material-icons-round">straighten</span>
+                            <span class="measure-history-title" data-i18n="measurements">Measurements</span>
+                            <span class="measure-badge" id="measureCountBadge">0</span>
+                            <button class="measure-collapse-btn" id="measureCollapseBtn">
+                                <span class="material-icons-round">expand_more</span>
+                            </button>
+                        </div>
+                        <div class="measure-history-body" id="measureHistoryBody">
+                            <div class="measure-summary">
+                                <div class="measure-summary-item">
+                                    <span class="measure-summary-label" data-i18n="total_lines">Total Lines</span>
+                                    <span class="measure-summary-value" id="measureSummaryTotal">0</span>
+                                </div>
+                                <div class="measure-summary-item">
+                                    <span class="measure-summary-label" data-i18n="longest">Longest</span>
+                                    <span class="measure-summary-value" id="measureSummaryLongest">—</span>
+                                </div>
+                                <div class="measure-summary-item">
+                                    <span class="measure-summary-label" data-i18n="shortest">Shortest</span>
+                                    <span class="measure-summary-value" id="measureSummaryShortest">—</span>
+                                </div>
+                            </div>
+                            <div class="measure-list" id="measureList">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="replay-bar" id="replayBar" style="display: none;">
+                        <span class="replay-node" id="replayNode"></span>
+                        <button class="replay-btn" id="replayPlayBtn" title="Play / Pause">
+                            <span class="material-icons-round">play_arrow</span>
+                        </button>
+                        <input type="range" class="replay-slider" id="replaySlider" min="0" max="1000" value="0" step="1">
+                        <span class="replay-time" id="replayTime">--:--:--</span>
+                        <button class="replay-speed" id="replaySpeedBtn" title="Playback speed">1×</button>
+                        <button class="replay-btn" id="replayCloseBtn" title="Exit replay">
+                            <span class="material-icons-round">close</span>
+                        </button>
+                    </div>
+
+                    <div class="compass-watermark" aria-hidden="true">
+                        <svg viewBox="0 0 220 220" class="compass-svg">
+                            <circle cx="110" cy="110" r="100" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.07"/>
+                            <circle cx="110" cy="110" r="80" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.05"/>
+                            <circle cx="110" cy="110" r="60" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.04"/>
+                            <circle cx="110" cy="110" r="40" fill="none" stroke="currentColor" stroke-width="0.4" opacity="0.035"/>
+                            <circle cx="110" cy="110" r="20" fill="none" stroke="currentColor" stroke-width="0.3" opacity="0.03"/>
+                            <line x1="110" y1="5" x2="110" y2="215" stroke="currentColor" stroke-width="0.5" opacity="0.05"/>
+                            <line x1="5" y1="110" x2="215" y2="110" stroke="currentColor" stroke-width="0.5" opacity="0.05"/>
+                            <line x1="32" y1="32" x2="188" y2="188" stroke="currentColor" stroke-width="0.3" opacity="0.035"/>
+                            <line x1="188" y1="32" x2="32" y2="188" stroke="currentColor" stroke-width="0.3" opacity="0.035"/>
+                            <text x="110" y="20" text-anchor="middle" fill="currentColor" font-size="13" font-weight="800" font-family="Inter" opacity="0.08">N</text>
+                            <text x="110" y="210" text-anchor="middle" fill="currentColor" font-size="13" font-weight="800" font-family="Inter" opacity="0.08">S</text>
+                            <text x="206" y="114" text-anchor="end" fill="currentColor" font-size="13" font-weight="800" font-family="Inter" opacity="0.08">E</text>
+                            <text x="18" y="114" text-anchor="start" fill="currentColor" font-size="13" font-weight="800" font-family="Inter" opacity="0.08">W</text>
+                            <polygon points="110,26 106,38 114,38" fill="currentColor" opacity="0.07"/>
+                            <line x1="110" y1="10" x2="110" y2="16" stroke="currentColor" stroke-width="0.8" opacity="0.06"/>
+                            <line x1="110" y1="204" x2="110" y2="210" stroke="currentColor" stroke-width="0.8" opacity="0.06"/>
+                            <line x1="10" y1="110" x2="16" y2="110" stroke="currentColor" stroke-width="0.8" opacity="0.06"/>
+                            <line x1="204" y1="110" x2="210" y2="110" stroke="currentColor" stroke-width="0.8" opacity="0.06"/>
+                        </svg>
+                    </div>
+
+                    <div class="map-dot-grid top-left" aria-hidden="true"></div>
+                    <div class="map-dot-grid bottom-right" aria-hidden="true"></div>
+                </div>
+            </div>
+
+            <aside class="right-panel" id="rightPanel">
+
+                <div class="mc-states" id="mcStates"></div>
+
+                <div class="comms-card" id="commsCard">
+                    <div class="status-card-header comms-header">
+                        <span class="material-icons-round">forum</span>
+                        <span data-i18n="mission_comms">Mission Comms</span>
+                        <button class="comms-filter" id="commsFilter" style="display: none;"></button>
+                        <span class="chat-count" id="chatCount"></span>
+                    </div>
+                    <div class="chat-list" id="commsList">
+                        <div class="chat-empty">
+                            <span class="material-icons-round">chat_bubble_outline</span>
+                            <span data-i18n="no_messages">No messages yet</span>
+                        </div>
+                    </div>
+                    <form class="chat-input-row" id="chatForm" autocomplete="off">
+                        <input type="text" id="chatInput" class="chat-input"
+                               placeholder="Message team… use @ to mention" data-i18n="msg_placeholder" data-i18n-attr="placeholder" maxlength="100" required>
+                        <button type="submit" class="chat-send-btn" id="chatSend" title="Send to LoRa mesh">
+                            <span class="material-icons-round">send</span>
+                        </button>
+                    </form>
+                    <div class="chat-hint" id="chatHint"></div>
+                </div>
+
+            </aside>
+
+        </div>
+
+        <div class="footer-stripe" aria-hidden="true"></div>
+
+    </div>
+
+    <script src="vendor/leaflet/leaflet.js"></script>
+
+    <script src="shim.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en" data-base="../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>POINT RESCUE — Wearable Tactical Tracker for Areas With No Signal</title>
+<meta name="description" content="POINT RESCUE: a wearable tactical tracker built on a controlled-flooding algorithm that finds disaster victims over a 433 MHz LoRa radio network in areas with no signal. PKM-KC 2026, Universitas Brawijaya.">
+<link rel="icon" href="../assets/img/logo-mark.png">
+<meta name="theme-color" content="#051a33">
+<link rel="canonical" href="https://danishpramudya-ops.github.io/pointrescue/en/">
+<!-- pratinjau saat tautan dibagikan (WhatsApp, Instagram, LinkedIn); alamatnya mutlak — ganti bila situs pindah -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Point Rescue">
+<meta property="og:title" content="POINT RESCUE — Wearable Tactical Tracker for Areas With No Signal">
+<meta property="og:description" content="POINT RESCUE: a wearable tactical tracker built on a controlled-flooding algorithm that finds disaster victims over a 433 MHz LoRa radio network in areas with no signal. PKM-KC 2026, Universitas Brawijaya.">
+<meta property="og:url" content="https://danishpramudya-ops.github.io/pointrescue/en/">
+<meta property="og:image" content="https://danishpramudya-ops.github.io/pointrescue/assets/img/og-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css?v=20">
+<!-- tanpa JavaScript, intro must not akan pernah dibuka: lepaskan kuncinya -->
+<noscript><style>body.is-intro{overflow:auto;height:auto}.intro{display:none}</style></noscript>
+<link rel="alternate" hreflang="id" href="../index.html">
+<link rel="alternate" hreflang="en" href="./index.html">
+<link rel="alternate" hreflang="x-default" href="../index.html">
+</head>
+<body class="is-intro">
+
+<!-- latar jaringan hidup, satu kanvas untuk seluruh halaman -->
+<canvas id="meshbg" aria-hidden="true"></canvas>
+
+<!-- ══════════ INTRO: animasi logo ══════════ -->
+<div class="intro" id="intro">
+  <div class="intro__rings" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <div class="intro__lockup">
+    <img class="intro__mark" src="../assets/img/logo-mark.png" alt="">
+    <div class="intro__word"><img src="../assets/img/wordmark.png" alt="Point Rescue"></div>
+  </div>
+  <p class="intro__tag"><span>Signal Lost.</span> <span>Lives Found.</span></p>
+  <div class="intro__bar"><i></i></div>
+</div>
+
+<!-- ══════════ NAV ══════════ -->
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#top">
+    <img src="../assets/img/logo-mark.png" alt="" class="nav__logo">
+    <span class="nav__name">POINT<em>RESCUE</em></span>
+  </a>
+  <!-- prop komponen GooeyNav React Bits, dalam bentuk data-* kebab-case -->
+  <nav class="nav__links" data-particle-count="14" data-particle-distance-outer="84"
+       data-particle-distance-inner="10" data-particle-r="100"
+       data-animation-time="600" data-time-variance="300">
+    <a href="#masalah">Problem</a>
+    <a href="#gagasan">Approach</a>
+    <a href="#sistem">How it works</a>
+    <a href="#anatomi">Anatomy</a>
+    <a href="#prototipe">Prototype</a>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#pengujian">Field data</a>
+    <a href="#aplikasi">App</a>
+    <a href="#hki">Copyright</a>
+    <a href="#tim">Team</a>
+  </nav>
+  <a class="nav__lang" href="../index.html" hreflang="id" aria-label="Baca dalam bahasa Indonesia">ID</a>
+  <a class="nav__cta" href="https://instagram.com/pointrescue" target="_blank" rel="noopener">@pointrescue</a>
+</header>
+
+<!-- progress gulir -->
+<div class="scrollbar" aria-hidden="true"><i id="scrollbar"></i></div>
+
+<main id="top">
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" data-anim="hero">
+  <div class="hero__bg" aria-hidden="true"></div>
+  <div class="grid-floor" aria-hidden="true"></div>
+  <!-- Radar (React Bits, di-port ke WebGL murni) — hanya biru, latar transparan -->
+  <div class="radar radar--hero" data-radar aria-hidden="true"
+       data-color="#3f8fe8" data-background-color="#000000"
+       data-speed="0.55" data-scale="0.58"
+       data-ring-count="9" data-spoke-count="16"
+       data-ring-thickness="0.042" data-spoke-thickness="0.006"
+       data-sweep-speed="0.5" data-sweep-width="2.6" data-sweep-lobes="1"
+       data-falloff="1.6" data-brightness="0.95"
+       data-mouse-influence="0.07"></div>
+
+  <div class="hero__inner">
+    <div class="hero__copy">
+      <p class="eyebrow" data-r="1">PKM-KC 2026 · Universitas Brawijaya</p>
+      <h1 class="hero__title">
+        <span class="line"><span data-r="2">POINT</span></span>
+        <span class="line"><span data-r="3" class="ghost">RESCUE</span></span>
+      </h1>
+      <p class="hero__lead" data-r="4">
+        A tactical <em>wearable</em> tracker built on a <em>controlled flooding</em> algorithm, finding disaster victims over a radio network in areas that have lost every signal.
+      </p>
+      <div class="hero__stats" data-r="5">
+        <div class="stat"><b data-count="433">0</b><span>MHz LoRa</span></div>
+        <div class="stat"><b data-count="716">0</b><span>metres of tested link</span></div>
+        <div class="stat"><b data-count="0">0</b><span>cell towers needed</span></div>
+      </div>
+      <div class="hero__actions" data-r="6">
+        <a class="btn btn--primary" href="#anatomi">Take it apart</a>
+        <a class="btn btn--ghost" href="#dashboard">See the dashboard</a>
+      </div>
+    </div>
+
+    <figure class="hero__shot" data-r="3">
+      <!-- Model 3D rakitan 17 part, berputar sendiri dan sengaja TIDAK bisa
+           disentuh — di sini cuma sorotan. Yang bisa dibongkar ada di 04.
+           Fotonya tetap dipakai sebagai poster sampai modelnya siap. -->
+      <div class="shot__frame" id="heroShot">
+        <img src="../assets/photo/proto-hand.jpg" alt="A Point Rescue unit held in the hand, antenna fitted">
+        <iframe id="hero3d" loading="lazy" tabindex="-1" aria-hidden="true"
+                src="../proto/hero.html?v=20" title="The Point Rescue 3D model, rotating"></iframe>
+        <span class="shot__scan" aria-hidden="true"></span>
+      </div>
+      <figcaption><b>Unit SAR</b> · 17-part assembly · PLA case 84 × 145 × 35 mm</figcaption>
+    </figure>
+  </div>
+
+  <div class="hero__cue" aria-hidden="true"><span></span>Scroll</div>
+</section>
+
+<div class="tape" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 01 MASALAH — kartu jatuh 3D ══════════ -->
+<section class="sec sec--dark" id="masalah" data-anim="fall">
+  <div class="wrap">
+    <header class="head">
+      <p class="head__num" data-r="1">01 — Problem</p>
+      <p class="head__lead" data-r="2">
+        Search operations always happen exactly where technology least wants to be: forest, mountain slope, river valley, ground a disaster has just flattened. And that is precisely where the cell towers have come down, the power is out, and every app that demands the internet stops being of any use.
+      </p>
+    </header>
+  </div>
+
+  <!-- ScrollExpand: bingkai membuka mengikuti gulir, film mulai saat penuh -->
+  <div class="se" data-se
+       data-start-width="46" data-start-height="62"
+       data-start-radius="22" data-media-zoom="1.28"
+       data-scroll-distance="1.15" data-hold-distance="0.75"
+       data-overlay-scrim="0.3">
+    <div class="se__track">
+      <div class="se__stage">
+        <div class="se__frame">
+          <video class="se__media" muted loop playsinline preload="metadata"
+                 poster="../assets/video/pkm-point-rescue-poster.jpg"
+                 aria-label="Point Rescue PKM-KC film: the problem, how the system works, and the field-test results. Narration and subtitles are in Indonesian.">
+            <source src="../assets/video/pkm-point-rescue.mp4" type="video/mp4">
+          </video>
+          <div class="se__scrim" aria-hidden="true"></div>
+          <div class="se__live" aria-hidden="true"><i></i>PKM-KC video</div>
+          <button class="se__sound" type="button" aria-pressed="false"
+                  aria-label="Turn on the film's sound and narration">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/>
+              <path class="se__wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"
+                    fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path class="se__slash" d="M4 20 L20 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg><span>Sound</span>
+          </button>
+          <p class="se__ajak" aria-hidden="true">Narrated and subtitled in Indonesian — press Sound</p>
+        </div>
+        <p class="se__title">When the network goes dark,<br>the search starts from zero.</p>
+        <p class="se__hint">Scroll</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="fallcards">
+      <article class="fc" data-r="1"><span class="fc__i">01</span>
+        <h3>Areas with no signal</h3>
+        <p>A <em>blank spot</em> is not the exception — it is a search-and-rescue team's daily working ground. Any device that needs a cellular signal just to open a map stops working at exactly the moment it matters most.</p>
+      </article>
+      <article class="fc" data-r="2"><span class="fc__i">02</span>
+        <h3>Teame that cannot be negotiated</h3>
+        <p>A victim's chance of survival drops sharply with every hour. Every hour spent sweeping the wrong area never comes back — and uncoordinated sweeping is the most common reason those hours are lost.</p>
+      </article>
+      <article class="fc" data-r="3"><span class="fc__i">03</span>
+        <h3>Coordination in the blind</h3>
+        <p>With no shared data channel, the command post does not know where its teams are and the teams do not know what other teams have already covered. Reports travel by voice radio, one at a time, and vanish the moment the conversation ends.</p>
+      </article>
+    </div>
+
+    <blockquote class="quote" data-r="4">
+      Point Rescue starts from a single design decision:
+      <b>never depend on the infrastructure most likely to be destroyed alongside everything else.</b>
+    </blockquote>
+
+    <div class="docnote">
+      <div>
+        <h4>Background image credits</h4>
+        <p>
+          The background images on the three cards above are illustrative —
+          <b>they are not documentation of a Point Rescue deployment</b>. Every image is freely licensed and taken from
+          <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>:
+        </p>
+        <ol>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Rescue_work_after_Mundakkai_devastation.webm" target="_blank" rel="noopener">Mundakkai search operation</a> — Makks2010, <em>CC0</em></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Philippines_Landslide.webm" target="_blank" rel="noopener">Philippines landslide</a> — VOA News, <em>public domain</em></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Aerial_video_of_the_aftermath_of_the_flood_in_Aqqala.webm" target="_blank" rel="noopener">Aqqala flood from the air</a> — Mohammad Moheimany, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener"><em>CC BY 4.0</em></a></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="tape" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 02 GAGASAN — track horizontal ══════════ -->
+<section class="track" id="gagasan" data-anim="track">
+  <div class="track__sticky">
+    <div class="track__head">
+      <p class="head__num">02 — Approach</p>
+      <h2 class="head__title">A network the team carries in with them.</h2>
+    </div>
+    <div class="track__rail" id="rail">
+      <article class="tcard">
+        <span class="tcard__n">01</span>
+        <div class="tcard__sim"><svg data-sim="nooperator" aria-hidden="true"></svg></div>
+        <h3>No carrier</h3>
+        <p>The moment it is switched on, every unit forms an independent radio network with the other units around it. No SIM card, no registration, no server. Each unit is at once sender, receiver and relay.</p>
+        <ul class="ticks"><li>LoRa 433 MHz · Net ID <code>PR01</code></li><li>Sync word <code>0x24</code></li><li>64-byte maximum payload</li></ul>
+      </article>
+      <article class="tcard">
+        <span class="tcard__n">02</span>
+        <div class="tcard__sim"><svg data-sim="flooding" aria-hidden="true"></svg></div>
+        <h3>Controlled flooding</h3>
+        <p>A packet that arrives is forwarded again by other nodes, so effective range reaches far beyond what a single radio can cover. That forwarding is deliberately controlled so the air does not clog with copies of the same message.</p>
+        <ul class="ticks"><li>1–4 hop budget per packet type</li><li>Random 400–700 ms delay</li><li>Duplicate suppression by sequence number</li></ul>
+      </article>
+      <article class="tcard">
+        <span class="tcard__n">03</span>
+        <div class="tcard__sim"><svg data-sim="situasi" aria-hidden="true"></svg></div>
+        <h3>Shared picture</h3>
+        <p>The same data reaches two places: the operator dashboard at the command post and the Android app in a rescuer's hand. Nobody has to walk back to the post just to find out what is happening.</p>
+        <ul class="ticks"><li>Tactical map, trails, compass</li><li>Two-way mission messaging</li><li>All processing on the device</li></ul>
+      </article>
+      <article class="tcard">
+        <span class="tcard__n">04</span>
+        <div class="tcard__sim"><svg data-sim="fallback" aria-hidden="true"></svg></div>
+        <h3>Holding up when things fail</h3>
+        <p>Every technical decision comes from one question: what happens if this part does not work? The map has three fallback levels, the last valid position is held, and a link can be proven all the way to the command post.</p>
+        <ul class="ticks"><li>Three-tier map fallback</li><li>Last valid position held</li><li>Tiered link proof</li></ul>
+      </article>
+    </div>
+    <div class="track__bar"><i id="trackbar"></i></div>
+  </div>
+</section>
+
+<!-- ══════════ 03 CARA KERJA — SVG draw ══════════ -->
+<section class="sec" id="sistem" data-anim="draw">
+  <div class="wrap">
+    <header class="head">
+      <p class="head__num" data-r="1">03 — How it works</p>
+      <h2 class="head__title" data-split>Three roles, one network.</h2>
+      <p class="head__lead" data-r="2">
+        The hardware is identical; the only difference is the role the firmware gives it. All three speak the same protocol, so any unit can relay for any other with no extra configuration.
+      </p>
+    </header>
+
+    <div class="mesh">
+      <div class="mesh__viz">
+        <svg viewBox="0 0 480 340" class="meshsvg" id="meshsvg" data-sim="mesh" aria-hidden="true">
+          <g class="meshsvg__links">
+            <path d="M78 250 L188 172" data-hop="1"/>
+            <path d="M78 250 L162 292" data-hop="1"/>
+            <path d="M188 172 L322 116" data-hop="2"/>
+            <path d="M188 172 L316 232" data-hop="2"/>
+            <path d="M162 292 L316 232" data-hop="2"/>
+            <path d="M322 116 L406 186" data-hop="3"/>
+            <path d="M316 232 L406 186" data-hop="3"/>
+          </g>
+          <g class="meshsvg__nodes">
+            <g transform="translate(78,250)" class="n n--k"><circle r="18"/><text y="5">K</text></g>
+            <g transform="translate(188,172)" class="n"><circle r="15"/><text y="5">S</text></g>
+            <g transform="translate(162,292)" class="n"><circle r="15"/><text y="5">S</text></g>
+            <g transform="translate(322,116)" class="n"><circle r="15"/><text y="5">S</text></g>
+            <g transform="translate(316,232)" class="n"><circle r="15"/><text y="5">S</text></g>
+            <g transform="translate(406,186)" class="n n--g"><circle r="19"/><text y="5">G</text></g>
+          </g>
+          <text x="78" y="292" class="cap">victim</text>
+          <text x="392" y="228" class="cap">post</text>
+        </svg>
+        <p class="mesh__legend"><b>K</b> victim · <b>S</b> SAR team · <b>G</b> command-post gateway</p>
+      </div>
+
+      <div class="mesh__roles">
+        <article class="role role--k" data-r="1">
+          <p class="role__tag">VICTIM node</p>
+          <h3>Carried by a victim, or left at the point where one is found</h3>
+          <p>Broadcasts its identity and coordinates at intervals. One button to arm it — no screen, no menu, still working from inside a bag.</p>
+        </article>
+        <article class="role role--s" data-r="2">
+          <p class="role__tag">SAR node</p>
+          <h3>Carried by personnel in the field</h3>
+          <p>As well as broadcasting, the SAR node bridges over Bluetooth to the Android app: packets from the network reach the screen, messages from the screen reach the network.</p>
+        </article>
+        <article class="role role--g" data-r="3">
+          <p class="role__tag">GATEWAY node</p>
+          <h3>Installed at the command post</h3>
+          <p>Connects to the post's computer over USB and pours all network traffic into the operator dashboard.</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="floodsteps">
+      <ol class="steps">
+        <li data-r="1"><b>Hop budget.</b> Every packet carries a <em>hop</em>allowance. A heartbeat gets one hop, a mission message up to four. When the budget runs out, the packet stops.</li>
+        <li data-r="2"><b>Random delay.</b> Before forwarding, a node waits a random 400–700 ms. Two nodes that hear the same packet will not re-send it at exactly the same instant.</li>
+        <li data-r="3"><b>Duplicate suppression.</b> Each node records the last sequence number from every sender. A copy that arrives later by a different path is discarded.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<div class="tape tape--alt" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 04 ANATOMI — viewer interaktif penuh ══════════ -->
+<section class="sec sec--dark g-b" id="anatomi" data-anim="anat">
+  <div class="wrap wrap--wide">
+    <header class="head">
+      <p class="head__num" data-r="1">04 — Anatomy</p>
+      <h2 class="head__title" data-split>Take it apart yourself, layer by layer.</h2>
+    </header>
+
+    <div class="anat">
+      <div class="anat__intro">
+        <div>
+          <p class="anat__lead" data-r="1">
+            The model below is the complete 17-part assembly — the case from the printed OBJ file, every other part modelled at its real size. The PCB's copper routing is deliberately left out.
+          </p>
+          <ul class="anat__how" data-r="2">
+            <li><b>Explode</b> — drag the slider or press the button to pull the unit apart</li>
+            <li><b>Labels</b> — bring up every part's name with its leader line</li>
+            <li><b>Ghost</b> — make the case transparent so the insides show</li>
+            <li><b>Spin</b> · <b>Iso/Front/Side/Top</b> — spin automatically or lock to a standard angle</li>
+            <li>List on the right: <b>hover</b> highlights a part, <b>klik</b> isolates it</li>
+          </ul>
+        </div>
+        <div class="anat__spec" data-r="3">
+          <div><b>84 × 145 × 35</b><span>Case (mm) · 3D-printed PLA</span></div>
+          <div><b>59,8 × 80,9</b><span>Carrier PCB (mm) · FR-4 1.6</span></div>
+          <div><b>ESP32-WROOM-32</b><span>30-pin devkit · 51.4 × 28.3 mm</span></div>
+          <div><b>SX1278 Ra-02</b><span>LoRa 433 MHz · SMA</span></div>
+          <div><b>NEO-M8N</b><span>GPS · external patch over u.FL</span></div>
+          <div><b>18650 · TP4056</b><span>3.7 V cell · micro-USB charging</span></div>
+        </div>
+      </div>
+
+      <div class="anat__viewer" data-r="1">
+        <p class="anat__wait">Preparing the 3D model — 17 parts</p>
+        <iframe src="../proto/viewer.html?v=20" loading="lazy"
+                title="Point Rescue 3D assembly — explode, labels and part isolation"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 05 PROTOTIPE — zoom full-bleed ══════════ -->
+<section class="proto" id="prototipe" data-anim="zoom">
+  <div class="proto__sticky">
+    <div class="proto__bleed"><img src="../assets/photo/proto-inside.jpg" alt="Inside the device: ESP32, LoRa, GPS, charger and 18650 cell"></div>
+    <div class="proto__caption">
+      <p class="head__num">05 — Prototype</p>
+      <h2>Not a render.<br>It already sits on the bench.</h2>
+      <p>This is the same unit that was walked away from the gateway until the signal ran out.</p>
+    </div>
+  </div>
+  <div class="wrap proto__strip">
+    <figure data-r="1"><img src="../assets/photo/proto-top.jpg" alt="Antenna, indicator LEDs and GPS patch on the top face">
+      <figcaption>GPS patch facing the sky, green LED for satellite lock</figcaption></figure>
+    <figure data-r="2"><img src="../assets/photo/proto-detail.jpg" alt="Indicator LEDs and button inside the case">
+      <figcaption>One button for the whole operation — no menu, no configuration</figcaption></figure>
+    <figure data-r="3"><img src="../assets/photo/proto-hand.jpg" alt="A Point Rescue unit held in the hand">
+      <figcaption>Small enough to hold, or to clip onto a vest</figcaption></figure>
+  </div>
+</section>
+
+<!-- ══════════ 06 DASHBOARD — console + dashboard asli ══════════ -->
+<section class="sec sec--dark g-b" id="dashboard" data-anim="console">
+  <div class="wrap">
+    <header class="head">
+      <p class="head__num" data-r="1">06 — Command post</p>
+      <h2 class="head__title" data-split>The whole network, on one screen.</h2>
+      <p class="head__lead" data-r="2">
+        The gateway node pours every packet it hears into the post's computer. The console below is running on recorded data from <code>simulate.py</code> — the same movement pattern, RSSI and message traffic as when the system is run for real.
+      </p>
+    </header>
+
+    <div class="laptop" data-r="1">
+      <div class="laptop__lid">
+        <span class="laptop__cam" aria-hidden="true"></span>
+        <div class="laptop__screen" id="laptopScreen">
+          <iframe id="dashframe" src="../dash/index.html" loading="lazy"
+                  title="The POINTRESCUE Gateway Dashboard running on recorded simulate.py data"></iframe>
+          <span class="laptop__glare" aria-hidden="true"></span>
+        </div>
+        <span class="laptop__brand" aria-hidden="true">POINT<em>RESCUE</em></span>
+      </div>
+      <div class="laptop__hinge" aria-hidden="true"></div>
+      <div class="laptop__deck" aria-hidden="true">
+        <span class="laptop__pad"></span>
+        <span class="laptop__lip"></span>
+      </div>
+      <div class="laptop__shadow" aria-hidden="true"></div>
+    </div>
+
+    <div class="dashbar" data-r="2">
+      <span class="dashbar__live"><i></i>Simulation running</span>
+      <span class="dashbar__meta" id="cclock">NET PR01 · 433 MHz</span>
+      <button class="btn btn--small" id="openDash" type="button">Open full screen →</button>
+    </div>
+
+    <p class="console__note" data-r="3">
+      That is the real operator dashboard — the same code registered for copyright — running inside this page on recorded data from
+      <code>simulate.py</code>: four nodes, the same movement and packet traffic as when the system is run for real.
+    </p>
+  </div>
+</section>
+
+<!-- overlay dashboard asli -->
+<div class="dashwrap dashwrap--app" id="appwrap" hidden>
+  <div class="dashwrap__bar">
+    <span>POINTRESCUE app · web build · demo mode</span>
+    <button type="button" id="closeApp" aria-label="Close">Close ✕</button>
+  </div>
+  <iframe id="appframe2" title="App Point Rescue" src="about:blank"></iframe>
+</div>
+
+<div class="dashwrap" id="dashwrap" hidden>
+  <div class="dashwrap__bar">
+    <span>POINTRESCUE Gateway Dashboard · demonstration mode</span>
+    <button type="button" id="closeDash" aria-label="Close">Close ✕</button>
+  </div>
+  <iframe id="dashframe2" title="The Point Rescue Gateway Dashboard" src="about:blank"></iframe>
+</div>
+
+<div class="tape" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 07 PENGUJIAN — grafik gambar sendiri ══════════ -->
+<section class="sec" id="pengujian" data-anim="chart">
+  <div class="wrap">
+    <header class="head">
+      <p class="head__num" data-r="1">07 — Field data</p>
+      <h2 class="head__title" data-split>Eight sessions, one recording.</h2>
+      <p class="head__lead" data-r="2">
+        Every number below is drawn from the gateway's serial recording across eight field sessions — packets the command post actually received, not a simulation and not a theoretical calculation. What is shown includes the parts that do not read well: nodes rebooting on their own, packets arriving with no valid position, and sessions with a PDR under 30 per cent.
+      </p>
+    </header>
+
+    <div class="vkpi" data-r="1">
+      <div><b data-vk="sesi">0</b><span>recorded sessions</span></div>
+      <div><b data-vk="menit">0</b><span>minutes in the field</span></div>
+      <div><b data-vk="rx">0</b><span>packets received at the post</span></div>
+      <div><b data-vk="tx">0</b><span>packets transmitted</span></div>
+      <div><b data-vk="jauh">0</b><span>metres · farthest direct link</span></div>
+      <div><b data-vk="reboot">0</b><span>node reboots</span></div>
+    </div>
+
+    <figure class="chart chart--wide" data-r="2">
+      <figcaption>RSSI against distance · <span data-v-titik>0</span> hop-0 packets with a valid GPS fix</figcaption>
+      <div class="chart__legend" id="vLegend" role="group" aria-label="Filter by session"></div>
+      <svg viewBox="0 0 900 420" id="vScatter" role="img"
+           aria-label="RSSI against distance across eight field-test sessions"></svg>
+      <p class="chart__note">The distance axis uses a square-root scale so the first hundred metres do not crowd against the left edge — that is where the signal falls most steeply. Only
+        <b>hop-0</b> packets are used: a hop-1 packet carries the RSSI of the node that relayed it, not of the node it came from, and including those would make the chart appear to show signal getting stronger with distance. Packets without a GPS fix are discarded too, because their coordinates are invented by the firmware. Click a session name to filter.</p>
+    </figure>
+
+    <div class="vduo">
+      <figure class="chart" data-r="1">
+        <figcaption>Farthest distance still reached · per session</figcaption>
+        <svg viewBox="0 0 460 300" id="vRange" role="img"
+             aria-label="Farthest distance per session, split between direct links and relayed links"></svg>
+        <p class="chart__note">A hatched bar means the packet arrived <b>via a relay</b> on another node rather than directly. The dashed bar on the multi-hop test is an upper bound: the tester noted that the last fifteen packets were probably relayed even though they counted as zero hops, so the figure that may be called a direct link is the solid bar.</p>
+      </figure>
+
+      <figure class="chart" data-r="2">
+        <figcaption>Packet Delivery Ratio · per node, in time order</figcaption>
+        <svg viewBox="0 0 460 300" id="vPdr" role="img"
+             aria-label="Packet delivery ratio for each node in each session"></svg>
+        <p class="chart__note">Computed from the continuity of packet sequence numbers. A node uses one counter for every packet type, so this is a <b>per-node aggregate PDR</b> — a gap in the sequence tells you a packet was lost, but not which kind.</p>
+      </figure>
+    </div>
+
+    <figure class="chart chart--wide" data-r="2">
+      <figcaption>Location data quality · valid GPS fixes against packets with none</figcaption>
+      <svg viewBox="0 0 900 220" id="vFix" role="img"
+           aria-label="Packets with a valid GPS fix compared with those without, per session"></svg>
+      <p class="chart__note">While the GPS has not yet locked onto satellites, the firmware still sends packets — with the same invented coordinates for every node. Packets like that are discarded from the distance analysis, and in the field app they are marked <b>stale position</b>. That marking is not decoration: it is the answer to the red bars in this chart.</p>
+    </figure>
+
+    <div class="vbatas" data-r="1">
+      <h3>Four things that <em>must not</em> be concluded from this data</h3>
+      <div class="vbatas__grid">
+        <article>
+          <h4>The post location for the last two sessions is an estimate</h4>
+          <p>The gateway has no GPS. On 30 July the location was measured by placing a GPS-equipped node at the post; on 14 and 18 August it was taken from the strongest-RSSI packet. Those estimates land 8 m and 16 m from the measured point — comparable to the GPS fix error itself, but do not call the distance axis of those two sessions a measurement.</p>
+        </article>
+        <article>
+          <h4>PDR here is a per-node aggregate</h4>
+          <p>One node, one sequence counter for every packet type. Do not claim an “SOS PDR of X per cent” from this data.</p>
+        </article>
+        <article>
+          <h4>Range is not the device's maximum</h4>
+          <p>The figure is the farthest distance that <em>happened to be tested</em> in that session. The session ended because the person stopped walking, not because the signal ran out. Do not quote this number as a range specification.</p>
+        </article>
+        <article>
+          <h4>These sessions are not a like-for-like comparison</h4>
+          <p>Node count, recording length and terrain all differ; the 24 July session even used firmware with a different format, and two sessions have no recorded date. Do not read them as “steadily getting better”.</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="findings">
+      <article data-r="1"><h4>Nodes reboot on their own in every session</h4>
+        <p>The packet sequence number returns to the start every time a node reboots — <b>22 times</b>
+          across the eight sessions, right from the earliest recording. This data proves it happens, but not why: a voltage drop, a program crash and a loose cable leave exactly the same trace in the gateway log. The firmware now prints a <code>[BOOT]</code> line carrying the reboot reason according to the ESP32 itself.</p></article>
+      <article data-r="2"><h4>What has been proven</h4>
+        <p>The radio parameters are identical across all three roles — SF10, BW 125 kHz, CR 4/5, sync word
+          <code>0x24</code> — and that is what makes the eight sessions comparable at all. In the multi-hop test the gateway stayed put, one node walked away and one node stood in the middle: eight packets are proven to have arrived <b>via a relay</b>, the farthest at 391 m, while the farthest recorded direct link was 1,891 m.</p></article>
+    </div>
+
+    <button class="vtabel__btn" id="vTabelToggle" type="button"
+            aria-expanded="false" aria-controls="vTabel">View the numbers as a table</button>
+    <div class="vtabel" id="vTabel" hidden></div>
+
+    <p class="vsumber" data-r="3">
+      The numbers are computed by <code>tools/anchorpulse.py</code> from the gateway's serial recording, then assembled into
+      <code>validasi/data.js</code> by <code>tools/susun_validasi.py</code>. This page presents them; it does not recompute them.
+    </p>
+  </div>
+</section>
+
+<div class="tape tape--alt" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 08 APLIKASI ══════════ -->
+<section class="sec sec--dark g-c" id="aplikasi" data-anim="phone">
+  <div class="wrap app">
+    <div class="app__copy">
+      <p class="head__num" data-r="1">08 — In hand</p>
+      <h2 class="head__title" data-split>A command post that walks with you.</h2>
+      <p class="head__lead" data-r="2">
+        The Android app connects to a SAR node over Bluetooth Low Energy. Five working areas — Dashboard, Map, Nodes, Messages, More — and all of them function without the internet. What is running on the phone beside this is <b>the app itself</b>, built for the web from the same Flutter code: tap the tab bar, pan the map, open a node's detail.
+      </p>
+      <div class="applist">
+        <div data-r="3"><b>Tiered map</b><span>Stored tiles → online source → program-drawn grid</span></div>
+        <div data-r="4"><b>Tactical compass</b><span>Bearing &amp; distance from the linked node or the phone's GPS</span></div>
+        <div data-r="5"><b>Link proof</b><span>Five levels, up to proof of receipt at the gateway</span></div>
+        <div data-r="6"><b>Reconnect</b><span>Backoff from 1 → 30 seconds when the link drops</span></div>
+      </div>
+      <p class="applist__meta" data-r="7">27 documented features · 198 automated tests passing · 18,581 lines of code</p>
+    </div>
+    <div class="app__phone" data-r="2">
+      <div class="phone" id="phone">
+        <span class="phone__btn phone__btn--vol"></span>
+        <span class="phone__btn phone__btn--pwr"></span>
+        <div class="phone__screen" id="phoneScreen">
+            <!-- tangkapan layar Copyright dipakai sebagai poster: layarnya sudah terisi
+                 sejak detik pertama, lalu aplikasi sungguhannya menimpanya -->
+            <img src="../assets/app/app-1.jpg" alt="The Point Rescue app dashboard screen" class="phone__poster">
+            <iframe id="appframe" loading="lazy" src="../app/index.html?v=20"
+                    title="The Point Rescue app running live on this page, demo mode"></iframe>
+            <p class="phone__wait"><i></i>Starting the app</p>
+        </div>
+      </div>
+      <figcaption class="phone__cap">
+        <b>The app itself, not a picture</b>
+        <span>web build from the same Flutter code · demo mode, no node attached</span>
+      </figcaption>
+      <button class="phone__full" id="openApp" type="button">Open full screen →</button>
+    </div>
+  </div>
+</section>
+
+<div class="tape" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 09 Copyright — tumpukan dokumen ══════════ -->
+<section class="sec" id="hki" data-anim="stack">
+  <div class="wrap hki">
+    <div class="hki__copy">
+      <p class="head__num" data-r="1">09 — Intellectual property</p>
+      <h2 class="head__title" data-split>Documented down to the line number.</h2>
+      <p class="head__lead" data-r="2">
+        Two Point Rescue works were assembled into copyright registration documents. Every code excerpt inside them is generated directly from the registered program, so the document cannot drift away from the software it describes.
+      </p>
+    </div>
+    <div class="hki__cards">
+      <article class="doc" data-r="1">
+        <p class="doc__k">Work 1</p><h3>Gateway Dashboard</h3>
+        <dl><div><dt>Description</dt><dd>43 pp · 29 figures</dd></div>
+            <div><dt>Coverage</dt><dd>25 features · 5 claims</dd></div>
+            <div><dt>Code appendix</dt><dd>185 pages</dd></div></dl>
+      </article>
+      <article class="doc" data-r="2">
+        <p class="doc__k">Work 2</p><h3>Mobile Application</h3>
+        <dl><div><dt>Document</dt><dd>310 pages</dd></div>
+            <div><dt>Coverage</dt><dd>27 features · 9 claims</dd></div>
+            <div><dt>Code appendix</dt><dd>18,581 numbered lines</dd></div></dl>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="tape tape--alt" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 10 TIM — kartu flip ══════════ -->
+<section class="sec sec--dark g-b" id="tim" data-anim="flip">
+  <div class="wrap">
+    <header class="head">
+      <p class="head__num" data-r="1">10 — Team</p>
+      <h2 class="head__title" data-split>PKM-KC Universitas Brawijaya 2026.</h2>
+    </header>
+    <svg class="team__ikon" aria-hidden="true"><defs>
+      <symbol id="ik-li" viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.76V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.19 1.45-2.19 2.96V21h-4z"/></symbol>
+      <symbol id="ik-gh" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03a9.6 9.6 0 0 1 5 0c1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85l-.01 2.75c0 .26.18.58.69.48A10 10 0 0 0 12 2z"/></symbol>
+      <symbol id="ik-ig" viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.89 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07c-4.36.2-6.78 2.62-6.98 6.98C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></symbol>
+    </defs></svg>
+    <!-- prop komponen TiltedCard React Bits, dalam bentuk data-* -->
+    <div class="team" data-rotate-amplitude="12" data-scale-on-hover="1.06">
+      <figure data-r="1">
+        <div class="team__kartu"><img src="../assets/img/team-keirio.jpg" alt="Keirio Omar Attalah"></div>
+        <figcaption>
+          <b>Keirio Omar Attalah</b>
+          <span class="team__peran">Team lead</span>
+          <span class="team__prodi">Computer Engineering ’24</span>
+            <span class="team__tautan">
+               <a href="https://www.linkedin.com/in/keirio-omar-attallah-93611b147/" target="_blank" rel="noopener noreferrer me"
+               title="LinkedIn" aria-label="LinkedIn Keirio Omar Attalah"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-li"></use></svg></a>
+               <a href="https://github.com/OmarAeternal" target="_blank" rel="noopener noreferrer me"
+               title="GitHub" aria-label="GitHub Keirio Omar Attalah"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-gh"></use></svg></a>
+               <a href="https://www.instagram.com/omar_attllh/" target="_blank" rel="noopener noreferrer me"
+               title="Instagram" aria-label="Instagram Keirio Omar Attalah"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-ig"></use></svg></a>
+            </span>
+        </figcaption>
+      </figure>
+      <figure data-r="2">
+        <div class="team__kartu"><img src="../assets/img/team-wijaya.jpg" alt="Wijaya Kurniawan, S.T., M.T., Ph.D."></div>
+        <figcaption>
+          <b>Wijaya Kurniawan, S.T., M.T., Ph.D.</b>
+          <span class="team__peran">Supervisor</span>
+          <span class="team__prodi">Associate Professor · Computer Engineering, Faculty of Computer Science</span>
+            <span class="team__tautan">
+               <a class="team__pil" href="https://filkom.ub.ac.id/profile/dosen/wijaya.kurniawan"
+                  target="_blank" rel="noopener noreferrer"
+                  aria-label="Wijaya Kurniawan's lecturer profile at FILKOM UB">FILKOM UB profile</a>
+            </span>
+        </figcaption>
+      </figure>
+      <figure data-r="3">
+        <div class="team__kartu"><img src="../assets/img/team-raiz.jpg" alt="Muhammad Raiz Belyaa"></div>
+        <figcaption>
+          <b>Muhammad Raiz Belyaa</b>
+          <span class="team__peran">Electrical engineer</span>
+          <span class="team__prodi">Computer Engineering ’24</span>
+            <span class="team__tautan">
+               <a href="https://www.linkedin.com/in/muhammad-raiz-belyaa-96a760322/" target="_blank" rel="noopener noreferrer me"
+               title="LinkedIn" aria-label="LinkedIn Muhammad Raiz Belyaa"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-li"></use></svg></a>
+               <a href="https://www.instagram.com/mraizabel/" target="_blank" rel="noopener noreferrer me"
+               title="Instagram" aria-label="Instagram Muhammad Raiz Belyaa"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-ig"></use></svg></a>
+            </span>
+        </figcaption>
+      </figure>
+      <figure data-r="4">
+        <div class="team__kartu"><img src="../assets/img/team-alexander.jpg" alt="Alexander Agung Widhi P."></div>
+        <figcaption>
+          <b>Alexander Agung Widhi P.</b>
+          <span class="team__peran">Mechanical engineer</span>
+          <span class="team__prodi">Computer Engineering ’24</span>
+            <span class="team__tautan">
+               <a href="https://www.linkedin.com/in/alexander-widhi-685418322/" target="_blank" rel="noopener noreferrer me"
+               title="LinkedIn" aria-label="LinkedIn Alexander Agung Widhi P."><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-li"></use></svg></a>
+               <a href="https://github.com/alexanderwidhiprojek-dotcom" target="_blank" rel="noopener noreferrer me"
+               title="GitHub" aria-label="GitHub Alexander Agung Widhi P."><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-gh"></use></svg></a>
+               <a href="https://www.instagram.com/alexanderwidhi/" target="_blank" rel="noopener noreferrer me"
+               title="Instagram" aria-label="Instagram Alexander Agung Widhi P."><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-ig"></use></svg></a>
+            </span>
+        </figcaption>
+      </figure>
+      <figure data-r="5">
+        <div class="team__kartu"><img src="../assets/img/team-danish.jpg" alt="Danish Ghozian Pramudya"></div>
+        <figcaption>
+          <b>Danish Ghozian Pramudya</b>
+          <span class="team__peran">Software engineer</span>
+          <span class="team__prodi">Information Systems ’25</span>
+            <span class="team__tautan">
+               <a href="https://www.linkedin.com/in/danish-ghozian-94a538354/" target="_blank" rel="noopener noreferrer me"
+               title="LinkedIn" aria-label="LinkedIn Danish Ghozian Pramudya"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-li"></use></svg></a>
+               <a href="https://github.com/danishpramudya-ops" target="_blank" rel="noopener noreferrer me"
+               title="GitHub" aria-label="GitHub Danish Ghozian Pramudya"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-gh"></use></svg></a>
+               <a href="https://www.instagram.com/danishghozian/" target="_blank" rel="noopener noreferrer me"
+               title="Instagram" aria-label="Instagram Danish Ghozian Pramudya"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-ig"></use></svg></a>
+            </span>
+        </figcaption>
+      </figure>
+      <figure data-r="6">
+        <div class="team__kartu"><img src="../assets/img/team-bimo.jpg" alt="Bimo Satrio"></div>
+        <figcaption>
+          <b>Bimo Satrio</b>
+          <span class="team__peran">Administration</span>
+          <span class="team__prodi">Computer Engineering ’24</span>
+            <span class="team__tautan">
+               <a href="https://www.linkedin.com/in/bimo-satrio-b0917a23a/" target="_blank" rel="noopener noreferrer me"
+               title="LinkedIn" aria-label="LinkedIn Bimo Satrio"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-li"></use></svg></a>
+               <a href="https://www.instagram.com/bimskuy1205/" target="_blank" rel="noopener noreferrer me"
+               title="Instagram" aria-label="Instagram Bimo Satrio"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-ig"></use></svg></a>
+            </span>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 11 PENUTUP — logo dirakit ulang ══════════ -->
+<section class="outro" id="pkm" data-anim="outro">
+  <!-- Bola rangka — 12 simpul, 30 rusuk. Visualnya diambil dari komponen
+       <WireframeBall /> React Bits Pro, ditulis ulang di WebGL mentah karena
+       paketnya butuh npm + lisensi; lihat kepala js/wireframe-ball.js. -->
+  <div class="wball" data-wball aria-hidden="true"
+       data-color="#5aa0ee" data-color-hot="#e45a07"
+       data-speed="0.42" data-scale="0.8" data-thickness="1.0"
+       data-glow="5.5" data-brightness="0.82" data-tilt="0.4"></div>
+  <div class="outro__inner">
+    <img class="outro__mark" src="../assets/img/logo-mark.png" alt="">
+    <h2 data-split>Signal Lost. Lives Found.</h2>
+    <p class="outro__title">
+      POINTRESCUE: A Wearable Tactical Tracker <em>Wearable</em> Built on the <em>Controlled Flooding</em>
+      Algorithm, for Finding Disaster Victims by Radio in Areas With No Signal
+    </p>
+    <div class="philo">
+      <div data-r="1"><i style="--c:#093261"></i><b>Navy</b> technology that is reliable, safe, trusted</div>
+      <div data-r="2"><i style="--c:#d30e10"></i><b>Red</b> emergency and urgency</div>
+      <div data-r="3"><i style="--c:#e45a07"></i><b>Orange</b> readiness, energy, rapid response</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div class="foot__brand">
+      <img src="../assets/img/logo-mark.png" alt="">
+      <p><b>POINT RESCUE</b><span>PKM-KC 2026 · Faculty of Computer Science, Universitas Brawijaya</span></p>
+    </div>
+    <a class="foot__ig" href="https://instagram.com/pointrescue" target="_blank" rel="noopener">@pointrescue</a>
+  </div>
+</footer>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/build/three.module.min.js",
+    "three/addons/": "./vendor/three/examples/jsm/",
+    "three/addons/controls/OrbitControls.js": "./vendor/three/examples/jsm/controls/OrbitControls.js",
+    "three/addons/loaders/OBJLoader.js": "./vendor/three/examples/jsm/loaders/OBJLoader.js",
+    "three/addons/exporters/OBJExporter.js": "./vendor/three/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "./vendor/three/examples/jsm/exporters/GLTFExporter.js"
+  }
+}
+</script>
+<script src="../proto/three-d-stage.js?v=20"></script>
+<script src="../js/i18n.js?v=20"></script>
+<script src="../js/motion.js?v=20"></script>
+<script src="../js/mesh-bg.js?v=20"></script>
+<script src="../assets/validasi.js?v=20"></script>
+<script src="../js/scroll.js?v=20"></script>
+<script src="../js/sim.js?v=20"></script>
+<script src="../js/validasi.js?v=20"></script>
+<script src="../js/radar.js?v=20"></script>
+<script src="../js/wireframe-ball.js?v=20"></script>
+<script src="../js/glow-cursor.js?v=20"></script>
+<script src="../js/scroll-expand.js?v=20"></script>
+<script src="../js/intro.js?v=20"></script>
+<script src="../js/devices.js?v=20"></script>
+<script src="../js/gooey-nav.js?v=20"></script>
+<script src="../js/tilted-card.js?v=20"></script>
+</body>
+</html>

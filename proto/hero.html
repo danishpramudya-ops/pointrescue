@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POINT RESCUE · sorotan 3D</title>
+<!--
+  Kembaran viewer.html, tapi hanya untuk dipajang di hero: berputar sendiri,
+  TIDAK bisa disentuh. Tidak ada slider explode, tidak ada tombol, tidak ada
+  daftar part — semua itu ada di bagian 04. Di sini modelnya cuma sorotan.
+
+  Memakai mesin 3D tim apa adanya (three-d-stage.js + assembly-model.js);
+  tidak ada satu pun berkas mereka yang diubah.
+-->
+<script type="importmap">
+{
+  "imports": {
+    "three": "../vendor/three/build/three.module.min.js",
+    "three/addons/controls/OrbitControls.js": "../vendor/three/examples/jsm/controls/OrbitControls.js",
+    "three/addons/loaders/OBJLoader.js": "../vendor/three/examples/jsm/loaders/OBJLoader.js",
+    "three/addons/exporters/OBJExporter.js": "../vendor/three/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "../vendor/three/examples/jsm/exporters/GLTFExporter.js"
+  }
+}
+</script>
+<style>
+  html,body{ height:100%; margin:0; background:transparent; overflow:hidden; }
+  three-d-stage{
+    display:block; width:100%; height:100%;
+    /* tidak bisa diapa-apakan — ini sorotan, bukan alat peraga */
+    pointer-events:none; touch-action:none;
+  }
+  three-d-stage:not(:defined){ visibility:hidden; }
+</style>
+</head>
+<body>
+
+<three-d-stage id="stage" name="pointrescue-hero" background="transparent" autorotate></three-d-stage>
+
+<!-- site.js tidak dipakai di sini, tapi assembly-model masih membaca id ini -->
+<script type="application/json" id="pcb-data">{}</script>
+
+<script src="./three-d-stage.js"></script>
+<script type="module">
+  import { buildAssembly } from './assembly-model.js';
+
+  let jalan = true;
+  /* halaman induk mematikan putarannya saat hero keluar layar atau saat
+     sakelar animasi situs dimatikan */
+  addEventListener('message', (e) => {
+    if (e.origin !== location.origin || !e.data || e.data.pr !== 'hero3d-gerak') return;
+    jalan = !!e.data.on;
+  });
+
+  const stage = document.getElementById('stage');
+  const { THREE } = await stage.ready;
+
+  /* pcb-data disimpan sebagai berkas terpisah, bukan disalin ke dalam HTML:
+     isinya 28 KB dan sudah ada di proto/pcb-data.json */
+  const D = await fetch('./pcb-data.json').then(r => r.json());
+  const el = document.getElementById('pcb-data');
+  el.textContent = JSON.stringify(D);
+
+  const { model } = await buildAssembly(D, { guides: false });
+
+  /* Dimiringkan supaya tidak terbaring rata — slot hero-nya potret, dan unit
+     yang berdiri miring mengisi bingkainya jauh lebih baik. Grup luar yang
+     diputar, jadi kemiringannya tidak ikut berputar. */
+  model.rotation.set(-0.10, 0, -0.62);
+  const putaran = new THREE.Group();
+  putaran.add(model);
+  stage.setObject(putaran);
+
+  /* Warna casing aslinya nyaris hitam; di atas latar hero yang juga gelap
+     siluetnya hilang. Materialnya di-clone lalu di-lerp ke slate kebiruan —
+     alasan yang sama dengan peredupan part di bagian 04. */
+  const SLATE = new THREE.Color('#5d7d9f');
+  const angkat = (m) => {
+    const c = m.clone();
+    if (c.color) c.color.lerp(SLATE, 0.34);
+    return c;
+  };
+  putaran.traverse((o) => {
+    if (!o.isMesh || !o.material) return;
+    o.material = Array.isArray(o.material) ? o.material.map(angkat) : angkat(o.material);
+  });
+  if (stage._key) stage._key.intensity = 2.9;
+
+  /* stage membingkai dengan jarak 1,35x jari-jari — lapang untuk viewer yang
+     bisa diputar, terlalu lapang untuk sorotan. Kameranya didekatkan; tidak
+     perlu khawatir tabrakan karena orbit control sudah mati. */
+  const dekatkan = () => {
+    if (!stage._camera) return;
+    stage._camera.position.multiplyScalar(0.74);
+    stage._camera.updateProjectionMatrix();
+  };
+  dekatkan();
+  /* stage membingkai ulang saat ukurannya berubah, jadi didekatkan lagi */
+  let tunda;
+  addEventListener('resize', () => { clearTimeout(tunda); tunda = setTimeout(dekatkan, 260); });
+
+  /* buang toolbar unduh DAN keterangan "drag to orbit" — keduanya di dalam
+     shadow DOM stage, jadi disentuh dari luar tanpa mengubah berkasnya */
+  ['.toolbar', '.note'].forEach((sel) => {
+    const n = stage.shadowRoot && stage.shadowRoot.querySelector(sel);
+    if (n) n.remove();
+  });
+  if (stage._controls) {
+    stage._controls.enabled = false;
+    stage._controls.autoRotate = false;
+  }
+
+  /* Putarannya digerakkan sendiri, bukan lewat OrbitControls: kecepatannya
+     jadi bisa diatur, dan tidak bergantung pada perilaku internal control
+     yang sudah dimatikan. Berhenti kalau tab-nya tidak terlihat. */
+  let t = performance.now();
+  (function spin(now) {
+    requestAnimationFrame(spin);
+    const dt = Math.min((now - t) / 1000, 0.05);
+    t = now;
+    if (document.hidden || !jalan) return;
+    putaran.rotation.y += dt * 0.42;
+  })(t);
+
+  /* kabari halaman induk supaya poster fotonya bisa memudar */
+  try { parent.postMessage({ pr: 'hero3d-siap' }, location.origin); } catch (e) {}
+  document.title = 'siap';
+</script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>POINT RESCUE · render PNG</title>
+<!--
+  Halaman kerja, bukan bagian situs. Dipakai tools/render-3d.py untuk
+  mengeluarkan PNG berlatar transparan dari model 3D yang sama — bahan
+  infografis, poster, dan konten Instagram.
+
+  Sudut kamera dan cara membingkainya diambil dari site.js dan
+  assembly-model.js milik tim, jadi hasilnya identik dengan yang terlihat di
+  viewer bagian 04. Tidak ada berkas tim yang diubah.
+
+  Semua kendali diekspos ke window.__pr supaya bisa disetir dari Playwright.
+-->
+<script type="importmap">
+{
+  "imports": {
+    "three": "../vendor/three/build/three.module.min.js",
+    "three/addons/controls/OrbitControls.js": "../vendor/three/examples/jsm/controls/OrbitControls.js",
+    "three/addons/loaders/OBJLoader.js": "../vendor/three/examples/jsm/loaders/OBJLoader.js",
+    "three/addons/exporters/OBJExporter.js": "../vendor/three/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "../vendor/three/examples/jsm/exporters/GLTFExporter.js"
+  }
+}
+</script>
+<style>
+  html,body{ height:100%; margin:0; background:transparent; overflow:hidden; }
+  three-d-stage{ display:block; width:100vw; height:100vh; pointer-events:none; }
+  three-d-stage:not(:defined){ visibility:hidden; }
+</style>
+</head>
+<body>
+
+<three-d-stage id="stage" name="pointrescue" background="transparent"></three-d-stage>
+<script type="application/json" id="pcb-data">{}</script>
+
+<script src="./three-d-stage.js"></script>
+<script type="module">
+  import { buildAssembly, makeFramer } from './assembly-model.js';
+
+  const stage = document.getElementById('stage');
+  const { THREE } = await stage.ready;
+
+  const D = await fetch('./pcb-data.json').then((r) => r.json());
+  document.getElementById('pcb-data').textContent = JSON.stringify(D);
+
+  const { model, items, setExplode, setGhost } = await buildAssembly(D);
+  stage.setObject(model);
+
+  /* halaman ini cuma menggambar; toolbar, keterangan dan orbit dimatikan */
+  ['.toolbar', '.note'].forEach((sel) => {
+    const n = stage.shadowRoot && stage.shadowRoot.querySelector(sel);
+    if (n) n.remove();
+  });
+  if (stage._controls) stage._controls.enabled = false;
+  /* bayangan lantai tidak ikut dirender: PNG-nya harus benar-benar bersih
+     supaya bisa ditempel di atas latar apa pun */
+  if (stage._ground) stage._ground.visible = false;
+
+  /* Warna casing aslinya nyaris hitam — di atas latar navy infografis
+     siluetnya hilang. Sama seperti sorotan hero, materialnya di-clone lalu
+     di-lerp ke slate kebiruan. Bisa dimatikan lewat window.__pr.warna(). */
+  const SLATE = new THREE.Color('#5d7d9f');
+  const asli = new Map();
+  let angkat = true;
+  function angkatWarna(nyala) {
+    angkat = !!nyala;
+    model.traverse((o) => {
+      if (!o.isMesh || !o.material) return;
+      if (!asli.has(o)) asli.set(o, o.material);
+      if (!nyala) { o.material = asli.get(o); return; }
+      const ubah = (m) => {
+        const c = m.clone();
+        if (c.color) c.color.lerp(SLATE, 0.34);
+        return c;
+      };
+      const dasar = asli.get(o);
+      o.material = Array.isArray(dasar) ? dasar.map(ubah) : ubah(dasar);
+    });
+  }
+
+  /* sudut yang sama persis dengan tombol Iso/Depan/Samping/Atas di viewer */
+  const SUDUT = {
+    iso:      [0.62, 0.5, 1],
+    depan:    [0, 0.12, 1],
+    samping:  [1, 0.12, 0.02],
+    atas:     [0.01, 1, 0.02],
+    belakang: [0, 0.12, -1],
+    tiga4:    [-0.7, 0.42, 0.9]
+  };
+
+  const ROT0 = model.rotation.clone();
+  const framer = makeFramer(stage, model, { pad: 1.06 });
+  let u = 0;
+
+  function pasang(namaSudut, explode, ghost, isi, miring) {
+    /* miring = pose berdiri seperti sorotan hero; unit yang terbaring rata
+       mengisi bingkai potret dengan buruk. Diputar SEBELUM diukur supaya
+       pembingkaiannya ikut menyesuaikan. Kalau tidak miring, rotasi bawaan
+       modelnya dikembalikan — bukan disetel nol, karena buildAssembly sudah
+       memberinya orientasi sendiri. */
+    if (miring) model.rotation.set(-0.10, 0, -0.62);   // nilai mutlak, sama dengan hero
+    else model.rotation.copy(ROT0);
+    const dir = SUDUT[namaSudut] || SUDUT.iso;
+    u = Math.max(0, Math.min(1, explode || 0));
+    setGhost(!!ghost);
+    /* setGhost mengubah material ASLI, sementara pengangkat warna sudah
+       menggantinya dengan salinan — tanpa dijalankan ulang di sini, mode
+       tembus pandang tidak pernah terlihat sama sekali. */
+    angkatWarna(angkat);
+    framer.measure(setExplode, dir);
+    setExplode(u);
+    const fit = framer.at(u);
+    const ctr = stage._controls;
+    ctr.target.copy(fit.center);
+    /* isi = seberapa penuh model mengisi bingkai; 1 = seperti viewer */
+    stage._camera.position.copy(fit.center)
+      .add(new THREE.Vector3(...dir).normalize().multiplyScalar(fit.dist / (isi || 1)));
+    stage._camera.updateProjectionMatrix();
+    ctr.update();
+  }
+
+  window.__pr = {
+    pasang,
+    warna: angkatWarna,
+    /* daftar 17 part beserta spesifikasinya — bahan menulis label infografis;
+       diambil dari assembly-model.js, jadi selalu cocok dengan modelnya */
+    daftarPart: () => items.map((it) => ({ id: it.id, nama: it.name, spec: it.spec })),
+    /* tunggu beberapa bingkai supaya render benar-benar selesai sebelum
+       Playwright memotret */
+    tunggu(n) {
+      return new Promise((res) => {
+        let i = 0;
+        (function tik() {
+          if (++i >= (n || 4)) return res(true);
+          requestAnimationFrame(tik);
+        })();
+      });
+    },
+    sudut: Object.keys(SUDUT)
+  };
+
+  angkatWarna(true);
+  pasang('iso', 0, false, 1);
+  document.title = 'siap';
+</script>
+</body>
+</html>

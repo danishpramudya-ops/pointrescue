@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>POINT RESCUE — Pelacak Taktis Wearable untuk Wilayah Tanpa Sinyal</title>
+<meta name="description" content="POINT RESCUE: pelacak taktis wearable berbasis algoritma controlled flooding untuk menemukan korban bencana lewat jaringan radio LoRa 433 MHz di wilayah tanpa sinyal. PKM-KC 2026, Universitas Brawijaya.">
+<link rel="icon" href="assets/img/logo-mark.png">
+<meta name="theme-color" content="#051a33">
+<link rel="canonical" href="https://danishpramudya-ops.github.io/pointrescue/">
+<!-- pratinjau saat tautan dibagikan (WhatsApp, Instagram, LinkedIn); alamatnya mutlak — ganti bila situs pindah -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Point Rescue">
+<meta property="og:title" content="POINT RESCUE — Pelacak Taktis Wearable untuk Wilayah Tanpa Sinyal">
+<meta property="og:description" content="POINT RESCUE: pelacak taktis wearable berbasis algoritma controlled flooding untuk menemukan korban bencana lewat jaringan radio LoRa 433 MHz di wilayah tanpa sinyal. PKM-KC 2026, Universitas Brawijaya.">
+<meta property="og:url" content="https://danishpramudya-ops.github.io/pointrescue/">
+<meta property="og:image" content="https://danishpramudya-ops.github.io/pointrescue/assets/img/og-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="id_ID">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=20">
+<!-- tanpa JavaScript, intro tidak akan pernah dibuka: lepaskan kuncinya -->
+<noscript><style>body.is-intro{overflow:auto;height:auto}.intro{display:none}</style></noscript>
+<link rel="alternate" hreflang="id" href="./index.html">
+<link rel="alternate" hreflang="en" href="./en/index.html">
+<link rel="alternate" hreflang="x-default" href="./index.html">
+</head>
+<body class="is-intro">
+
+<!-- latar jaringan hidup, satu kanvas untuk seluruh halaman -->
+<canvas id="meshbg" aria-hidden="true"></canvas>
+
+<!-- ══════════ INTRO: animasi logo ══════════ -->
+<div class="intro" id="intro">
+  <div class="intro__rings" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <div class="intro__lockup">
+    <img class="intro__mark" src="assets/img/logo-mark.png" alt="">
+    <div class="intro__word"><img src="assets/img/wordmark.png" alt="Point Rescue"></div>
+  </div>
+  <p class="intro__tag"><span>Signal Lost.</span> <span>Lives Found.</span></p>
+  <div class="intro__bar"><i></i></div>
+</div>
+
+<!-- ══════════ NAV ══════════ -->
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#top">
+    <img src="assets/img/logo-mark.png" alt="" class="nav__logo">
+    <span class="nav__name">POINT<em>RESCUE</em></span>
+  </a>
+  <!-- prop komponen GooeyNav React Bits, dalam bentuk data-* kebab-case -->
+  <nav class="nav__links" data-particle-count="14" data-particle-distance-outer="84"
+       data-particle-distance-inner="10" data-particle-r="100"
+       data-animation-time="600" data-time-variance="300">
+    <a href="#masalah">Masalah</a>
+    <a href="#gagasan">Gagasan</a>
+    <a href="#sistem">Cara kerja</a>
+    <a href="#anatomi">Anatomi</a>
+    <a href="#prototipe">Prototipe</a>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#pengujian">Pengujian</a>
+    <a href="#aplikasi">Aplikasi</a>
+    <a href="#hki">HKI</a>
+    <a href="#tim">Tim</a>
+  </nav>
+  <a class="nav__lang" href="en/index.html" hreflang="en" aria-label="Read in English">EN</a>
+  <a class="nav__cta" href="https://instagram.com/pointrescue" target="_blank" rel="noopener">@pointrescue</a>
+</header>
+
+<!-- progress gulir -->
+<div class="scrollbar" aria-hidden="true"><i id="scrollbar"></i></div>
+
+<main id="top">
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" data-anim="hero">
+  <div class="hero__bg" aria-hidden="true"></div>
+  <div class="grid-floor" aria-hidden="true"></div>
+  <!-- Radar (React Bits, di-port ke WebGL murni) — hanya biru, latar transparan -->
+  <div class="radar radar--hero" data-radar aria-hidden="true"
+       data-color="#3f8fe8" data-background-color="#000000"
+       data-speed="0.55" data-scale="0.58"
+       data-ring-count="9" data-spoke-count="16"
+       data-ring-thickness="0.042" data-spoke-thickness="0.006"
+       data-sweep-speed="0.5" data-sweep-width="2.6" data-sweep-lobes="1"
+       data-falloff="1.6" data-brightness="0.95"
+       data-mouse-influence="0.07"></div>
+
+  <div class="hero__inner">
+    <div class="hero__copy">
+      <p class="eyebrow" data-r="1">PKM-KC 2026 · Universitas Brawijaya</p>
+      <h1 class="hero__title">
+        <span class="line"><span data-r="2">POINT</span></span>
+        <span class="line"><span data-r="3" class="ghost">RESCUE</span></span>
+      </h1>
+      <p class="hero__lead" data-r="4">
+        Pelacak taktis <em>wearable</em> berbasis algoritma <em>controlled flooding</em> untuk
+        menemukan korban bencana lewat jaringan radio di wilayah yang kehilangan seluruh sinyal.
+      </p>
+      <div class="hero__stats" data-r="5">
+        <div class="stat"><b data-count="433">0</b><span>MHz LoRa</span></div>
+        <div class="stat"><b data-count="716">0</b><span>meter tautan teruji</span></div>
+        <div class="stat"><b data-count="0">0</b><span>menara seluler</span></div>
+      </div>
+      <div class="hero__actions" data-r="6">
+        <a class="btn btn--primary" href="#anatomi">Bedah perangkatnya</a>
+        <a class="btn btn--ghost" href="#dashboard">Lihat dashboard</a>
+      </div>
+    </div>
+
+    <figure class="hero__shot" data-r="3">
+      <!-- Model 3D rakitan 17 part, berputar sendiri dan sengaja TIDAK bisa
+           disentuh — di sini cuma sorotan. Yang bisa dibongkar ada di 04.
+           Fotonya tetap dipakai sebagai poster sampai modelnya siap. -->
+      <div class="shot__frame" id="heroShot">
+        <img src="assets/photo/proto-hand.jpg" alt="Perangkat Point Rescue digenggam, antena terpasang">
+        <iframe id="hero3d" loading="lazy" tabindex="-1" aria-hidden="true"
+                src="proto/hero.html?v=20" title="Model 3D Point Rescue berputar"></iframe>
+        <span class="shot__scan" aria-hidden="true"></span>
+      </div>
+      <figcaption><b>Unit SAR</b> · rakitan 17 part · casing PLA 84 × 145 × 35 mm</figcaption>
+    </figure>
+  </div>
+
+  <div class="hero__cue" aria-hidden="true"><span></span>Gulir</div>
+</section>
+
+<div class="tape" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 01 MASALAH — kartu jatuh 3D ══════════ -->
+<section class="sec sec--dark" id="masalah" data-anim="fall">
+  <div class="wrap">
+    <header class="head">
+      <p class="head__num" data-r="1">01 — Masalah</p>
+      <p class="head__lead" data-r="2">
+        Operasi pencarian selalu terjadi di tempat yang paling tidak diinginkan teknologi: hutan,
+        lereng gunung, lembah sungai, kawasan yang baru diratakan bencana. Justru di sanalah menara
+        seluler roboh, listrik padam, dan setiap aplikasi yang menuntut internet berhenti berguna.
+      </p>
+    </header>
+  </div>
+
+  <!-- ScrollExpand: bingkai membuka mengikuti gulir, film mulai saat penuh -->
+  <div class="se" data-se
+       data-start-width="46" data-start-height="62"
+       data-start-radius="22" data-media-zoom="1.28"
+       data-scroll-distance="1.15" data-hold-distance="0.75"
+       data-overlay-scrim="0.3">
+    <div class="se__track">
+      <div class="se__stage">
+        <div class="se__frame">
+          <video class="se__media" muted loop playsinline preload="metadata"
+                 poster="assets/video/pkm-point-rescue-poster.jpg"
+                 aria-label="Film PKM-KC Point Rescue: masalahnya, cara kerja sistem, dan hasil uji lapangan. Narasi dan subtitle berbahasa Indonesia.">
+            <source src="assets/video/pkm-point-rescue.mp4" type="video/mp4">
+          </video>
+          <div class="se__scrim" aria-hidden="true"></div>
+          <div class="se__live" aria-hidden="true"><i></i>Video PKM-KC</div>
+          <button class="se__sound" type="button" aria-pressed="false"
+                  aria-label="Nyalakan suara dan narasi film">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/>
+              <path class="se__wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"
+                    fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path class="se__slash" d="M4 20 L20 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg><span>Suara</span>
+          </button>
+          <p class="se__ajak" aria-hidden="true">Filmnya ada narasinya — tekan Suara</p>
+        </div>
+        <p class="se__title">Ketika jaringan padam,<br>pencarian dimulai dari nol.</p>
+        <p class="se__hint">Gulir</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="fallcards">
+      <article class="fc" data-r="1"><span class="fc__i">01</span>
+        <h3>Wilayah tanpa sinyal</h3>
+        <p>Titik <em>blank spot</em> bukan pengecualian — itu medan kerja harian tim SAR. Perangkat
+          yang butuh sinyal seluler untuk sekadar membuka peta akan mati fungsi persis saat paling
+          dibutuhkan.</p>
+      </article>
+      <article class="fc" data-r="2"><span class="fc__i">02</span>
+        <h3>Waktu yang tak bisa ditawar</h3>
+        <p>Peluang korban selamat menurun tajam tiap jam. Setiap jam yang habis menyisir area yang
+          salah tidak pernah kembali — dan penyisiran tanpa koordinasi adalah penyebab paling umum
+          waktu terbuang itu.</p>
+      </article>
+      <article class="fc" data-r="3"><span class="fc__i">03</span>
+        <h3>Koordinasi yang buta</h3>
+        <p>Tanpa kanal data bersama, posko tak tahu di mana timnya dan tim tak tahu apa yang sudah
+          disisir tim lain. Laporan berjalan lewat radio suara, satu per satu, lalu hilang begitu
+          percakapan selesai.</p>
+      </article>
+    </div>
+
+    <blockquote class="quote" data-r="4">
+      Point Rescue berangkat dari satu keputusan desain:
+      <b>jangan pernah bergantung pada infrastruktur yang paling mungkin ikut hancur.</b>
+    </blockquote>
+
+    <div class="docnote">
+      <div>
+        <h4>Sumber gambar latar</h4>
+        <p>
+          Gambar latar tiga kartu di atas bersifat ilustratif —
+          <b>bukan dokumentasi penerjunan Point Rescue</b>.
+          Seluruhnya berlisensi bebas dan diambil dari
+          <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>:
+        </p>
+        <ol>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Rescue_work_after_Mundakkai_devastation.webm" target="_blank" rel="noopener">Operasi pencarian Mundakkai</a> — Makks2010, <em>CC0</em></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Philippines_Landslide.webm" target="_blank" rel="noopener">Tanah longsor Filipina</a> — VOA News, <em>public domain</em></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Aerial_video_of_the_aftermath_of_the_flood_in_Aqqala.webm" target="_blank" rel="noopener">Banjir Aqqala dari udara</a> — Mohammad Moheimany, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener"><em>CC BY 4.0</em></a></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="tape" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 02 GAGASAN — track horizontal ══════════ -->
+<section class="track" id="gagasan" data-anim="track">
+  <div class="track__sticky">
+    <div class="track__head">
+      <p class="head__num">02 — Gagasan</p>
+      <h2 class="head__title">Jaringan yang dibawa sendiri oleh tim.</h2>
+    </div>
+    <div class="track__rail" id="rail">
+      <article class="tcard">
+        <span class="tcard__n">01</span>
+        <div class="tcard__sim"><svg data-sim="nooperator" aria-hidden="true"></svg></div>
+        <h3>Tanpa operator</h3>
+        <p>Begitu dinyalakan, tiap unit langsung membentuk jaringan radio mandiri bersama unit lain
+          di sekitarnya. Tidak ada kartu SIM, tidak ada pendaftaran, tidak ada server. Setiap unit
+          sekaligus pengirim, penerima, dan penerus pesan.</p>
+        <ul class="ticks"><li>LoRa 433 MHz · Net ID <code>PR01</code></li><li>Sync word <code>0x24</code></li><li>Muatan maksimum 64 byte</li></ul>
+      </article>
+      <article class="tcard">
+        <span class="tcard__n">02</span>
+        <div class="tcard__sim"><svg data-sim="flooding" aria-hidden="true"></svg></div>
+        <h3>Controlled flooding</h3>
+        <p>Paket yang diterima diteruskan lagi oleh node lain, sehingga jangkauan efektif jauh
+          melampaui jangkauan satu radio. Penerusan itu dikendalikan supaya udara tidak tersumbat
+          salinan pesan yang sama.</p>
+        <ul class="ticks"><li>Batas 1–4 lompatan per jenis paket</li><li>Jeda acak 400–700 ms</li><li>Penekanan duplikat via nomor urut</li></ul>
+      </article>
+      <article class="tcard">
+        <span class="tcard__n">03</span>
+        <div class="tcard__sim"><svg data-sim="situasi" aria-hidden="true"></svg></div>
+        <h3>Gambaran situasi</h3>
+        <p>Data yang sama sampai ke dua tempat: dasbor operator di posko dan aplikasi Android di
+          genggaman personel. Tim tak perlu kembali ke posko hanya untuk tahu keadaan.</p>
+        <ul class="ticks"><li>Peta taktis, jejak, kompas</li><li>Pesan misi dua arah</li><li>Seluruh pengolahan di perangkat</li></ul>
+      </article>
+      <article class="tcard">
+        <span class="tcard__n">04</span>
+        <div class="tcard__sim"><svg data-sim="fallback" aria-hidden="true"></svg></div>
+        <h3>Bertahan saat gagal</h3>
+        <p>Tiap keputusan teknis lahir dari satu pertanyaan: apa yang terjadi kalau bagian ini tidak
+          bekerja? Peta punya tiga tingkat cadangan, posisi terakhir ditahan, tautan bisa dibuktikan
+          sampai posko.</p>
+        <ul class="ticks"><li>Peta berjenjang tiga tingkat</li><li>Penahanan posisi sah terakhir</li><li>Pembuktian tautan berjenjang</li></ul>
+      </article>
+    </div>
+    <div class="track__bar"><i id="trackbar"></i></div>
+  </div>
+</section>
+
+<!-- ══════════ 03 CARA KERJA — SVG draw ══════════ -->
+<section class="sec" id="sistem" data-anim="draw">
+  <div class="wrap">
+    <header class="head">
+      <p class="head__num" data-r="1">03 — Cara kerja</p>
+      <h2 class="head__title" data-split>Tiga peran, satu jaringan.</h2>
+      <p class="head__lead" data-r="2">
+        Perangkat kerasnya sama; yang membedakan hanya peran yang diberikan firmware. Ketiganya
+        bicara dalam protokol identik, jadi setiap unit bisa menjadi penerus bagi unit lain tanpa
+        pengaturan tambahan.
+      </p>
+    </header>
+
+    <div class="mesh">
+      <div class="mesh__viz">
+        <svg viewBox="0 0 480 340" class="meshsvg" id="meshsvg" data-sim="mesh" aria-hidden="true">
+          <g class="meshsvg__links">
+            <path d="M78 250 L188 172" data-hop="1"/>
+            <path d="M78 250 L162 292" data-hop="1"/>
+            <path d="M188 172 L322 116" data-hop="2"/>
+            <path d="M188 172 L316 232" data-hop="2"/>
+            <path d="M162 292 L316 232" data-hop="2"/>
+            <path d="M322 116 L406 186" data-hop="3"/>
+            <path d="M316 232 L406 186" data-hop="3"/>
+          </g>
+          <g class="meshsvg__nodes">
+            <g transform="translate(78,250)" class="n n--k"><circle r="18"/><text y="5">K</text></g>
+            <g transform="translate(188,172)" class="n"><circle r="15"/><text y="5">S</text></g>
+            <g transform="translate(162,292)" class="n"><circle r="15"/><text y="5">S</text></g>
+            <g transform="translate(322,116)" class="n"><circle r="15"/><text y="5">S</text></g>
+            <g transform="translate(316,232)" class="n"><circle r="15"/><text y="5">S</text></g>
+            <g transform="translate(406,186)" class="n n--g"><circle r="19"/><text y="5">G</text></g>
+          </g>
+          <text x="78" y="292" class="cap">korban</text>
+          <text x="392" y="228" class="cap">posko</text>
+        </svg>
+        <p class="mesh__legend"><b>K</b> korban · <b>S</b> tim SAR · <b>G</b> gateway posko</p>
+      </div>
+
+      <div class="mesh__roles">
+        <article class="role role--k" data-r="1">
+          <p class="role__tag">Node KORBAN</p>
+          <h3>Dibawa korban atau ditinggal di titik temuan</h3>
+          <p>Memancarkan identitas dan koordinat berkala. Cukup satu tombol untuk aktif — tanpa
+            layar, tanpa menu, tetap bekerja di dalam tas.</p>
+        </article>
+        <article class="role role--s" data-r="2">
+          <p class="role__tag">Node SAR</p>
+          <h3>Dibawa personel di lapangan</h3>
+          <p>Selain memancar sendiri, node SAR jadi jembatan Bluetooth ke aplikasi Android: paket
+            dari jaringan masuk ke layar, pesan dari layar keluar ke jaringan.</p>
+        </article>
+        <article class="role role--g" data-r="3">
+          <p class="role__tag">Node GATEWAY</p>
+          <h3>Terpasang di posko</h3>
+          <p>Tersambung ke komputer posko lewat USB dan menuangkan seluruh lalu lintas jaringan ke
+            dasbor operator.</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="floodsteps">
+      <ol class="steps">
+        <li data-r="1"><b>Batas lompatan.</b> Tiap paket membawa jatah <em>hop</em>. Denyut nadi hanya
+          satu lompatan, pesan misi sampai empat. Jatah habis, paket berhenti.</li>
+        <li data-r="2"><b>Jeda acak.</b> Sebelum meneruskan, node menunggu 400–700 ms secara acak.
+          Dua node yang mendengar paket sama tidak meneruskannya pada saat persis sama.</li>
+        <li data-r="3"><b>Penekanan duplikat.</b> Node mencatat nomor urut terakhir tiap pengirim.
+          Salinan yang datang belakangan lewat jalur berbeda dibuang.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<div class="tape tape--alt" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 04 ANATOMI — viewer interaktif penuh ══════════ -->
+<section class="sec sec--dark g-b" id="anatomi" data-anim="anat">
+  <div class="wrap wrap--wide">
+    <header class="head">
+      <p class="head__num" data-r="1">04 — Anatomi</p>
+      <h2 class="head__title" data-split>Bongkar sendiri, lapis demi lapis.</h2>
+    </header>
+
+    <div class="anat">
+      <div class="anat__intro">
+        <div>
+          <p class="anat__lead" data-r="1">
+            Model di bawah adalah rakitan lengkap 17 part — casing dari berkas OBJ hasil cetak,
+            part lainnya dimodelkan sesuai ukuran aslinya. Jalur tembaga PCB sengaja tidak ditampilkan.
+          </p>
+          <ul class="anat__how" data-r="2">
+            <li><b>Explode</b> — geser penggeser atau tekan tombolnya untuk membongkar unit</li>
+            <li><b>Labels</b> — munculkan nama tiap part beserta garis penunjuknya</li>
+            <li><b>Ghost</b> — buat casing tembus pandang supaya isinya terlihat</li>
+            <li><b>Spin</b> · <b>Iso/Depan/Samping/Atas</b> — putar otomatis atau kunci ke sudut baku</li>
+            <li>Daftar di kanan: <b>hover</b> menyorot part, <b>klik</b> mengisolasinya</li>
+          </ul>
+        </div>
+        <div class="anat__spec" data-r="3">
+          <div><b>84 × 145 × 35</b><span>Case (mm) · PLA cetak 3D</span></div>
+          <div><b>59,8 × 80,9</b><span>Carrier PCB (mm) · FR-4 1,6</span></div>
+          <div><b>ESP32-WROOM-32</b><span>Devkit 30 pin · 51,4 × 28,3 mm</span></div>
+          <div><b>SX1278 Ra-02</b><span>LoRa 433 MHz · SMA</span></div>
+          <div><b>NEO-M8N</b><span>GPS · patch luar lewat u.FL</span></div>
+          <div><b>18650 · TP4056</b><span>Sel 3,7 V · pengisian micro-USB</span></div>
+        </div>
+      </div>
+
+      <div class="anat__viewer" data-r="1">
+        <p class="anat__wait">Menyiapkan model 3D — 17 part</p>
+        <iframe src="proto/viewer.html?v=20" loading="lazy"
+                title="Model 3D rakitan Point Rescue — explode, label, dan isolasi part"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 05 PROTOTIPE — zoom full-bleed ══════════ -->
+<section class="proto" id="prototipe" data-anim="zoom">
+  <div class="proto__sticky">
+    <div class="proto__bleed"><img src="assets/photo/proto-inside.jpg" alt="Isi perangkat: ESP32, LoRa, GPS, charger, dan sel 18650"></div>
+    <div class="proto__caption">
+      <p class="head__num">05 — Prototipe</p>
+      <h2>Bukan render.<br>Sudah berdiri di meja.</h2>
+      <p>Unit yang sama inilah yang dibawa berjalan menjauhi gateway sampai sinyalnya habis.</p>
+    </div>
+  </div>
+  <div class="wrap proto__strip">
+    <figure data-r="1"><img src="assets/photo/proto-top.jpg" alt="Antena, LED indikator, dan patch GPS di muka atas">
+      <figcaption>Patch GPS menghadap langit, LED hijau menandakan kunci satelit</figcaption></figure>
+    <figure data-r="2"><img src="assets/photo/proto-detail.jpg" alt="LED indikator dan tombol di dalam casing">
+      <figcaption>Satu tombol untuk seluruh operasi — tanpa menu, tanpa konfigurasi</figcaption></figure>
+    <figure data-r="3"><img src="assets/photo/proto-hand.jpg" alt="Unit Point Rescue digenggam">
+      <figcaption>Cukup ringkas untuk digenggam atau dikaitkan ke rompi</figcaption></figure>
+  </div>
+</section>
+
+<!-- ══════════ 06 DASHBOARD — console + dashboard asli ══════════ -->
+<section class="sec sec--dark g-b" id="dashboard" data-anim="console">
+  <div class="wrap">
+    <header class="head">
+      <p class="head__num" data-r="1">06 — Posko</p>
+      <h2 class="head__title" data-split>Seluruh jaringan, dalam satu layar.</h2>
+      <p class="head__lead" data-r="2">
+        Node gateway menuangkan tiap paket yang terdengar ke komputer posko. Konsol di bawah ini
+        berjalan dengan data hasil rekaman <code>simulate.py</code> — pola gerak, RSSI, dan lalu
+        lintas pesan yang sama seperti saat sistem dijalankan sungguhan.
+      </p>
+    </header>
+
+    <div class="laptop" data-r="1">
+      <div class="laptop__lid">
+        <span class="laptop__cam" aria-hidden="true"></span>
+        <div class="laptop__screen" id="laptopScreen">
+          <iframe id="dashframe" src="dash/index.html" loading="lazy"
+                  title="Dashboard Gateway POINTRESCUE berjalan dengan data rekaman simulate.py"></iframe>
+          <span class="laptop__glare" aria-hidden="true"></span>
+        </div>
+        <span class="laptop__brand" aria-hidden="true">POINT<em>RESCUE</em></span>
+      </div>
+      <div class="laptop__hinge" aria-hidden="true"></div>
+      <div class="laptop__deck" aria-hidden="true">
+        <span class="laptop__pad"></span>
+        <span class="laptop__lip"></span>
+      </div>
+      <div class="laptop__shadow" aria-hidden="true"></div>
+    </div>
+
+    <div class="dashbar" data-r="2">
+      <span class="dashbar__live"><i></i>Simulasi berjalan</span>
+      <span class="dashbar__meta" id="cclock">NET PR01 · 433 MHz</span>
+      <button class="btn btn--small" id="openDash" type="button">Buka layar penuh →</button>
+    </div>
+
+    <p class="console__note" data-r="3">
+      Itu dashboard operator yang sesungguhnya — kode yang sama dengan yang didaftarkan
+      sebagai HKI — berjalan di dalam halaman ini dengan data hasil rekaman
+      <code>simulate.py</code>: empat node, pola gerak dan lalu lintas paket yang sama
+      seperti saat sistem dijalankan sungguhan.
+    </p>
+  </div>
+</section>
+
+<!-- overlay dashboard asli -->
+<div class="dashwrap dashwrap--app" id="appwrap" hidden>
+  <div class="dashwrap__bar">
+    <span>Aplikasi POINTRESCUE · build web · mode demo</span>
+    <button type="button" id="closeApp" aria-label="Tutup">Tutup ✕</button>
+  </div>
+  <iframe id="appframe2" title="Aplikasi Point Rescue" src="about:blank"></iframe>
+</div>
+
+<div class="dashwrap" id="dashwrap" hidden>
+  <div class="dashwrap__bar">
+    <span>Dashboard Gateway POINTRESCUE · mode peragaan</span>
+    <button type="button" id="closeDash" aria-label="Tutup">Tutup ✕</button>
+  </div>
+  <iframe id="dashframe2" title="Dashboard Gateway Point Rescue" src="about:blank"></iframe>
+</div>
+
+<div class="tape" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 07 PENGUJIAN — grafik gambar sendiri ══════════ -->
+<section class="sec" id="pengujian" data-anim="chart">
+  <div class="wrap">
+    <header class="head">
+      <p class="head__num" data-r="1">07 — Pengujian</p>
+      <h2 class="head__title" data-split>Delapan sesi, satu berkas rekaman.</h2>
+      <p class="head__lead" data-r="2">
+        Seluruh angka di bawah ini ditarik dari rekaman serial gateway pada delapan sesi lapangan —
+        paket yang benar-benar diterima posko, bukan simulasi dan bukan hitungan teoretis. Yang
+        ditampilkan termasuk yang tidak enak dibaca: node yang mati-hidup sendiri, paket yang datang
+        tanpa posisi sah, dan sesi dengan PDR di bawah 30 persen.
+      </p>
+    </header>
+
+    <div class="vkpi" data-r="1">
+      <div><b data-vk="sesi">0</b><span>sesi rekaman</span></div>
+      <div><b data-vk="menit">0</b><span>menit di lapangan</span></div>
+      <div><b data-vk="rx">0</b><span>paket diterima posko</span></div>
+      <div><b data-vk="tx">0</b><span>paket dipancarkan</span></div>
+      <div><b data-vk="jauh">0</b><span>meter · tautan langsung terjauh</span></div>
+      <div><b data-vk="reboot">0</b><span>kali node menyala ulang</span></div>
+    </div>
+
+    <figure class="chart chart--wide" data-r="2">
+      <figcaption>RSSI terhadap jarak · <span data-v-titik>0</span> paket hop-0 ber-fix GPS sah</figcaption>
+      <div class="chart__legend" id="vLegend" role="group" aria-label="Saring menurut sesi"></div>
+      <svg viewBox="0 0 900 420" id="vScatter" role="img"
+           aria-label="Sebaran RSSI terhadap jarak dari delapan sesi uji lapangan"></svg>
+      <p class="chart__note">Sumbu jaraknya berskala akar supaya seratus meter pertama tidak
+        berdesakan di tepi kiri — di situlah sinyalnya jatuh paling curam. Hanya paket
+        <b>hop-0</b> yang dipakai: paket hop-1 membawa RSSI node yang merelai, bukan node asalnya,
+        dan memasukkannya akan membuat grafik seolah makin jauh sinyal makin kuat. Paket tanpa fix
+        GPS juga dibuang karena koordinatnya karangan firmware. Klik nama sesi untuk menyaring.</p>
+    </figure>
+
+    <div class="vduo">
+      <figure class="chart" data-r="1">
+        <figcaption>Jarak terjauh yang masih sampai · per sesi</figcaption>
+        <svg viewBox="0 0 460 300" id="vRange" role="img"
+             aria-label="Jarak terjauh per sesi, dipisah antara tautan langsung dan lewat relai"></svg>
+        <p class="chart__note">Batang berarsir berarti paket itu sampai <b>lewat relai</b> node lain,
+          bukan langsung. Batang putus-putus pada uji multi-hop adalah batas atas: penguji mencatat
+          bahwa lima belas paket terakhir kemungkinan direlai walau terhitung nol hop, jadi angka
+          yang boleh disebut tautan langsung adalah batang penuhnya.</p>
+      </figure>
+
+      <figure class="chart" data-r="2">
+        <figcaption>Packet Delivery Ratio · per node, urut waktu</figcaption>
+        <svg viewBox="0 0 460 300" id="vPdr" role="img"
+             aria-label="Packet delivery ratio tiap node pada tiap sesi"></svg>
+        <p class="chart__note">Dihitung dari kesinambungan nomor urut paket. Satu node memakai satu
+          penghitung untuk semua jenis paket, jadi ini PDR <b>agregat per node</b> — lubang di
+          deretan nomor memberi tahu ada paket hilang, tapi tidak memberi tahu jenisnya.</p>
+      </figure>
+    </div>
+
+    <figure class="chart chart--wide" data-r="2">
+      <figcaption>Mutu data lokasi · fix GPS sah dibanding paket tanpa fix</figcaption>
+      <svg viewBox="0 0 900 220" id="vFix" role="img"
+           aria-label="Perbandingan paket dengan fix GPS sah dan tanpa fix pada tiap sesi"></svg>
+      <p class="chart__note">Saat GPS belum mengunci satelit, firmware tetap mengirim paket — dengan
+        koordinat karangan yang sama untuk setiap node. Paket seperti itu dibuang dari analisis jarak,
+        dan di aplikasi lapangan ditandai <b>posisi lama</b>. Penandaan itu bukan hiasan: ia jawaban
+        atas batang merah di grafik ini.</p>
+    </figure>
+
+    <div class="vbatas" data-r="1">
+      <h3>Empat hal yang <em>tidak</em> boleh disimpulkan dari data ini</h3>
+      <div class="vbatas__grid">
+        <article>
+          <h4>Titik posko dua sesi terakhir adalah perkiraan</h4>
+          <p>Gateway tidak punya GPS. Pada 30 Juli titiknya diukur dengan menempelkan satu node
+            ber-GPS di posko; pada 14 dan 18 Agustus titiknya diambil dari paket ber-RSSI terkuat.
+            Perkiraan itu meleset 8 m dan 16 m dari titik terukur — sebanding dengan galat fix GPS
+            itu sendiri, tapi jangan sebut sumbu jarak dua sesi itu hasil pengukuran.</p>
+        </article>
+        <article>
+          <h4>PDR di sini agregat per node</h4>
+          <p>Satu node, satu penghitung nomor urut untuk semua jenis paket. Jangan mengklaim
+            “PDR SOS sekian persen” dari data ini.</p>
+        </article>
+        <article>
+          <h4>Jangkauan bukan batas maksimum alat</h4>
+          <p>Angkanya adalah jarak terjauh yang <em>kebetulan diuji</em> pada sesi itu. Sesinya
+            berhenti karena orangnya berhenti berjalan, bukan karena sinyalnya habis. Jangan sebut
+            angka ini spesifikasi jangkauan.</p>
+        </article>
+        <article>
+          <h4>Sesi-sesi ini bukan perbandingan setara</h4>
+          <p>Jumlah node, lama rekaman, dan medannya berbeda-beda; sesi 24 Juli bahkan memakai
+            firmware dengan format berbeda, dan dua sesi tidak punya tanggal tercatat. Jangan
+            mengurutkannya sebagai “makin lama makin baik”.</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="findings">
+      <article data-r="1"><h4>Node mati-hidup sendiri di setiap sesi</h4>
+        <p>Nomor urut paket kembali ke awal tiap kali sebuah node menyala ulang — <b>22 kali</b>
+          sepanjang delapan sesi, sejak rekaman paling awal. Data ini membuktikan kejadiannya, tapi
+          tidak sebabnya: tegangan jatuh, program crash, dan kabel longgar meninggalkan jejak yang
+          sama persis di rekaman gateway. Firmware sekarang mencetak baris <code>[BOOT]</code> berisi
+          sebab reboot menurut ESP32 sendiri.</p></article>
+      <article data-r="2"><h4>Yang sudah terbukti</h4>
+        <p>Parameter radionya sama di ketiga peran — SF10, BW 125 kHz, CR 4/5, sync word
+          <code>0x24</code> — dan itulah yang membuat kedelapan sesi bisa dibandingkan. Pada uji
+          multi-hop, gateway diam, satu node menjauh, satu node berdiri di tengah: delapan paket
+          terbukti sampai <b>lewat relai</b>, terjauh 391 m, sementara tautan langsung terjauh yang
+          tercatat 1.891 m.</p></article>
+    </div>
+
+    <button class="vtabel__btn" id="vTabelToggle" type="button"
+            aria-expanded="false" aria-controls="vTabel">Lihat angkanya sebagai tabel</button>
+    <div class="vtabel" id="vTabel" hidden></div>
+
+    <p class="vsumber" data-r="3">
+      Angka dihitung <code>tools/anchorpulse.py</code> dari rekaman serial gateway, lalu disusun jadi
+      <code>validasi/data.js</code> oleh <code>tools/susun_validasi.py</code>. Halaman ini menyajikan,
+      tidak menghitung ulang.
+    </p>
+  </div>
+</section>
+
+<div class="tape tape--alt" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 08 APLIKASI ══════════ -->
+<section class="sec sec--dark g-c" id="aplikasi" data-anim="phone">
+  <div class="wrap app">
+    <div class="app__copy">
+      <p class="head__num" data-r="1">08 — Genggam</p>
+      <h2 class="head__title" data-split>Posko yang ikut berjalan.</h2>
+      <p class="head__lead" data-r="2">
+        Aplikasi Android tersambung ke node SAR lewat Bluetooth Low Energy. Lima wilayah kerja —
+        Dasbor, Peta, Node, Pesan, Lainnya — dan seluruhnya berfungsi tanpa internet.
+        Yang berjalan di ponsel sebelah ini <b>aplikasinya sendiri</b>, di-build ke web dari
+        kode Flutter yang sama: ketuk tab bar-nya, geser petanya, buka rincian nodenya.
+      </p>
+      <div class="applist">
+        <div data-r="3"><b>Peta berjenjang</b><span>Ubin tersimpan → sumber daring → grid buatan program</span></div>
+        <div data-r="4"><b>Kompas taktis</b><span>Arah &amp; jarak dari node tertaut atau GPS ponsel</span></div>
+        <div data-r="5"><b>Pembuktian tautan</b><span>Lima tingkat, sampai terbukti diterima gateway</span></div>
+        <div data-r="6"><b>Sambung ulang</b><span>Jeda berlipat 1 → 30 detik saat tautan putus</span></div>
+      </div>
+      <p class="applist__meta" data-r="7">27 fitur terdokumentasi · 198 pengujian otomatis lulus · 18.581 baris kode</p>
+    </div>
+    <div class="app__phone" data-r="2">
+      <div class="phone" id="phone">
+        <span class="phone__btn phone__btn--vol"></span>
+        <span class="phone__btn phone__btn--pwr"></span>
+        <div class="phone__screen" id="phoneScreen">
+            <!-- tangkapan layar HKI dipakai sebagai poster: layarnya sudah terisi
+                 sejak detik pertama, lalu aplikasi sungguhannya menimpanya -->
+            <img src="assets/app/app-1.jpg" alt="Layar dasbor aplikasi Point Rescue" class="phone__poster">
+            <iframe id="appframe" loading="lazy" src="app/index.html?v=20"
+                    title="Aplikasi Point Rescue berjalan langsung di halaman ini, mode demo"></iframe>
+            <p class="phone__wait"><i></i>Menyalakan aplikasi</p>
+        </div>
+      </div>
+      <figcaption class="phone__cap">
+        <b>Aplikasinya sendiri, bukan gambar</b>
+        <span>build web dari kode Flutter yang sama · mode demo, tanpa node</span>
+      </figcaption>
+      <button class="phone__full" id="openApp" type="button">Buka layar penuh →</button>
+    </div>
+  </div>
+</section>
+
+<div class="tape" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 09 HKI — tumpukan dokumen ══════════ -->
+<section class="sec" id="hki" data-anim="stack">
+  <div class="wrap hki">
+    <div class="hki__copy">
+      <p class="head__num" data-r="1">09 — Kekayaan intelektual</p>
+      <h2 class="head__title" data-split>Terdokumentasi sampai ke nomor barisnya.</h2>
+      <p class="head__lead" data-r="2">
+        Dua ciptaan Point Rescue disusun jadi dokumen pendaftaran HKI. Seluruh kutipan kode di
+        dalamnya dibangkitkan langsung dari program yang didaftarkan, jadi dokumennya tidak mungkin
+        melenceng dari perangkat lunaknya.
+      </p>
+    </div>
+    <div class="hki__cards">
+      <article class="doc" data-r="1">
+        <p class="doc__k">Ciptaan 1</p><h3>Dasbor Gateway</h3>
+        <dl><div><dt>Deskripsi</dt><dd>43 hlm · 29 gambar</dd></div>
+            <div><dt>Cakupan</dt><dd>25 fitur · 5 klaim</dd></div>
+            <div><dt>Lampiran kode</dt><dd>185 halaman</dd></div></dl>
+      </article>
+      <article class="doc" data-r="2">
+        <p class="doc__k">Ciptaan 2</p><h3>Aplikasi Perangkat Bergerak</h3>
+        <dl><div><dt>Dokumen</dt><dd>310 halaman</dd></div>
+            <div><dt>Cakupan</dt><dd>27 fitur · 9 klaim</dd></div>
+            <div><dt>Lampiran kode</dt><dd>18.581 baris bernomor</dd></div></dl>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="tape tape--alt" aria-hidden="true">
+  <span class="tape__strip tape__strip--a"></span>
+  <span class="tape__strip tape__strip--b"></span>
+</div>
+
+<!-- ══════════ 10 TIM — kartu flip ══════════ -->
+<section class="sec sec--dark g-b" id="tim" data-anim="flip">
+  <div class="wrap">
+    <header class="head">
+      <p class="head__num" data-r="1">10 — Tim</p>
+      <h2 class="head__title" data-split>PKM-KC Universitas Brawijaya 2026.</h2>
+    </header>
+    <svg class="team__ikon" aria-hidden="true"><defs>
+      <symbol id="ik-li" viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.76V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.19 1.45-2.19 2.96V21h-4z"/></symbol>
+      <symbol id="ik-gh" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03a9.6 9.6 0 0 1 5 0c1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85l-.01 2.75c0 .26.18.58.69.48A10 10 0 0 0 12 2z"/></symbol>
+      <symbol id="ik-ig" viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.89 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07c-4.36.2-6.78 2.62-6.98 6.98C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></symbol>
+    </defs></svg>
+    <!-- prop komponen TiltedCard React Bits, dalam bentuk data-* -->
+    <div class="team" data-rotate-amplitude="12" data-scale-on-hover="1.06">
+      <figure data-r="1">
+        <div class="team__kartu"><img src="assets/img/team-keirio.jpg" alt="Keirio Omar Attalah"></div>
+        <figcaption>
+          <b>Keirio Omar Attalah</b>
+          <span class="team__peran">Ketua tim</span>
+          <span class="team__prodi">Teknik Komputer ’24</span>
+            <span class="team__tautan">
+               <a href="https://www.linkedin.com/in/keirio-omar-attallah-93611b147/" target="_blank" rel="noopener noreferrer me"
+               title="LinkedIn" aria-label="LinkedIn Keirio Omar Attalah"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-li"></use></svg></a>
+               <a href="https://github.com/OmarAeternal" target="_blank" rel="noopener noreferrer me"
+               title="GitHub" aria-label="GitHub Keirio Omar Attalah"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-gh"></use></svg></a>
+               <a href="https://www.instagram.com/omar_attllh/" target="_blank" rel="noopener noreferrer me"
+               title="Instagram" aria-label="Instagram Keirio Omar Attalah"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-ig"></use></svg></a>
+            </span>
+        </figcaption>
+      </figure>
+      <figure data-r="2">
+        <div class="team__kartu"><img src="assets/img/team-wijaya.jpg" alt="Wijaya Kurniawan, S.T., M.T., Ph.D."></div>
+        <figcaption>
+          <b>Wijaya Kurniawan, S.T., M.T., Ph.D.</b>
+          <span class="team__peran">Dosen pembimbing</span>
+          <span class="team__prodi">Lektor Kepala · Teknik Komputer FILKOM</span>
+            <span class="team__tautan">
+               <a class="team__pil" href="https://filkom.ub.ac.id/profile/dosen/wijaya.kurniawan"
+                  target="_blank" rel="noopener noreferrer"
+                  aria-label="Profil dosen Wijaya Kurniawan di FILKOM UB">Profil FILKOM UB</a>
+            </span>
+        </figcaption>
+      </figure>
+      <figure data-r="3">
+        <div class="team__kartu"><img src="assets/img/team-raiz.jpg" alt="Muhammad Raiz Belyaa"></div>
+        <figcaption>
+          <b>Muhammad Raiz Belyaa</b>
+          <span class="team__peran">Perancang elektronik</span>
+          <span class="team__prodi">Teknik Komputer ’24</span>
+            <span class="team__tautan">
+               <a href="https://www.linkedin.com/in/muhammad-raiz-belyaa-96a760322/" target="_blank" rel="noopener noreferrer me"
+               title="LinkedIn" aria-label="LinkedIn Muhammad Raiz Belyaa"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-li"></use></svg></a>
+               <a href="https://www.instagram.com/mraizabel/" target="_blank" rel="noopener noreferrer me"
+               title="Instagram" aria-label="Instagram Muhammad Raiz Belyaa"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-ig"></use></svg></a>
+            </span>
+        </figcaption>
+      </figure>
+      <figure data-r="4">
+        <div class="team__kartu"><img src="assets/img/team-alexander.jpg" alt="Alexander Agung Widhi P."></div>
+        <figcaption>
+          <b>Alexander Agung Widhi P.</b>
+          <span class="team__peran">Perancang mekanik</span>
+          <span class="team__prodi">Teknik Komputer ’24</span>
+            <span class="team__tautan">
+               <a href="https://www.linkedin.com/in/alexander-widhi-685418322/" target="_blank" rel="noopener noreferrer me"
+               title="LinkedIn" aria-label="LinkedIn Alexander Agung Widhi P."><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-li"></use></svg></a>
+               <a href="https://github.com/alexanderwidhiprojek-dotcom" target="_blank" rel="noopener noreferrer me"
+               title="GitHub" aria-label="GitHub Alexander Agung Widhi P."><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-gh"></use></svg></a>
+               <a href="https://www.instagram.com/alexanderwidhi/" target="_blank" rel="noopener noreferrer me"
+               title="Instagram" aria-label="Instagram Alexander Agung Widhi P."><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-ig"></use></svg></a>
+            </span>
+        </figcaption>
+      </figure>
+      <figure data-r="5">
+        <div class="team__kartu"><img src="assets/img/team-danish.jpg" alt="Danish Ghozian Pramudya"></div>
+        <figcaption>
+          <b>Danish Ghozian Pramudya</b>
+          <span class="team__peran">Perangkat lunak</span>
+          <span class="team__prodi">Sistem Informasi ’25</span>
+            <span class="team__tautan">
+               <a href="https://www.linkedin.com/in/danish-ghozian-94a538354/" target="_blank" rel="noopener noreferrer me"
+               title="LinkedIn" aria-label="LinkedIn Danish Ghozian Pramudya"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-li"></use></svg></a>
+               <a href="https://github.com/danishpramudya-ops" target="_blank" rel="noopener noreferrer me"
+               title="GitHub" aria-label="GitHub Danish Ghozian Pramudya"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-gh"></use></svg></a>
+               <a href="https://www.instagram.com/danishghozian/" target="_blank" rel="noopener noreferrer me"
+               title="Instagram" aria-label="Instagram Danish Ghozian Pramudya"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-ig"></use></svg></a>
+            </span>
+        </figcaption>
+      </figure>
+      <figure data-r="6">
+        <div class="team__kartu"><img src="assets/img/team-bimo.jpg" alt="Bimo Satrio"></div>
+        <figcaption>
+          <b>Bimo Satrio</b>
+          <span class="team__peran">Administrasi</span>
+          <span class="team__prodi">Teknik Komputer ’24</span>
+            <span class="team__tautan">
+               <a href="https://www.linkedin.com/in/bimo-satrio-b0917a23a/" target="_blank" rel="noopener noreferrer me"
+               title="LinkedIn" aria-label="LinkedIn Bimo Satrio"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-li"></use></svg></a>
+               <a href="https://www.instagram.com/bimskuy1205/" target="_blank" rel="noopener noreferrer me"
+               title="Instagram" aria-label="Instagram Bimo Satrio"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ik-ig"></use></svg></a>
+            </span>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 11 PENUTUP — logo dirakit ulang ══════════ -->
+<section class="outro" id="pkm" data-anim="outro">
+  <!-- Bola rangka — 12 simpul, 30 rusuk. Visualnya diambil dari komponen
+       <WireframeBall /> React Bits Pro, ditulis ulang di WebGL mentah karena
+       paketnya butuh npm + lisensi; lihat kepala js/wireframe-ball.js. -->
+  <div class="wball" data-wball aria-hidden="true"
+       data-color="#5aa0ee" data-color-hot="#e45a07"
+       data-speed="0.42" data-scale="0.8" data-thickness="1.0"
+       data-glow="5.5" data-brightness="0.82" data-tilt="0.4"></div>
+  <div class="outro__inner">
+    <img class="outro__mark" src="assets/img/logo-mark.png" alt="">
+    <h2 data-split>Signal Lost. Lives Found.</h2>
+    <p class="outro__title">
+      POINTRESCUE: Pelacak Taktis <em>Wearable</em> Berbasis Algoritma <em>Controlled Flooding</em>
+      untuk Menemukan Korban Bencana dengan Sistem Komunikasi Radio di Wilayah Tanpa Sinyal
+    </p>
+    <div class="philo">
+      <div data-r="1"><i style="--c:#093261"></i><b>Navy</b> teknologi yang andal, aman, terpercaya</div>
+      <div data-r="2"><i style="--c:#d30e10"></i><b>Merah</b> kondisi darurat dan urgensi</div>
+      <div data-r="3"><i style="--c:#e45a07"></i><b>Oranye</b> kesiapsiagaan, energi, respons cepat</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div class="foot__brand">
+      <img src="assets/img/logo-mark.png" alt="">
+      <p><b>POINT RESCUE</b><span>PKM-KC 2026 · FILKOM Universitas Brawijaya</span></p>
+    </div>
+    <a class="foot__ig" href="https://instagram.com/pointrescue" target="_blank" rel="noopener">@pointrescue</a>
+  </div>
+</footer>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/build/three.module.min.js",
+    "three/addons/": "./vendor/three/examples/jsm/",
+    "three/addons/controls/OrbitControls.js": "./vendor/three/examples/jsm/controls/OrbitControls.js",
+    "three/addons/loaders/OBJLoader.js": "./vendor/three/examples/jsm/loaders/OBJLoader.js",
+    "three/addons/exporters/OBJExporter.js": "./vendor/three/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "./vendor/three/examples/jsm/exporters/GLTFExporter.js"
+  }
+}
+</script>
+<script src="proto/three-d-stage.js?v=20"></script>
+<script src="js/i18n.js?v=20"></script>
+<script src="js/motion.js?v=20"></script>
+<script src="js/mesh-bg.js?v=20"></script>
+<script src="assets/validasi.js?v=20"></script>
+<script src="js/scroll.js?v=20"></script>
+<script src="js/sim.js?v=20"></script>
+<script src="js/validasi.js?v=20"></script>
+<script src="js/radar.js?v=20"></script>
+<script src="js/wireframe-ball.js?v=20"></script>
+<script src="js/glow-cursor.js?v=20"></script>
+<script src="js/scroll-expand.js?v=20"></script>
+<script src="js/intro.js?v=20"></script>
+<script src="js/devices.js?v=20"></script>
+<script src="js/gooey-nav.js?v=20"></script>
+<script src="js/tilted-card.js?v=20"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Keluaran perkakas, bukan isi situs. Semuanya bisa dibuat ulang:
+#   python tools/qa-tangkap.py     -> tools/tangkapan/
+#   python tools/render-3d.py      -> tools/render/
+tools/tangkapan/
+tools/render/
+tools/narasi/
+tools/__pycache__/
+
+# sisa build Flutter, tidak dipakai saat menyajikan
+app/.last_build_id
+
+# lampiran laporan (bukan isi situs): tangkapan layar versi lama, termasuk bagian yang sudah dihapus
+lampiran10-assets/
+tools/capture-lampiran10-*.py
