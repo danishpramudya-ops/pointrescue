@@ -74,7 +74,7 @@ def main():
         html = pola(id_).sub(lambda m: en, html)
 
     # ── 2. jalur relatif: halaman ini satu tingkat lebih dalam ────────────
-    html = re.sub(r'(?<=")(css|js|assets|proto|dash|app)/', r'../\1/', html)
+    html = re.sub(r'(?<=")(css|js|assets|proto|dash|app|komparasi)/', r'../\1/', html)
     html = html.replace('href="../assets/img/favicon', 'href="../assets/img/favicon')
     # <html lang> dan penanda basis untuk js
     html = html.replace('<html lang="id">', '<html lang="en" data-base="../">', 1)

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Komparasi Sistem — POINTRESCUE</title>
+<meta name="description" content="Komparasi sistem: POINTRESCUE, Handy Talky, dan Meshtastic dibandingkan pada tiga kriteria — aktivasi Pull &amp; Play, dashboard pencarian, dan biaya per unit.">
+<meta name="theme-color" content="#051a33">
+<link rel="canonical" href="https://danishpramudya-ops.github.io/pointrescue/komparasi/">
+<link rel="icon" href="../assets/img/logo-mark.png">
+<link rel="apple-touch-icon" href="../assets/img/logo-mark.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Point Rescue">
+<meta property="og:title" content="Komparasi Sistem — POINTRESCUE">
+<meta property="og:description" content="POINTRESCUE, Handy Talky, dan Meshtastic dibandingkan pada tiga kriteria: aktivasi Pull &amp; Play, dashboard pencarian, dan biaya per unit.">
+<meta property="og:url" content="https://danishpramudya-ops.github.io/pointrescue/komparasi/">
+<meta property="og:image" content="https://danishpramudya-ops.github.io/pointrescue/assets/img/og-komparasi.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="id_ID">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   Komparasi Sistem — halaman tersendiri. Satu berkas HTML, tanpa pustaka,
+   tanpa pelacak. Identitas sama dengan situs dan halaman tautan: navy dalam,
+   biru logo, oranye hanya aksen, police line selalu ada.
+
+   Dua bahasa dalam satu berkas (<span lang="id"> / <span lang="en">). Yang
+   tampil dipilih lewat ?lang=, pilihan terakhir pengunjung (kunci yang sama
+   dengan halaman tautan), atau bahasa peramban. Tanpa JavaScript halaman
+   tetap utuh, berbahasa Indonesia.
+
+   MENGUBAH HARGA: ganti teksnya di tabel DAN di grafik, lalu ganti variabel
+   --min / --max pada batang grafiknya (satuan: ribu rupiah; sumbu 0 … --skala).
+   ========================================================================== */
+:root{
+  --ink:#03101f; --navy-900:#051a33; --navy-800:#07264a; --navy:#093261; --navy-600:#0f4489;
+  --blue:#2f7fe0; --blue-lt:#6fb0ff; --red:#d30e10; --orange:#e45a07; --paper:#eef2f7;
+  --line:rgba(140,190,255,.2); --line-2:rgba(140,190,255,.12);
+  --f-disp:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --ease:cubic-bezier(.22,.68,.16,1);
+  --kaca:linear-gradient(rgba(120,180,255,.085), rgba(120,180,255,.035)), #061f3d;
+  --biru:linear-gradient(135deg, rgba(41,114,205,.98), rgba(15,68,137,.98)), #0f4489;
+  --lebar:1040px;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+html{ background:var(--ink); }
+body{
+  margin:0; min-height:100vh; min-height:100svh; color:var(--paper);
+  font:400 16px/1.5 var(--f-body); font-variation-settings:"wdth" 100;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  background:
+    radial-gradient(95% 52% at 50% -8%, rgba(47,127,224,.34), transparent 64%),
+    radial-gradient(75% 46% at 88% 102%, rgba(15,68,137,.5), transparent 66%),
+    var(--ink);
+}
+/* garis kontur topografi — bahasa visual peta pencarian */
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.5;
+  background:url("../assets/img/kontur-gelap.svg") 50% 0 / max(190%, 1500px) auto no-repeat;
+  -webkit-mask-image:linear-gradient(#000 6%, transparent 70%);
+          mask-image:linear-gradient(#000 6%, transparent 70%);
+}
+a{ color:inherit; }
+em{ font-style:normal; color:var(--orange); }
+svg{ fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.wrap{ position:relative; z-index:2; width:min(100% - 40px, var(--lebar)); margin:0 auto; }
+
+/* bahasa: tiap teks punya dua <span lang>; yang tak aktif disembunyikan */
+html[lang="id"] [lang="en"], html[lang="en"] [lang="id"]{ display:none; }
+
+/* ── police line: pita asli dari dashboard, dua helai disilangkan ───────── */
+.tape{ position:relative; z-index:3; height:78px; overflow:hidden; pointer-events:none; }
+.tape span{
+  position:absolute; left:-10%; right:-10%; height:43px;
+  background:url("../assets/img/policeline.png") repeat-x left center; background-size:auto 43px;
+  filter:drop-shadow(0 10px 22px rgba(0,0,0,.5)); will-change:background-position;
+}
+.tape .a{ top:calc(50% - 36px); transform:rotate(-1.7deg); animation:tapeL 26s linear infinite; }
+.tape .b{ top:calc(50% - 4px);  transform:rotate(1.5deg);  animation:tapeR 32s linear infinite; }
+.tape--bawah{ height:92px; margin-top:34px; }
+.tape--bawah .a{ transform:rotate(1.9deg);  animation-name:tapeR; }
+.tape--bawah .b{ transform:rotate(-1.3deg); animation-name:tapeL; }
+@keyframes tapeL{ to{ background-position-x:-1024px; } }
+@keyframes tapeR{ to{ background-position-x: 1024px; } }
+
+/* ── bilah atas ─────────────────────────────────────────────────────────── */
+.bar{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:4px; }
+.brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:#fff;
+  font:800 19px/1 var(--f-disp); font-variation-settings:"wdth" 84; letter-spacing:-.01em; }
+.brand img{ height:30px; width:auto; filter:drop-shadow(0 0 10px rgba(47,127,224,.6)); }
+.brand:focus-visible, .link:focus-visible{ outline:3px solid var(--blue-lt); outline-offset:3px; border-radius:10px; }
+.lang{ display:flex; padding:3px; gap:2px; border:1px solid var(--line); border-radius:99px; background:rgba(5,26,51,.72); }
+.lang button{
+  all:unset; cursor:pointer; min-width:44px; padding:8px 0; text-align:center; border-radius:99px;
+  font:700 11px/1 var(--f-mono); letter-spacing:.16em; color:rgba(210,228,250,.7); transition:color .25s, background .25s;
+}
+.lang button:hover{ color:#fff; }
+.lang button[aria-pressed="true"]{ color:#fff; background:#2a6fcf; }
+.lang button:focus-visible{ outline:2px solid var(--blue-lt); outline-offset:2px; }
+
+/* ── judul ──────────────────────────────────────────────────────────────── */
+.hero{ padding:clamp(22px,4vw,44px) 0 clamp(14px,2.4vw,24px); }
+.eyebrow{ margin:0 0 14px; font:700 11px/1.3 var(--f-mono); letter-spacing:.26em; text-transform:uppercase; color:var(--blue-lt); }
+.judul{ margin:0; font:800 clamp(44px,9.4vw,88px)/.98 var(--f-disp); font-variation-settings:"wdth" 82; letter-spacing:-.03em; color:#fff; text-wrap:balance; }
+.lead{ margin:18px 0 0; max-width:56ch; font-size:clamp(16px,1.5vw,19px); line-height:1.55; color:rgba(225,236,250,.82); text-wrap:pretty; }
+
+/* unit 3D di tengah cincin radar — dipakai di kepala kolom (layar lebar) dan di bawah judul (ponsel) */
+.unit{ --h:150px; position:relative; display:grid; place-items:center; height:var(--h); }
+.unit img{ position:relative; z-index:2; display:block; height:var(--h); width:auto; max-width:none; filter:drop-shadow(0 14px 18px rgba(0,0,0,.45)); }
+.unit__ping i{
+  position:absolute; left:50%; top:50%; width:150px; height:150px; margin:-75px 0 0 -75px; border-radius:50%;
+  border:1.5px solid rgba(190,224,255,.55); opacity:0; animation:ping 5s var(--ease) infinite; animation-delay:calc(var(--n) * 1.4s);
+}
+.unit__ping i:nth-child(1){ --n:0; } .unit__ping i:nth-child(2){ --n:1; } .unit__ping i:nth-child(3){ --n:2; }
+@keyframes ping{ 0%{ transform:scale(.4); opacity:.85; } 100%{ transform:scale(2.2); opacity:0; } }
+.hero__unit{ display:none; }
+
+/* ── matriks: tabel sungguhan, tiap sel sebuah ubin ─────────────────────── */
+.mx-wrap{ position:relative; z-index:2; width:min(100% - 20px, calc(var(--lebar) + 24px)); margin:6px auto 0; }
+.mx{ width:100%; border-collapse:separate; border-spacing:10px; table-layout:fixed; }
+.mx col:first-child{ width:22%; }
+.mx th, .mx td{ padding:0; text-align:left; vertical-align:middle; font-weight:400; }
+
+.pojok{
+  position:relative; height:226px; border-radius:20px; border:1px solid var(--line-2);
+  background:
+    linear-gradient(to top right, transparent calc(50% - 1px), rgba(140,190,255,.3) calc(50% - 1px), rgba(140,190,255,.3) calc(50% + 1px), transparent calc(50% + 1px)),
+    rgba(5,26,51,.45);
+}
+.pojok span.pojok__alat, .pojok span.pojok__fitur{ position:absolute; font:700 11.5px/1 var(--f-mono); letter-spacing:.2em; text-transform:uppercase; color:rgba(190,214,245,.72); }
+.pojok__alat{ right:20px; top:20px; } .pojok__fitur{ left:20px; bottom:20px; }
+
+.sis{ position:relative; height:226px; border-radius:20px; background:var(--kaca); border:1px solid var(--line); overflow:hidden; }
+.sis__in{ position:relative; height:224px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:12px; padding:14px 12px 18px; text-align:center; }
+.sis__nama{ position:relative; z-index:3; display:flex; align-items:center; justify-content:center; gap:8px; font:800 21px/1 var(--f-disp); font-variation-settings:"wdth" 88; letter-spacing:-.01em; color:#fff; }
+.sis__nama img{ height:26px; width:auto; }
+.sis .pic{ width:96px; height:104px; margin-bottom:2px; color:rgba(150,196,250,.82); stroke-width:3; }
+.sis__ruang{ flex:1; width:100%; display:grid; place-items:center; min-height:0; }
+.sis__tag{ position:absolute; z-index:4; left:12px; top:12px; padding:6px 9px 5px; border-radius:7px; background:rgba(3,16,31,.55);
+  font:700 9.5px/1 var(--f-mono); letter-spacing:.18em; text-transform:uppercase; color:#fff; }
+
+.sis--pr{
+  border-color:rgba(160,205,255,.6);
+  background:
+    radial-gradient(62% 54% at 50% 38%, rgba(160,205,255,.55), rgba(47,127,224,0) 72%),
+    linear-gradient(165deg, #2c78d6, #0d3f80 78%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 30px 60px -30px rgba(47,127,224,.95);
+}
+.sis--pr::after{          /* kilau yang melintas sekali saat halaman dibuka */
+  content:""; position:absolute; inset:0; z-index:5; pointer-events:none;
+  background:linear-gradient(105deg, transparent 38%, rgba(255,255,255,.28) 50%, transparent 62%);
+  transform:translateX(-130%); animation:kilau 1.4s var(--ease) .9s 1 both;
+}
+@keyframes kilau{ to{ transform:translateX(130%); } }
+
+/* label baris: ubin oranye redup, gema ubin persik di infografis */
+.krit__in{ display:flex; align-items:center; gap:14px; min-height:98px; padding:14px 16px; border-radius:16px; background:rgba(228,90,7,.10); border:1px solid rgba(228,90,7,.32); }
+.krit__ik{ flex:0 0 44px; width:44px; height:44px; border-radius:12px; display:grid; place-items:center; background:rgba(228,90,7,.2); color:#ff9248; }
+.krit__ik svg{ width:24px; height:24px; }
+.krit__ik .rp{ font:800 15px/1 var(--f-mono); font-style:normal; letter-spacing:-.02em; }
+.krit b{ display:block; font:800 18px/1.15 var(--f-disp); font-variation-settings:"wdth" 88; letter-spacing:-.01em; color:#fff; }
+.krit small{ display:block; margin-top:5px; font:400 12.5px/1.4 var(--f-body); color:rgba(255,226,206,.74); }
+.krit--skor .krit__in{ min-height:76px; background:rgba(5,26,51,.5); border-color:var(--line-2); }
+.krit--skor small{ color:rgba(200,222,255,.6); }
+
+/* sel isi */
+.isi{ position:relative; display:flex; align-items:center; gap:13px; min-height:98px; padding:14px 16px; border-radius:16px; background:var(--kaca); border:1px solid var(--line);
+  transition:border-color .3s, box-shadow .3s; }
+.sel:hover .isi{ border-color:rgba(111,176,255,.5); }
+.isi b{ display:block; font:700 15.5px/1.25 var(--f-body); color:#fff; text-wrap:balance; }
+.isi small{ display:block; margin-top:3px; font:400 12.5px/1.4 var(--f-body); color:rgba(200,222,255,.68); text-wrap:balance; }
+.isi .nama{ display:none; }
+.sel--pr .isi{ background:var(--biru); border-color:rgba(160,205,255,.5); box-shadow:inset 0 1px 0 rgba(255,255,255,.24), 0 22px 44px -28px rgba(47,127,224,.95); }
+.sel--pr .isi small{ color:rgba(236,246,255,.88); }
+.sel--pr:hover .isi{ border-color:rgba(200,228,255,.85); }
+
+.tanda{ flex:0 0 36px; width:36px; height:36px; border-radius:50%; display:grid; place-items:center; animation:pop .6s var(--ease) both; animation-delay:calc(var(--d, 0) * 90ms + 350ms); }
+.tanda svg{ width:20px; height:20px; stroke-width:3.2; }
+.tanda--ya{ background:rgba(111,176,255,.14); color:var(--blue-lt); box-shadow:inset 0 0 0 1.5px rgba(111,176,255,.55); }
+.sel--pr .tanda--ya{ background:#fff; color:var(--navy-600); box-shadow:0 8px 16px -8px rgba(0,0,0,.55); }
+.tanda--tdk{ background:var(--red); color:#fff; box-shadow:0 8px 16px -8px rgba(211,14,16,.85); }
+@keyframes pop{ from{ transform:scale(.55); } }
+
+.skor .isi{ min-height:76px; justify-content:center; }
+.skor strong{ font:800 32px/1 var(--f-disp); font-variation-settings:"wdth" 84; letter-spacing:-.02em; color:rgba(215,232,250,.82); }
+.skor strong em{ font-size:.55em; color:inherit; opacity:.6; margin-left:2px; }
+.sel--pr.skor strong{ color:#fff; }
+
+.legenda{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 18px; margin:14px 10px 0; font:500 12.5px/1.4 var(--f-body); color:rgba(200,222,255,.7); }
+.legenda .tanda{ flex:0 0 22px; width:22px; height:22px; animation:none; }
+.legenda .tanda svg{ width:13px; height:13px; }
+.legenda i{ display:inline-flex; align-items:center; gap:8px; font-style:normal; }
+.legenda .ket{ flex:1 1 260px; }
+
+/* ── bukti: satu blok per kriteria ──────────────────────────────────────── */
+.bukti{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.05fr); gap:clamp(26px,5vw,64px); align-items:center;
+  padding:clamp(40px,6.5vw,76px) 0; border-top:1px solid var(--line-2); }
+.bukti:first-of-type{ margin-top:clamp(34px,5vw,56px); }
+.bukti h2{ margin:0; font:800 clamp(27px,3.6vw,41px)/1.08 var(--f-disp); font-variation-settings:"wdth" 86; letter-spacing:-.022em; color:#fff; text-wrap:balance; }
+.bukti__teks p:not(.eyebrow){ margin:16px 0 0; max-width:52ch; font-size:16.5px; line-height:1.62; color:rgba(225,236,250,.8); }
+.bukti__teks p.banding{ font-size:14.5px; color:rgba(200,222,255,.66); padding-left:14px; border-left:2px solid rgba(111,176,255,.4); }
+.bukti__visual{ min-width:0; }
+
+/* langkah Pull & Play — urutannya sungguhan, jadi bernomor */
+.langkah{ list-style:none; margin:0; padding:0; counter-reset:n; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.langkah li{ counter-increment:n; position:relative; padding:12px 12px 16px; border-radius:18px; background:var(--kaca); border:1px solid var(--line); }
+.langkah li::before{ content:counter(n); position:absolute; left:12px; top:12px; width:24px; height:24px; border-radius:50%; display:grid; place-items:center;
+  font:700 12px/1 var(--f-mono); background:var(--blue); color:#fff; }
+.langkah li:nth-child(3){ border-color:rgba(160,205,255,.5); background:var(--biru); }
+.langkah svg.skema{ display:block; width:100%; height:auto; color:#bcd9fb; }
+.langkah b{ display:block; margin-top:6px; font:700 14.5px/1.25 var(--f-body); color:#fff; }
+.langkah span.ket{ display:block; margin-top:3px; font:400 12.5px/1.4 var(--f-body); color:rgba(200,222,255,.7); }
+.langkah li:nth-child(3) span.ket{ color:rgba(236,246,255,.88); }
+.skema .badan{ fill:rgba(111,176,255,.1); stroke:currentColor; stroke-width:2.6; }
+.skema .ant{ stroke:currentColor; stroke-width:5; }
+.skema .reed{ stroke:var(--orange); fill:rgba(228,90,7,.18); stroke-width:2.4; }
+.skema .mg-n{ fill:var(--orange); stroke:none; } .skema .mg-s{ fill:var(--blue-lt); stroke:none; }
+.skema .tali{ stroke:currentColor; stroke-width:2.2; }
+.skema .hantu{ stroke:currentColor; stroke-width:2; stroke-dasharray:4 4; opacity:.5; fill:none; }
+.skema .arah{ stroke:#fff; stroke-width:2.6; }
+.skema .busur{ stroke:#fff; stroke-width:2.6; }
+.skema .led{ fill:var(--orange); stroke:none; }
+.catatan-visual{ margin:10px 4px 0; font:500 10.5px/1.5 var(--f-mono); letter-spacing:.12em; text-transform:uppercase; color:rgba(190,214,245,.64); }
+
+/* dashboard asli + aplikasi asli */
+.duo{ position:relative; margin:0; padding-bottom:clamp(40px,8vw,84px); }
+.duo .laptop{ border-radius:16px; padding:7px; background:#0a1a2f; border:1px solid var(--line); box-shadow:0 34px 70px -34px rgba(0,0,0,.95); }
+.duo .laptop img{ display:block; width:100%; height:auto; border-radius:9px; }
+.duo .phone{ position:absolute; right:clamp(-10px,-1vw,0px); bottom:0; width:25%; border-radius:20px; padding:5px; background:#0a1a2f; border:1px solid var(--line); box-shadow:0 30px 56px -22px rgba(0,0,0,.95); }
+.duo .phone img{ display:block; width:100%; height:auto; border-radius:15px; }
+.duo figcaption{ position:absolute; left:4px; bottom:6px; max-width:62%; font:500 10.5px/1.5 var(--f-mono); letter-spacing:.12em; text-transform:uppercase; color:rgba(190,214,245,.64); }
+
+/* grafik harga — satu skala, rentang digambar sebagai batang mengambang */
+.harga{ --skala:2000; margin:0; padding:22px 22px 16px; border-radius:20px; background:var(--kaca); border:1px solid var(--line); }
+.harga__isi{ position:relative; display:grid; gap:20px; }
+.harga__grid{ position:absolute; inset:0; pointer-events:none; }
+.harga__grid i{ position:absolute; top:-6px; bottom:-6px; width:1px; background:rgba(140,190,255,.15); left:calc(var(--k) * 25%); }
+.hr{ position:relative; z-index:1; }
+.hr__kepala{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:8px; }
+.hr__kepala b{ font:700 15px/1.2 var(--f-body); color:#fff; }
+.hr__kepala span{ font:600 13px/1.2 var(--f-mono); color:#cfe3ff; text-align:right; }
+.hr__trek{ position:relative; height:16px; border-radius:8px; background:rgba(120,180,255,.08); }
+.bar-h{ position:absolute; top:0; bottom:0; border-radius:8px;
+  left:calc(var(--min) / var(--skala) * 100%); width:calc((var(--max) - var(--min)) / var(--skala) * 100%); background:rgba(111,176,255,.55); }
+.hr--pr .bar-h{ background:linear-gradient(90deg, rgba(47,127,224,.1), var(--blue)); border-right:3px solid #cfe6ff; border-radius:8px 4px 4px 8px; }
+.sumbu{ position:relative; height:14px; margin-top:14px; font:500 11px/1 var(--f-mono); color:rgba(190,214,245,.6); }
+.sumbu > span{ position:absolute; top:0; transform:translateX(-50%); white-space:nowrap; }
+.sumbu > span:first-child{ transform:none; } .sumbu > span:last-child{ transform:translateX(-100%); }
+.harga__ket{ margin:14px 0 0; font:400 12px/1.5 var(--f-body); color:rgba(200,222,255,.58); }
+
+/* ajakan */
+.ajak{ padding:clamp(34px,5vw,56px) 0 0; border-top:1px solid var(--line-2); }
+.ajak h2{ margin:0 0 18px; font:800 clamp(24px,3vw,32px)/1.1 var(--f-disp); font-variation-settings:"wdth" 86; letter-spacing:-.02em; color:#fff; }
+.ajak__baris{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.link{ display:flex; align-items:center; justify-content:space-between; gap:14px; min-height:74px; padding:14px 18px; border-radius:16px; text-decoration:none; color:#fff;
+  background:var(--kaca); border:1px solid var(--line); font:700 15.5px/1.25 var(--f-body);
+  transition:transform .35s var(--ease), border-color .3s, box-shadow .35s; }
+.link small{ display:block; margin-top:3px; font:400 12.5px/1.4 var(--f-body); color:rgba(200,222,255,.66); }
+.link:hover, .link:focus-visible{ transform:translateY(-2px); border-color:var(--blue-lt); box-shadow:0 16px 36px -22px rgba(47,127,224,.9); }
+.link .go{ flex:0 0 30px; width:30px; height:30px; display:grid; place-items:center; border-radius:50%; background:rgba(111,176,255,.14); transition:background .3s, transform .35s var(--ease); }
+.link .go svg{ width:16px; height:16px; fill:var(--blue-lt); stroke:none; }
+.link:hover .go, .link:focus-visible .go{ background:var(--blue); transform:translateX(3px); }
+.link:hover .go svg, .link:focus-visible .go svg{ fill:#fff; }
+.link--utama{ background:var(--biru); border-color:rgba(160,205,255,.55); }
+.link--utama small{ color:rgba(236,246,255,.88); }
+.link--utama .go{ background:rgba(255,255,255,.2); } .link--utama .go svg{ fill:#fff; }
+
+.kaki{ margin:34px 0 0; max-width:78ch; font:400 12.5px/1.6 var(--f-body); color:rgba(190,214,245,.55); }
+.foot{ margin:26px 0 0; text-align:center; font:500 10.5px/1.7 var(--f-mono); letter-spacing:.14em; text-transform:uppercase; color:rgba(190,214,245,.5); }
+
+/* ── ponsel: tiap kriteria jadi satu kartu, tiga baris di dalamnya ───────── */
+@media (max-width:860px){
+  .bukti{ grid-template-columns:minmax(0,1fr); }
+  .ajak__baris{ grid-template-columns:minmax(0,1fr); }
+}
+@media (min-width:861px) and (max-width:1000px){
+  .krit__ik{ display:none; }                       /* kolom label sempit: ikonnya mengalah, teksnya tidak */
+  .krit__in{ padding:14px; }
+}
+@media (max-width:860px){
+  .hero__unit{ display:block; height:196px; margin:10px 0 0; }
+  .hero__unit .unit{ --h:188px; }
+  .hero__unit .unit__ping i{ width:120px; height:120px; margin:-60px 0 0 -60px; }
+  .hero__unit::before{ content:""; position:absolute; left:50%; top:50%; width:300px; height:300px; margin:-150px 0 0 -150px; border-radius:50%;
+    background:radial-gradient(closest-side, rgba(47,127,224,.42), rgba(47,127,224,.12) 58%, transparent 78%); }
+  .hero__unit{ position:relative; }
+
+  .mx-wrap{ width:min(100% - 40px, var(--lebar)); }
+  .mx, .mx tbody, .mx tfoot, .mx tr, .mx th, .mx td{ display:block; }
+  .mx{ border-spacing:0; }
+  .mx colgroup{ display:none; }
+  .mx thead{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+  .mx tbody{ display:grid; gap:14px; }
+  .mx tr{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:12px; border-radius:20px; background:rgba(5,26,51,.5); border:1px solid var(--line-2); }
+  .mx tr > .krit{ grid-column:1 / -1; }
+  .mx tfoot{ margin-top:14px; }
+  .mx tfoot tr{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+  .mx tfoot th{ grid-column:1 / -1; }
+  .krit__in{ min-height:0; padding:11px 12px; }
+  .krit--skor .krit__in{ min-height:0; padding:9px 12px; }
+  .isi{ min-height:0; padding:12px 14px; }
+  .isi .nama{ display:block; margin-bottom:3px; font:700 10px/1 var(--f-mono); font-style:normal; letter-spacing:.16em; text-transform:uppercase; color:rgba(190,214,245,.62); }
+  .sel--pr .isi .nama{ color:rgba(255,255,255,.9); }
+  .skor .isi{ flex-direction:column; justify-content:center; gap:6px; text-align:center; min-height:0; padding:12px 6px; }
+  .skor .isi .nama{ margin:0; }
+  .skor strong{ font-size:28px; }
+  .legenda{ margin:14px 4px 0; }
+}
+@media (max-width:560px){
+  .mx tbody tr{ grid-template-columns:minmax(0,1fr); }     /* ponsel: tiga sistem ditumpuk */
+}
+@media (max-width:380px){
+  .eyebrow{ letter-spacing:.16em; }
+}
+@media (max-width:520px){
+  .langkah{ grid-template-columns:minmax(0,1fr); }
+  .langkah li{ display:grid; grid-template-columns:132px minmax(0,1fr); gap:0 14px; align-items:center; padding:12px 12px 12px 44px; }
+  .langkah li::before{ top:50%; margin-top:-12px; }
+  .langkah li > div{ min-width:0; }
+  .langkah b{ margin-top:0; }
+  .harga{ padding:18px 16px 14px; }
+}
+@media (prefers-reduced-motion:reduce){
+  *, *::before, *::after{ animation:none !important; transition:none !important; }
+  .unit__ping i:nth-child(1){ opacity:.3; transform:scale(1.2); } .unit__ping i:nth-child(2){ opacity:.16; transform:scale(1.7); } .unit__ping i:nth-child(3){ display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ikon: gambar sendiri (garis), tanpa pustaka -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-ok" viewBox="0 0 24 24"><path d="M5.5 12.8l4.2 4.2L18.5 8"/></symbol>
+    <symbol id="i-no" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></symbol>
+    <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6.9 6.9a8 8 0 1 0 10.2 0"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21.5s7-6 7-11.7A7 7 0 0 0 5 9.8c0 5.7 7 11.7 7 11.7z"/><circle cx="12" cy="9.8" r="2.6"/></symbol>
+    <symbol id="i-go" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></symbol>
+    <!-- pembanding digambar sebagai piktogram, bukan foto produk -->
+    <symbol id="p-ht" viewBox="0 0 120 130">
+      <path d="M80 40V10" stroke-width="7"/><path d="M45 40V29" stroke-width="6"/>
+      <rect x="34" y="40" width="56" height="84" rx="11"/>
+      <path d="M46 56h32M46 65h32M46 74h32M46 83h32"/>
+      <rect x="46" y="96" width="32" height="14" rx="3"/>
+      <path d="M27 66v26" stroke-width="6"/>
+    </symbol>
+    <symbol id="p-mesh" viewBox="0 0 120 130">
+      <path d="M82 46L97 9" stroke-width="7"/>
+      <rect x="24" y="46" width="72" height="78" rx="12"/>
+      <rect x="35" y="57" width="50" height="34" rx="4"/>
+      <path d="M42 68h24M42 76h36M42 84h16" stroke-width="2.4" opacity=".7"/>
+      <circle cx="44" cy="108" r="4.5"/><circle cx="60" cy="108" r="4.5"/><circle cx="76" cy="108" r="4.5"/>
+      <path d="M31 46c-6-13 0-23 11-23" stroke-width="2.4" opacity=".6"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="tape" aria-hidden="true"><span class="a"></span><span class="b"></span></div>
+
+<header class="wrap bar">
+  <a class="brand" href="../" data-href-en="../en/" aria-label="POINTRESCUE">
+    <img src="../assets/img/logo-mark.png" alt="" width="25" height="30"><span>POINT<em>RESCUE</em></span>
+  </a>
+  <div class="lang" role="group" aria-label="Bahasa / Language">
+    <button type="button" data-lang="id" aria-pressed="true" aria-label="Bahasa Indonesia">ID</button>
+    <button type="button" data-lang="en" aria-pressed="false" aria-label="English">EN</button>
+  </div>
+</header>
+
+<main>
+<header class="wrap hero">
+  <p class="eyebrow">PKM-KC 2026<span aria-hidden="true"> · </span><span lang="id">Perbandingan alat</span><span lang="en">Tool comparison</span></p>
+  <h1 class="judul"><span lang="id">Komparasi Sistem</span><span lang="en">System Comparison</span></h1>
+  <p class="lead">
+    <span lang="id">Tiga alat untuk komunikasi dan pencarian di wilayah tanpa sinyal, dibandingkan pada tiga hal yang paling menentukan di lapangan.</span>
+    <span lang="en">Three tools for communication and search where there is no signal, compared on the three things that matter most in the field.</span>
+  </p>
+  <div class="hero__unit" aria-hidden="true">
+    <div class="unit"><span class="unit__ping"><i></i><i></i><i></i></span><img src="../assets/img/komparasi-unit.png" alt="" width="427" height="600"></div>
+  </div>
+</header>
+
+<section class="mx-wrap" aria-labelledby="mx-judul">
+  <h2 class="sr" id="mx-judul"><span lang="id">Tabel perbandingan tiga alat pada tiga kriteria</span><span lang="en">Comparison table of three tools on three criteria</span></h2>
+  <table class="mx" role="table">
+    <colgroup><col><col><col><col></colgroup>
+    <thead>
+      <tr role="row">
+        <th class="pojok" scope="col" role="columnheader">
+          <span class="pojok__alat"><span lang="id">Alat</span><span lang="en">Tool</span></span>
+          <span class="pojok__fitur"><span lang="id">Fitur</span><span lang="en">Feature</span></span>
+        </th>
+        <th class="sis sis--pr" scope="col" role="columnheader">
+          <div class="sis__in">
+            <span class="sis__tag"><span lang="id">Sistem kami</span><span lang="en">Our system</span></span>
+            <div class="sis__ruang"><div class="unit" aria-hidden="true"><span class="unit__ping"><i></i><i></i><i></i></span><img src="../assets/img/komparasi-unit.png" alt="" width="427" height="600"></div></div>
+            <span class="sis__nama"><img src="../assets/img/logo-mark.png" alt="" width="22" height="26"><span>POINT<em>RESCUE</em></span></span>
+          </div>
+        </th>
+        <th class="sis" scope="col" role="columnheader">
+          <div class="sis__in">
+            <div class="sis__ruang"><svg class="pic" aria-hidden="true"><use href="#p-ht"/></svg></div>
+            <span class="sis__nama">Handy Talky</span>
+          </div>
+        </th>
+        <th class="sis" scope="col" role="columnheader">
+          <div class="sis__in">
+            <div class="sis__ruang"><svg class="pic" aria-hidden="true"><use href="#p-mesh"/></svg></div>
+            <span class="sis__nama">Meshtastic</span>
+          </div>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <!-- 1 · Pull & Play -->
+      <tr role="row">
+        <th class="krit" scope="row" role="rowheader">
+          <div class="krit__in">
+            <span class="krit__ik"><svg aria-hidden="true"><use href="#i-power"/></svg></span>
+            <span><b>Pull &amp; Play</b><small><span lang="id">Langsung aktif tanpa menu?</span><span lang="en">Switches on with no menu?</span></small></span>
+          </div>
+        </th>
+        <td class="sel sel--pr" role="cell"><div class="isi">
+          <span class="tanda tanda--ya" style="--d:0"><svg aria-hidden="true"><use href="#i-ok"/></svg><span class="sr"><span lang="id">Ya</span><span lang="en">Yes</span></span></span>
+          <span><i class="nama">POINTRESCUE</i><b><span lang="id">Reed switch magnetik</span><span lang="en">Magnetic reed switch</span></b><small><span lang="id">Tarik, langsung aktif</span><span lang="en">Pull, and it is on</span></small></span>
+        </div></td>
+        <td class="sel" role="cell"><div class="isi">
+          <span class="tanda tanda--tdk" style="--d:1"><svg aria-hidden="true"><use href="#i-no"/></svg><span class="sr"><span lang="id">Tidak</span><span lang="en">No</span></span></span>
+          <span><i class="nama">Handy Talky</i><b><span lang="id">Saklar on-off biasa</span><span lang="en">Ordinary on/off switch</span></b></span>
+        </div></td>
+        <td class="sel" role="cell"><div class="isi">
+          <span class="tanda tanda--tdk" style="--d:2"><svg aria-hidden="true"><use href="#i-no"/></svg><span class="sr"><span lang="id">Tidak</span><span lang="en">No</span></span></span>
+          <span><i class="nama">Meshtastic</i><b><span lang="id">Saklar on-off biasa</span><span lang="en">Ordinary on/off switch</span></b></span>
+        </div></td>
+      </tr>
+
+      <!-- 2 · Dashboard pencarian -->
+      <tr role="row">
+        <th class="krit" scope="row" role="rowheader">
+          <div class="krit__in">
+            <span class="krit__ik"><svg aria-hidden="true"><use href="#i-pin"/></svg></span>
+            <span><b><span lang="id">Dashboard Pencarian</span><span lang="en">Search Dashboard</span></b><small><span lang="id">Posisi korban terlihat di peta?</span><span lang="en">Victim positions shown on a map?</span></small></span>
+          </div>
+        </th>
+        <td class="sel sel--pr" role="cell"><div class="isi">
+          <span class="tanda tanda--ya" style="--d:3"><svg aria-hidden="true"><use href="#i-ok"/></svg><span class="sr"><span lang="id">Ya</span><span lang="en">Yes</span></span></span>
+          <span><i class="nama">POINTRESCUE</i><b><span lang="id">Tracker visual koordinat GPS</span><span lang="en">Visual tracker of GPS coordinates</span></b><small><span lang="id">Peta taktis dengan jejak gerak</span><span lang="en">Tactical map with movement trails</span></small></span>
+        </div></td>
+        <td class="sel" role="cell"><div class="isi">
+          <span class="tanda tanda--tdk" style="--d:4"><svg aria-hidden="true"><use href="#i-no"/></svg><span class="sr"><span lang="id">Tidak</span><span lang="en">No</span></span></span>
+          <span><i class="nama">Handy Talky</i><b><span lang="id">Komunikasi radio saja</span><span lang="en">Radio communication only</span></b><small><span lang="id">Posisi disebut manual lewat suara</span><span lang="en">Positions are called out by voice</span></small></span>
+        </div></td>
+        <td class="sel" role="cell"><div class="isi">
+          <span class="tanda tanda--ya" style="--d:5"><svg aria-hidden="true"><use href="#i-ok"/></svg><span class="sr"><span lang="id">Ya</span><span lang="en">Yes</span></span></span>
+          <span><i class="nama">Meshtastic</i><b><span lang="id">Aplikasi bawaan Meshtastic</span><span lang="en">Meshtastic's built-in app</span></b><small><span lang="id">Dirancang untuk penggunaan umum</span><span lang="en">Built for general use</span></small></span>
+        </div></td>
+      </tr>
+
+      <!-- 3 · Hemat biaya — angka sama dengan grafik di bawah -->
+      <tr role="row">
+        <th class="krit" scope="row" role="rowheader">
+          <div class="krit__in">
+            <span class="krit__ik"><i class="rp">Rp</i></span>
+            <span><b><span lang="id">Hemat Biaya</span><span lang="en">Low Cost</span></b><small><span lang="id">Terjangkau untuk dibawa banyak orang?</span><span lang="en">Affordable enough to carry in numbers?</span></small></span>
+          </div>
+        </th>
+        <td class="sel sel--pr" role="cell"><div class="isi">
+          <span class="tanda tanda--ya" style="--d:6"><svg aria-hidden="true"><use href="#i-ok"/></svg><span class="sr"><span lang="id">Ya</span><span lang="en">Yes</span></span></span>
+          <span><i class="nama">POINTRESCUE</i><b><span lang="id">&lt; Rp&nbsp;500 ribu</span><span lang="en">&lt; Rp&nbsp;500 thousand</span></b><small><span lang="id">perkiraan per unit</span><span lang="en">estimated per unit</span></small></span>
+        </div></td>
+        <td class="sel" role="cell"><div class="isi">
+          <span class="tanda tanda--ya" style="--d:7"><svg aria-hidden="true"><use href="#i-ok"/></svg><span class="sr"><span lang="id">Ya</span><span lang="en">Yes</span></span></span>
+          <span><i class="nama">Handy Talky</i><b><span lang="id">Rp&nbsp;120–300 ribu</span><span lang="en">Rp&nbsp;120–300 thousand</span></b><small><span lang="id">perkiraan per unit</span><span lang="en">estimated per unit</span></small></span>
+        </div></td>
+        <td class="sel" role="cell"><div class="isi">
+          <span class="tanda tanda--tdk" style="--d:8"><svg aria-hidden="true"><use href="#i-no"/></svg><span class="sr"><span lang="id">Tidak</span><span lang="en">No</span></span></span>
+          <span><i class="nama">Meshtastic</i><b><span lang="id">Rp&nbsp;1–2 juta</span><span lang="en">Rp&nbsp;1–2 million</span></b><small><span lang="id">perkiraan per unit</span><span lang="en">estimated per unit</span></small></span>
+        </div></td>
+      </tr>
+    </tbody>
+
+    <!-- jumlah ✓ per kolom di atas -->
+    <tfoot>
+      <tr role="row">
+        <th class="krit krit--skor" scope="row" role="rowheader"><div class="krit__in"><span><b><span lang="id">Kriteria terpenuhi</span><span lang="en">Criteria met</span></b></span></div></th>
+        <td class="sel sel--pr skor" role="cell"><div class="isi"><i class="nama">POINTRESCUE</i><strong>3<em>/3</em></strong></div></td>
+        <td class="sel skor" role="cell"><div class="isi"><i class="nama">Handy Talky</i><strong>1<em>/3</em></strong></div></td>
+        <td class="sel skor" role="cell"><div class="isi"><i class="nama">Meshtastic</i><strong>1<em>/3</em></strong></div></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <p class="legenda">
+    <i><span class="tanda tanda--ya"><svg aria-hidden="true"><use href="#i-ok"/></svg></span><span lang="id">Ada</span><span lang="en">Yes</span></i>
+    <i><span class="tanda tanda--tdk"><svg aria-hidden="true"><use href="#i-no"/></svg></span><span lang="id">Tidak ada</span><span lang="en">No</span></i>
+    <span class="ket"><span lang="id">Harga adalah perkiraan per unit.</span><span lang="en">Prices are estimates per unit.</span></span>
+  </p>
+</section>
+
+<div class="wrap">
+
+  <!-- ══════ Pull & Play ══════ -->
+  <section class="bukti" id="pull-play">
+    <div class="bukti__teks">
+      <p class="eyebrow">Pull &amp; Play</p>
+      <h2><span lang="id">Tarik, dan perangkat langsung menyala.</span><span lang="en">Pull, and the unit switches on.</span></h2>
+      <p>
+        <span lang="id">Pada node korban, sakelar magnetik jenis reed switch ditahan oleh magnet pada tali penarik. Selama magnet di tempatnya, perangkat diam dan hemat daya. Begitu tali ditarik, magnet menjauh dan perangkat langsung aktif serta memancarkan koordinatnya — tanpa menu, tanpa aplikasi, tanpa konfigurasi.</span>
+        <span lang="en">On the victim node, a magnetic reed switch is held by a magnet on a pull tab. While the magnet stays in place the unit sleeps and saves power. Pull the tab and the magnet moves away: the unit switches on at once and starts transmitting its coordinates — no menu, no app, no setup.</span>
+      </p>
+      <p class="banding">
+        <span lang="id">Handy Talky dan Meshtastic dinyalakan dengan saklar on-off biasa. Dalam kondisi panik, tidak ada waktu untuk membuka menu.</span>
+        <span lang="en">A Handy Talky and Meshtastic are switched on with an ordinary on/off switch. In a panic there is no time to open a menu.</span>
+      </p>
+    </div>
+    <div class="bukti__visual">
+      <ol class="langkah">
+        <li>
+          <svg class="skema" viewBox="0 -6 200 116" aria-hidden="true">
+            <rect class="badan" x="14" y="40" width="90" height="60" rx="11"/><path class="ant" d="M86 40L96 22"/>
+            <rect class="reed" x="70" y="64" width="26" height="9" rx="4.5"/>
+            <path class="mg-n" d="M109 58h8v21h-8a3 3 0 0 1-3-3V61a3 3 0 0 1 3-3z"/><path class="mg-s" d="M117 58h8a3 3 0 0 1 3 3v15a3 3 0 0 1-3 3h-8z"/>
+            <path class="tali" d="M128 68.5h24"/><circle class="tali" cx="158" cy="68.5" r="6"/>
+          </svg>
+          <div><b><span lang="id">Ditahan magnet</span><span lang="en">Held by the magnet</span></b><span class="ket"><span lang="id">Perangkat diam, hemat daya</span><span lang="en">Unit sleeps, saving power</span></span></div>
+        </li>
+        <li>
+          <svg class="skema" viewBox="0 -6 200 116" aria-hidden="true">
+            <rect class="badan" x="14" y="40" width="90" height="60" rx="11"/><path class="ant" d="M86 40L96 22"/>
+            <rect class="reed" x="70" y="64" width="26" height="9" rx="4.5"/>
+            <rect class="hantu" x="106" y="58" width="22" height="21" rx="3"/>
+            <path class="arah" d="M131 68.5h9M137 62.5l6 6-6 6"/>
+            <path class="mg-n" d="M149 58h8v21h-8a3 3 0 0 1-3-3V61a3 3 0 0 1 3-3z"/><path class="mg-s" d="M157 58h8a3 3 0 0 1 3 3v15a3 3 0 0 1-3 3h-8z"/>
+            <path class="tali" d="M168 68.5h10"/><circle class="tali" cx="184" cy="68.5" r="6"/>
+          </svg>
+          <div><b><span lang="id">Tali ditarik</span><span lang="en">Tab pulled</span></b><span class="ket"><span lang="id">Magnet menjauh dari sakelar</span><span lang="en">Magnet leaves the switch</span></span></div>
+        </li>
+        <li>
+          <svg class="skema" viewBox="0 -6 200 116" aria-hidden="true">
+            <rect class="badan" x="14" y="40" width="90" height="60" rx="11"/><path class="ant" d="M86 40L96 22"/>
+            <path class="busur" d="M98.3 13.3a9 9 0 0 1 6.4 6.4"/><path class="busur" d="M100.1 6.6a16 16 0 0 1 11.3 11.3"/><path class="busur" d="M102 -0.2a23 23 0 0 1 16.2 16.2"/>
+            <circle class="led" cx="32" cy="58" r="5"/>
+            <rect class="reed" x="70" y="64" width="26" height="9" rx="4.5"/>
+          </svg>
+          <div><b><span lang="id">Aktif</span><span lang="en">Active</span></b><span class="ket"><span lang="id">Memancarkan koordinat</span><span lang="en">Transmitting coordinates</span></span></div>
+        </li>
+      </ol>
+      <p class="catatan-visual"><span lang="id">Skema sederhana — bukan gambar teknik</span><span lang="en">Simplified schematic — not an engineering drawing</span></p>
+    </div>
+  </section>
+
+  <!-- ══════ Dashboard pencarian ══════ -->
+  <section class="bukti" id="dashboard-pencarian">
+    <div class="bukti__teks">
+      <p class="eyebrow"><span lang="id">Dashboard pencarian</span><span lang="en">Search dashboard</span></p>
+      <h2><span lang="id">Posisi korban tampil di peta posko.</span><span lang="en">Victim positions appear on the post's map.</span></h2>
+      <p>
+        <span lang="id">Gateway di posko mengumpulkan semua paket yang terdengar di jaringan, lalu dashboard operator menampilkannya: daftar node daring dan luring, peta taktis dengan jejak gerak, serta pesan dua arah. Semuanya berjalan tanpa internet — ubin peta tersimpan lokal. Personel di lapangan melihat gambaran yang sama lewat aplikasi Android.</span>
+        <span lang="en">The gateway at the post collects every packet heard on the network and the operator dashboard shows it: online and offline nodes, a tactical map with movement trails, and two-way messages. All of it runs without internet — map tiles are stored locally. People in the field see the same picture in the Android app.</span>
+      </p>
+      <p class="banding">
+        <span lang="id">Handy Talky hanya membawa suara, sehingga posisi harus disebutkan manual lewat radio. Meshtastic punya aplikasi bawaan, tetapi dirancang untuk penggunaan umum, bukan khusus operasi pencarian dan penyelamatan.</span>
+        <span lang="en">A Handy Talky carries voice only, so positions have to be called out over the radio. Meshtastic has its own app, but it is built for general use, not specifically for search and rescue.</span>
+      </p>
+    </div>
+    <div class="bukti__visual">
+      <figure class="duo">
+        <div class="laptop"><img src="../assets/img/komparasi-dashboard.jpg" width="1200" height="717" loading="lazy"
+          alt="Dashboard posko POINTRESCUE: daftar node, peta taktis dengan posisi korban dan tim SAR, dan linimasa misi"
+          data-alt-en="The POINTRESCUE command-post dashboard: node list, tactical map with victim and SAR team positions, and mission timeline"></div>
+        <div class="phone"><img src="../assets/app/app-2.jpg" width="620" height="1342" loading="lazy"
+          alt="Aplikasi Android POINTRESCUE: peta taktis dengan posisi anggota SAR dan korban"
+          data-alt-en="The POINTRESCUE Android app: tactical map with the positions of SAR members and a victim"></div>
+        <figcaption><span lang="id">Tangkapan layar demo dashboard dan aplikasi</span><span lang="en">Screenshots of the dashboard and app demo</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ══════ Hemat biaya ══════ -->
+  <section class="bukti" id="hemat-biaya">
+    <div class="bukti__teks">
+      <p class="eyebrow"><span lang="id">Hemat biaya</span><span lang="en">Low cost</span></p>
+      <h2><span lang="id">Cukup murah untuk dibawa banyak orang.</span><span lang="en">Cheap enough to carry in numbers.</span></h2>
+      <p>
+        <span lang="id">Perkiraan harga per unit pada satu skala. Unit yang murah bisa dibagikan ke lebih banyak personel — bahkan warga terdampak.</span>
+        <span lang="en">Estimated price per unit on one scale. A cheaper unit can be handed to more responders — even to affected residents.</span>
+      </p>
+      <p class="banding">
+        <span lang="id">Batang POINTRESCUE menunjukkan batas atas: harganya kurang dari Rp&nbsp;500 ribu.</span>
+        <span lang="en">The POINTRESCUE bar shows an upper bound: it costs less than Rp&nbsp;500 thousand.</span>
+      </p>
+    </div>
+    <div class="bukti__visual">
+      <figure class="harga" style="--skala:2000">
+        <figcaption class="sr"><span lang="id">Grafik rentang harga per unit, skala 0 sampai Rp 2 juta</span><span lang="en">Chart of price ranges per unit, scale 0 to Rp 2 million</span></figcaption>
+        <div class="harga__isi">
+          <div class="harga__grid" aria-hidden="true"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i></div>
+          <div class="hr hr--pr">
+            <div class="hr__kepala"><b>POINTRESCUE</b><span><span lang="id">&lt; Rp&nbsp;500 ribu</span><span lang="en">&lt; Rp&nbsp;500 thousand</span></span></div>
+            <div class="hr__trek"><i class="bar-h" style="--min:0;--max:500"></i></div>
+          </div>
+          <div class="hr">
+            <div class="hr__kepala"><b>Handy Talky</b><span><span lang="id">Rp&nbsp;120–300 ribu</span><span lang="en">Rp&nbsp;120–300 thousand</span></span></div>
+            <div class="hr__trek"><i class="bar-h" style="--min:120;--max:300"></i></div>
+          </div>
+          <div class="hr">
+            <div class="hr__kepala"><b>Meshtastic</b><span><span lang="id">Rp&nbsp;1–2 juta</span><span lang="en">Rp&nbsp;1–2 million</span></span></div>
+            <div class="hr__trek"><i class="bar-h" style="--min:1000;--max:2000"></i></div>
+          </div>
+        </div>
+        <div class="sumbu" aria-hidden="true">
+          <span style="left:0%">0</span>
+          <span style="left:25%"><span lang="id">500 rb</span><span lang="en">500K</span></span>
+          <span style="left:50%"><span lang="id">1 jt</span><span lang="en">1M</span></span>
+          <span style="left:75%"><span lang="id">1,5 jt</span><span lang="en">1.5M</span></span>
+          <span style="left:100%"><span lang="id">2 jt</span><span lang="en">2M</span></span>
+        </div>
+        <p class="harga__ket"><span lang="id">Rupiah per unit, skala 0 – 2 juta.</span><span lang="en">Rupiah per unit, scale 0 – 2 million.</span></p>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ══════ ajakan ══════ -->
+  <section class="ajak" aria-labelledby="ajak-judul">
+    <h2 id="ajak-judul"><span lang="id">Lihat langsung</span><span lang="en">See it for yourself</span></h2>
+    <div class="ajak__baris">
+      <a class="link link--utama" href="../#dashboard" data-href-en="../en/#dashboard">
+        <span><span lang="id">Demo dashboard &amp; aplikasi mobile</span><span lang="en">Dashboard &amp; mobile app demo</span>
+          <small><span lang="id">Pemantauan posisi korban &amp; SAR real-time</span><span lang="en">Real-time victim &amp; SAR position monitoring</span></small></span>
+        <span class="go" aria-hidden="true"><svg><use href="#i-go"/></svg></span>
+      </a>
+      <a class="link" href="../#pengujian" data-href-en="../en/#pengujian">
+        <span><span lang="id">Data uji lapangan</span><span lang="en">Field test data</span>
+          <small><span lang="id">8 sesi pengujian · 754 titik ukur</span><span lang="en">8 test sessions · 754 measurements</span></small></span>
+        <span class="go" aria-hidden="true"><svg><use href="#i-go"/></svg></span>
+      </a>
+      <a class="link" href="../" data-href-en="../en/">
+        <span><span lang="id">Situs resmi POINTRESCUE</span><span lang="en">Official POINTRESCUE website</span>
+          <small><span lang="id">Model 3D interaktif · dashboard · data uji</span><span lang="en">Interactive 3D model · dashboard · field data</span></small></span>
+        <span class="go" aria-hidden="true"><svg><use href="#i-go"/></svg></span>
+      </a>
+    </div>
+    <p class="kaki">
+      <span lang="id">Perbandingan ini hanya pada tiga kriteria di atas dan bukan penilaian menyeluruh atas tiap alat. Harga adalah perkiraan per unit dan dapat berbeda menurut merek, tempat membeli, dan waktu. Nama dan merek pembanding milik pemiliknya masing-masing; POINTRESCUE tidak berafiliasi dengan mereka.</span>
+      <span lang="en">This comparison covers only the three criteria above and is not a full assessment of each tool. Prices are estimates per unit and can differ by brand, shop and time. The names and brands of the other tools belong to their owners; POINTRESCUE is not affiliated with them.</span>
+    </p>
+    <p class="foot">
+      <span lang="id">PKM-KC 2026 · Fakultas Ilmu Komputer<br>Universitas Brawijaya</span>
+      <span lang="en">PKM-KC 2026 · Faculty of Computer Science<br>Universitas Brawijaya</span>
+    </p>
+  </section>
+
+</div>
+</main>
+
+<div class="tape tape--bawah" aria-hidden="true"><span class="a"></span><span class="b"></span></div>
+
+<script>
+(function () {
+  /* ── bahasa: ?lang= bila ada, kalau tidak pilihan terakhir pengunjung (kunci yang sama dengan
+        halaman tautan), kalau tidak ada ikut bahasa peramban. Tautan ke situs mengikuti bahasanya
+        (../ atau ../en/). Tanpa JavaScript halaman tetap utuh, berbahasa Indonesia. ───────── */
+  var KEY = 'pr-link-lang', html = document.documentElement;
+  var JUDUL = { id: 'Komparasi Sistem — POINTRESCUE', en: 'System Comparison — POINTRESCUE' };
+  function baca() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+  function simpan(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+  function pasang(l) {
+    html.lang = l;
+    document.title = JUDUL[l];
+    [].forEach.call(document.querySelectorAll('[data-lang]'), function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === l));
+    });
+    [].forEach.call(document.querySelectorAll('img[data-alt-en]'), function (im) {
+      if (!im.getAttribute('data-alt-id')) im.setAttribute('data-alt-id', im.getAttribute('alt'));
+      im.setAttribute('alt', im.getAttribute(l === 'en' ? 'data-alt-en' : 'data-alt-id'));
+    });
+    [].forEach.call(document.querySelectorAll('a[data-href-en]'), function (a) {
+      if (!a.getAttribute('data-href-id')) a.setAttribute('data-href-id', a.getAttribute('href'));
+      a.setAttribute('href', a.getAttribute(l === 'en' ? 'data-href-en' : 'data-href-id'));
+    });
+  }
+  var p = null;
+  try { p = new URLSearchParams(location.search).get('lang'); } catch (e) {}
+  var awal = (p === 'id' || p === 'en') ? p : baca();
+  if (p === 'id' || p === 'en') simpan(p);
+  if (awal !== 'id' && awal !== 'en') awal = /^en/i.test(navigator.language || '') ? 'en' : 'id';
+  pasang(awal);
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-lang]');
+    if (!b) return;
+    var l = b.getAttribute('data-lang');
+    simpan(l); pasang(l);
+    try {                                   /* alamat di bilah peramban ikut, supaya yang dibagikan sesuai bahasanya */
+      var u = new URL(location.href); u.searchParams.set('lang', l);
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    } catch (err) {}
+  });
+})();
+</script>
+</body>
+</html>

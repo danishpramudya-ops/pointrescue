@@ -343,10 +343,18 @@ KAMUS = {
     "kesiapsiagaan, energi, respons cepat": "readiness, energy, rapid response",
     "PKM-KC 2026 · FILKOM Universitas Brawijaya":
         "PKM-KC 2026 · Faculty of Computer Science, Universitas Brawijaya",
+
+    # ── jembatan ke halaman komparasi (akhir bagian 01) dan tautan di footer ──
+    "Handy Talky dan Meshtastic sudah ada. Lalu apa bedanya Point Rescue?":
+        "Handy Talky and Meshtastic already exist. So what sets Point Rescue apart?",
+    "Lihat komparasi sistem": "See the system comparison",
+    "Komparasi Sistem": "System Comparison",
 }
 
 # atribut alt / title / aria-label
 ATRIBUT = {
+    # halaman komparasi dua bahasa memilih bahasa lewat ?lang= — tautan dari halaman Inggris minta yang Inggris
+    "komparasi/?lang=id": "komparasi/?lang=en",
     "Perangkat Point Rescue digenggam, antena terpasang":
         "A Point Rescue unit held in the hand, antenna fitted",
     "Model 3D Point Rescue berputar": "The Point Rescue 3D model, rotating",

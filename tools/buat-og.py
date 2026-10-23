@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Render tools/og-card.html menjadi assets/img/og-card.jpg (1200 × 630).
+"""Render kartu pratinjau tautan (1200 × 630) dari templat HTML-nya di tools/:
 
-Gambar itu yang tampil sebagai pratinjau saat tautan situs atau halaman tautan resmi
-dibagikan di WhatsApp, Instagram, LinkedIn, atau Telegram — dirujuk lewat <meta
-property="og:image"> di index.html dan link/index.html (alamatnya mutlak, jadi ikut
-diganti kalau situs pindah alamat).
+    tools/og-card.html       →  assets/img/og-card.jpg        situs utama dan halaman tautan
+    tools/og-komparasi.html  →  assets/img/og-komparasi.jpg   halaman komparasi
+
+Gambar itu yang tampil sebagai pratinjau saat tautan dibagikan di WhatsApp, Instagram,
+LinkedIn, atau Telegram — dirujuk lewat <meta property="og:image"> di index.html,
+link/index.html, dan komparasi/index.html (alamatnya mutlak, jadi ikut diganti kalau
+situs pindah alamat).
 
     pip install playwright        # driver-nya saja; Chrome yang terpasang dipakai
     python tools/buat-og.py
@@ -23,8 +26,7 @@ except ImportError:
     sys.exit("Butuh Playwright:  pip install playwright")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SUMBER = os.path.join(ROOT, "tools", "og-card.html")
-HASIL = os.path.join(ROOT, "assets", "img", "og-card.jpg")
+KARTU = [("og-card.html", "og-card.jpg"), ("og-komparasi.html", "og-komparasi.jpg")]
 
 
 def main():
@@ -36,16 +38,19 @@ def main():
     with sync_playwright() as p:
         b = p.chromium.launch(channel="chrome", headless=True, args=["--force-color-profile=srgb"])
         page = b.new_page(viewport={"width": 1200, "height": 630}, device_scale_factor=1)
-        page.goto("file:///" + SUMBER.replace("\\", "/"), wait_until="networkidle")
-        page.evaluate("document.fonts.ready")
-        ok = page.evaluate("document.fonts.check('900 40px Archivo')")
-        if not ok:
-            b.close()
-            sys.exit("Font Archivo tidak termuat (offline?) — kartu tidak disimpan.")
-        page.wait_for_timeout(400)
-        page.screenshot(path=HASIL, type="jpeg", quality=88, clip={"x": 0, "y": 0, "width": 1200, "height": 630})
+        for sumber, hasil in KARTU:
+            jalur = os.path.join(ROOT, "tools", sumber)
+            keluar = os.path.join(ROOT, "assets", "img", hasil)
+            page.goto("file:///" + jalur.replace("\\", "/"), wait_until="networkidle")
+            page.evaluate("document.fonts.ready")
+            ok = page.evaluate("document.fonts.check('900 40px Archivo')")
+            if not ok:
+                b.close()
+                sys.exit("Font Archivo tidak termuat (offline?) — kartu tidak disimpan.")
+            page.wait_for_timeout(400)
+            page.screenshot(path=keluar, type="jpeg", quality=88, clip={"x": 0, "y": 0, "width": 1200, "height": 630})
+            print("tersimpan: %s  (%.0f KB)" % (keluar, os.path.getsize(keluar) / 1024))
         b.close()
-    print("tersimpan: %s  (%.0f KB)" % (HASIL, os.path.getsize(HASIL) / 1024))
 
 
 if __name__ == "__main__":

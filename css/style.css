@@ -604,6 +604,9 @@ html[data-motion="off"] .fc::before{ transition:none; }
   font-family:var(--f-disp); font-weight:600; font-variation-settings:"wdth" 92;
   font-size:clamp(20px,2.6vw,32px); line-height:1.32; max-width:30ch; color:rgba(230,242,255,.9); }
 .quote b{ color:var(--blue-lt); font-weight:800; }
+/* jembatan ke halaman komparasi, tepat setelah kutipan penutup bagian 01 */
+.bridge{ display:flex; align-items:center; flex-wrap:wrap; gap:16px 28px; margin:30px 0 0; }
+.bridge p{ margin:0; max-width:38ch; font:500 17px/1.5 var(--f-body); color:rgba(215,232,250,.78); }
 
 /* ═══ 02 GAGASAN — track horizontal ══════════════════════════════════════ */
 .track{ position:relative; height:420vh; color:var(--ink);
@@ -1106,3 +1109,6 @@ html.has-tilt .team figure:hover .team__kartu::after{ opacity:1; }
 .foot__brand b{ display:block; font-family:var(--f-disp); font-weight:800; font-variation-settings:"wdth" 86; font-size:16px; letter-spacing:.04em; }
 .foot__brand span{ display:block; font:500 11px/1.5 var(--f-mono); color:rgba(200,222,255,.45); }
 .foot__ig{ margin-left:auto; font:700 12px/1 var(--f-mono); letter-spacing:.1em; text-decoration:none; color:var(--blue); }
+.foot__lnk{ margin-left:auto; font:700 12px/1 var(--f-mono); letter-spacing:.1em; text-decoration:none; color:rgba(200,222,255,.72); transition:color .2s; }
+.foot__lnk:hover{ color:#fff; }
+.foot__lnk + .foot__ig{ margin-left:0; }

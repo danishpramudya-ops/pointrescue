@@ -42,6 +42,7 @@ proto/             mesin 3D milik tim (three-d-stage, assembly-model, parts/)
 proto/hero.html    sorotan 3D di hero — berputar sendiri, tidak bisa disentuh
 en/index.html      versi bahasa Inggris, dibangkitkan tools/buat-en.py
 link/              halaman tautan resmi (pengganti Linktree), dua bahasa
+komparasi/         halaman "Komparasi Sistem" (Point Rescue · Handy Talky · Meshtastic), dua bahasa
 qr/                kode QR resmi — situs + halaman tautan; SVG untuk cetak
 dash/              dashboard operator asli + shim.js + replay.json
 assets/photo/      foto prototipe (sudah di-grade ke arah biru)
@@ -1124,6 +1125,46 @@ berhenti. Pakai varian `-polos` (tanpa logo) bila QR dicetak lebih kecil dari ±
 **Kartu pratinjau** (`assets/img/og-card.jpg`, 1200 × 630) dirender dari `tools/og-card.html`: navy dalam yang
 sama dengan situs, foto prototipe asli, logo, dan police line. `og:description` halaman Inggris diterjemahkan
 lewat kamus yang sama dengan isi halaman.
+
+## Halaman komparasi (`komparasi/`)
+
+Permintaan klien: infografis "Komparasi Sistem" (Point Rescue, Handy Talky, Meshtastic pada tiga kriteria:
+Pull & Play, Dashboard Pencarian, Hemat Biaya) dijadikan halaman tersendiri. Dibangun ulang sebagai HTML,
+bukan gambar infografisnya ditempel, supaya bisa dibaca pembaca layar, mengikuti lebar layar, dan punya
+versi Inggris.
+
+**Satu berkas, dua bahasa.** Seperti `link/`: tiap teks punya `<span lang="id">` dan `<span lang="en">`.
+Bahasa dipilih lewat `?lang=id|en`, kalau tidak ada lewat pilihan terakhir pengunjung (kunci
+`localStorage` yang sama dengan halaman tautan), kalau tidak ada ikut bahasa peramban; tanpa JavaScript
+halaman berbahasa Indonesia. Tautan dari `index.html` membawa `?lang=id`; `tools/buat-en.py` mengubahnya jadi
+`../komparasi/?lang=en` di `en/index.html` (lihat `komparasi/` di regex jalur dan satu entri `ATRIBUT`).
+
+**Tabelnya tabel sungguhan** (`<table>` dengan `<th scope>`), bukan susunan `div`. Di ponsel tiap baris
+menjadi kartu — `display:block` menghapus semantik tabel di sebagian peramban, jadi `role="table|row|cell|…"`
+ditulis eksplisit. Tanda ✓/✗ punya teks tersembunyi ("Ya"/"Tidak") untuk pembaca layar; jumlah ✓ per
+kolom ("Kriteria terpenuhi") dihitung dari tabel itu, bukan angka terpisah.
+
+**Gambar yang dipakai semuanya milik tim**: render 3D unit (`assets/img/komparasi-unit.png`, dari
+`tools/render/poster-berdiri.png`), tangkapan layar dashboard asli (`assets/img/komparasi-dashboard.jpg`,
+atribusi OpenStreetMap ikut terlihat di petanya), dan layar aplikasi asli (`assets/app/app-2.jpg`).
+Handy Talky dan Meshtastic sengaja digambar sebagai piktogram garis, bukan foto: foto di infografis aslinya
+tidak jelas lisensinya. Kalau tim ingin foto asli, pakai yang tim punya haknya atau yang berlisensi bebas
+(Wikimedia Commons) dan catat sumbernya seperti blok "Sumber gambar latar" di bagian 01.
+
+**Angka harga** (< Rp 500 ribu · Rp 120–300 ribu · Rp 1–2 juta per unit) berasal dari infografis klien dan
+BELUM ada di dokumen mana pun di repo ini. Skrip presentasi PKP2 menyebut Meshtastic "Rp1–3 juta", bukan
+"1–2 juta" — samakan salah satunya sebelum tampil. Mengubah harga: ganti teks di tabel, di grafik, DAN
+variabel `--min` / `--max` pada batang grafik (satuan ribu rupiah; sumbu 0 … `--skala`).
+
+**Teks pembanding hanya memuat yang ada di materi tim** (artikel Kompasiana dan skrip PKP2): mekanisme
+reed switch + magnet pada tali penarik, dashboard posko yang berjalan tanpa internet, Handy Talky "hanya
+suara", Meshtastic "dirancang untuk penggunaan umum". Catatan kaki halaman menyebut bahwa perbandingannya
+hanya pada tiga kriteria dan bahwa merek pembanding milik pemiliknya.
+
+**Pintu masuk**: jembatan di akhir bagian 01 (`.bridge` — "Handy Talky dan Meshtastic sudah ada. Lalu apa
+bedanya Point Rescue?"), tautan di footer, dan satu baris di halaman tautan. Sengaja TIDAK dimasukkan ke
+`.nav__links`: `js/scroll.js` memanggil `querySelector(href)` untuk tiap tautan di sana, dan `komparasi/`
+bukan selektor yang sah — satu tautan non-hash akan mematikan seluruh mesin gulir.
 
 ## Keamanan
 
