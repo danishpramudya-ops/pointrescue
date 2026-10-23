@@ -156,6 +156,8 @@ em{ font-style:normal; color:var(--orange); }
   background:linear-gradient(160deg, rgba(47,127,224,.28), rgba(47,127,224,.1)); box-shadow:inset 0 0 0 1px rgba(111,176,255,.22); }
 .btn__i svg{ width:24px; height:24px; fill:currentColor; }
 .btn__i--ig{ color:#fff; background:linear-gradient(45deg,#f58529 0%,#dd2a7b 45%,#8134af 75%,#515bd4 100%); box-shadow:0 8px 18px -10px rgba(221,42,123,.9); }
+.btn__i--yt{ color:#fff; background:#f00; box-shadow:0 8px 18px -10px rgba(255,0,0,.85); }
+.btn__i--yt svg{ width:28px; height:28px; }
 .btn b{ display:block; font:700 17px/1.22 var(--f-body); letter-spacing:-.005em; color:#fff; text-wrap:balance; }
 .btn small{ display:block; margin-top:3px; font:400 13px/1.4 var(--f-body); color:rgba(200,222,255,.72); text-wrap:balance; }
 .btn small.akun{ display:flex; align-items:center; gap:7px; font:500 13.5px/1.4 var(--f-mono); letter-spacing:0; color:rgba(235,244,255,.95); }
@@ -198,12 +200,12 @@ html[lang="id"] [lang="en"], html[lang="en"] [lang="id"]{ display:none; }
 </head>
 <body>
 
-<!-- ikon: Material Design Icons (Apache 2.0) + glif Instagram yang sama dengan situs -->
+<!-- ikon: Material Design Icons (Apache 2.0) + glif Instagram yang sama dengan situs + glif YouTube (Simple Icons, CC0) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
     <symbol id="i-web" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.93 6h-2.95a15.65 15.65 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14a8.2 8.2 0 0 1 0-4h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.99 7.99 0 0 1 5.08 16zm2.95-8H5.08a7.99 7.99 0 0 1 4.33-3.56A15.65 15.65 0 0 0 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.1.65.16 1.32.16 2s-.06 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38a8.2 8.2 0 0 1 0 4h-3.38z"/></symbol>
     <symbol id="i-ig" viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.89 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07c-4.36.2-6.78 2.62-6.98 6.98C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></symbol>
-    <symbol id="i-film" viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></symbol>
+    <symbol id="i-yt" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></symbol>
     <symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/></symbol>
     <symbol id="i-demo" viewBox="0 0 24 24"><path d="M3 4h18a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-7v2h3v2H7v-2h3v-2H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm1 2v9h16V6H4z"/></symbol>
     <symbol id="i-tim" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></symbol>
@@ -265,8 +267,8 @@ html[lang="id"] [lang="en"], html[lang="en"] [lang="id"]{ display:none; }
         </a>
       </li>
       <li style="--i:2">
-        <a class="btn" href="../assets/video/pkm-point-rescue.mp4">
-          <span class="btn__i"><svg aria-hidden="true"><use href="#i-film"/></svg></span>
+        <a class="btn" href="https://youtu.be/HkM_-zHAwXQ" target="_blank" rel="noopener noreferrer">
+          <span class="btn__i btn__i--yt"><svg aria-hidden="true"><use href="#i-yt"/></svg></span>
           <span>
             <b><span lang="id">Video Dokumentasi PKM-KC</span><span lang="en">PKM-KC Documentation Video</span></b>
             <small><span lang="id">Dari permasalahan hingga hasil uji&nbsp;· 3&nbsp;mnt&nbsp;28&nbsp;dtk</span><span lang="en">Problem to results&nbsp;· 3&nbsp;min&nbsp;28&nbsp;s&nbsp;· in Indonesian</span></small>

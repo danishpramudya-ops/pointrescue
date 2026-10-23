@@ -1126,6 +1126,11 @@ Menambah tautan: salin satu `<li>` di dalam `<ul class="chain">`, ganti `href`, 
 Sentuhan pada tombol memancarkan cincin dari titik jari dan bergetar 8 ms di ponsel yang mendukung. Seluruh
 animasi mati di `prefers-reduced-motion`, dan halaman tetap utuh tanpa JavaScript (berbahasa Indonesia).
 
+Baris video mengarah ke YouTube resmi tim (kanal @PointRescue, `youtu.be/HkM_-zHAwXQ`). Durasinya 3:28,
+sama dengan film di bagian 01, jadi keterangan "3 mnt 28 dtk" tetap benar — kalau videonya diganti,
+periksa lagi angka itu. Tautannya membuka tab baru (seperti Instagram, karena keluar dari situs);
+ikonnya glif YouTube dari Simple Icons (CC0).
+
 Sempat dibuat juga versi "poster lapangan" (cobalt, tipografi raksasa, lingkup radar) — tim memilih yang navy
 karena poster terasa terlalu ramai. Versi poster masih ada di riwayat git (commit `1bfbbe8`).
 
