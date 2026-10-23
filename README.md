@@ -1101,35 +1101,29 @@ Kalau suatu saat situs pindah: (1) ganti canonical dan `og:*` di dua berkas tadi
 halaman pengalih di alamat lama supaya QR yang telanjur tercetak tetap sampai. GitHub Pages tidak
 mengalihkan sendiri saat repo diganti nama.
 
-**Halaman `link/`** — satu berkas HTML tanpa pustaka dan tanpa pelacak, dirancang sebagai **poster
-lapangan**, bukan deretan kartu: latar cobalt rata, judul raksasa ("Signal Lost." berongga = hilang,
-"Lives Found." padat = ketemu) dengan kursor pembidik yang mengunci kata *Found*, lingkup radar berisi
-**model 3D unit yang asli** (`proto/hero.html` dalam iframe; dimuat setelah halaman tampil, dan dilewati
-bila gerak dikurangi atau penghemat data menyala), dial frekuensi 433 MHz yang "disetel" saat dibuka,
-police line yang melintang, dan tag bernomor dengan angka stensil. Aturan gayanya: **tanpa kaca buram,
-tanpa pendar gradien, tanpa sudut membulat** — hanya blok warna rata, garis tebal, dan bayangan keras satu
-arah. Semua angka di halaman itu nyata: 433 MHz dan SF10 · BW 125 kHz · CR 4/5 (parameter radio
-perangkat), 1.891 m (tautan langsung terjauh di data uji), 3:28, 754 titik ukur, dan 6 orang.
+**Halaman `link/`** — satu berkas HTML tanpa pustaka dan tanpa pelacak, bergaya navy dalam yang sama dengan
+situs: bidang radar dengan **model 3D unit yang asli** berputar di tengahnya (`proto/hero.html` dalam iframe;
+dimuat setelah halaman tampil, dan dilewati bila gerak dikurangi atau penghemat data menyala), logo + nama di
+bawahnya, lalu rantai tombol kaca dengan sebutir paket oranye yang merayap di sela-selanya (hanya terlihat di
+celah antar tombol karena tombolnya buram). Keterangan tombol ditulis sebagai kalimat biasa, bukan huruf kapital
+mono, supaya mudah dibaca. Sengaja tenang: satu titik fokus (unit 3D), satu tombol utama.
 
-Menambah tautan: salin satu `<li>` di dalam `<ol class="rows">`, ganti `href`, nomor, dan dua teks
-bahasanya (`<span lang="id">` / `<span lang="en">`); angka kecil di kanan (`.row__m`) opsional. Tautan ke
-situs mengikuti bahasa yang dipilih lewat `data-href-en`. Ketuk judul = kirim sinyal (cincin memancar dari
-titik jari); tiap tag memancarkan cincin yang sama dan bergetar 8 ms di ponsel yang mendukung; di layar
-berpointer lingkup dan judul bergeser berlawanan (paralaks halus). Seluruh animasi mati di
-`prefers-reduced-motion`, dan halaman tetap utuh tanpa JavaScript (berbahasa Indonesia).
+Menambah tautan: salin satu `<li>` di dalam `<ul class="chain">`, ganti `href`, ikon, dan dua teks bahasanya
+(`<span lang="id">` / `<span lang="en">`). Tautan ke situs mengikuti bahasa yang dipilih lewat `data-href-en`.
+Sentuhan pada tombol memancarkan cincin dari titik jari dan bergetar 8 ms di ponsel yang mendukung. Seluruh
+animasi mati di `prefers-reduced-motion`, dan halaman tetap utuh tanpa JavaScript (berbahasa Indonesia).
 
-Huruf: Archivo (variabel), JetBrains Mono, dan Big Shoulders Stencil Display — yang terakhir hanya subset
-`0–9 : /` lewat parameter `text=` Google Fonts, beberapa KB saja, khusus untuk nomor stensil.
+Sempat dibuat juga versi "poster lapangan" (cobalt, tipografi raksasa, lingkup radar) — tim memilih yang navy
+karena poster terasa terlalu ramai. Versi poster masih ada di riwayat git (commit `1bfbbe8`).
 
 **QR** di `qr/` (SVG untuk cetak, PNG untuk slide): koreksi galat tingkat H, logo menutup < 4% area,
 modul navy `#093261` di atas putih. Setiap berkas diuji dibaca ulang oleh ZXing sebelum disimpan —
 ukuran asli, diperkecil sampai 150 px, diburamkan, JPEG kasar, dan diputar; satu saja gagal, skrip
 berhenti. Pakai varian `-polos` (tanpa logo) bila QR dicetak lebih kecil dari ±2,5 cm.
 
-**Kartu pratinjau** (`assets/img/og-card.jpg`, 1200 × 630) dirender dari `tools/og-card.html` dengan bahasa
-visual yang sama dengan `link/`: poster cobalt, judul raksasa, police line, dan **foto prototipe asli** di
-dalam lingkup radar. `og:description` halaman Inggris diterjemahkan lewat kamus yang sama dengan isi
-halaman.
+**Kartu pratinjau** (`assets/img/og-card.jpg`, 1200 × 630) dirender dari `tools/og-card.html`: navy dalam yang
+sama dengan situs, foto prototipe asli, logo, dan police line. `og:description` halaman Inggris diterjemahkan
+lewat kamus yang sama dengan isi halaman.
 
 ## Keamanan
 
