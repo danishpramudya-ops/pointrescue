@@ -52,6 +52,9 @@ assets/casing.obj  dipakai parts/casing.js (jalurnya relatif ke halaman)
 vendor/three/      Three.js r184
 tools/qa-tangkap.py  tangkap layar tiap bagian lewat Chrome headless
 tools/render-3d.py   PNG transparan model 3D — bahan infografis & IG
+tools/pembanding-3d.html   model 3D generik Handy Talky + node mesh (halaman komparasi)
+tools/render-pembanding.py PNG transparan kedua pembanding itu, dari halaman di atas
+tools/og-komparasi.html    templat kartu pratinjau halaman komparasi
 tools/kontur.py      bangkitkan garis kontur SVG untuk latar seksi
 tools/narasi.py      (arsip) narasi film lama — tak dipakai sejak filmnya diganti
 tools/buat-en.py     bangun en/index.html dari index.html + kamus-en.py
@@ -1144,12 +1147,18 @@ menjadi kartu — `display:block` menghapus semantik tabel di sebagian peramban,
 ditulis eksplisit. Tanda ✓/✗ punya teks tersembunyi ("Ya"/"Tidak") untuk pembaca layar; jumlah ✓ per
 kolom ("Kriteria terpenuhi") dihitung dari tabel itu, bukan angka terpisah.
 
-**Gambar yang dipakai semuanya milik tim**: render 3D unit (`assets/img/komparasi-unit.png`, dari
-`tools/render/poster-berdiri.png`), tangkapan layar dashboard asli (`assets/img/komparasi-dashboard.jpg`,
+**Gambar yang dipakai semuanya milik tim atau buatan sendiri**: render 3D unit (`assets/img/komparasi-unit.png`,
+dari `tools/render/poster-berdiri.png`), tangkapan layar dashboard asli (`assets/img/komparasi-dashboard.jpg`,
 atribusi OpenStreetMap ikut terlihat di petanya), dan layar aplikasi asli (`assets/app/app-2.jpg`).
-Handy Talky dan Meshtastic sengaja digambar sebagai piktogram garis, bukan foto: foto di infografis aslinya
-tidak jelas lisensinya. Kalau tim ingin foto asli, pakai yang tim punya haknya atau yang berlisensi bebas
-(Wikimedia Commons) dan catat sumbernya seperti blok "Sumber gambar latar" di bagian 01.
+
+**Handy Talky dan Meshtastic adalah model 3D GENERIK buatan sendiri**, bukan foto dan bukan tiruan produk:
+dibangun dari kotak membulat dan silinder di `tools/pembanding-3d.html` (tanpa logo, tanpa tulisan, ukuran
+hanya perkiraan jenisnya), dirender `python tools/render-pembanding.py` (butuh `python serve.py` di port 8130)
+oleh mesin 3D tim yang sama dengan render Point Rescue — cahaya dan kameranya identik, jadi ketiganya
+serumpun. Foto di infografis aslinya tidak jelas lisensinya, maka tidak dipakai; halaman menyebut gambarnya
+"ilustrasi 3D generik". Kalau tim ingin foto asli, pakai yang tim punya haknya atau yang berlisensi bebas
+(Wikimedia Commons) dan catat sumbernya seperti blok "Sumber gambar latar" di bagian 01. Mengubah pose atau
+warna: parameter `--qs "rz=-0.5&ry=0.4"` pada skrip render, atau palet `W` di halaman modelnya.
 
 **Angka harga** (< Rp 500 ribu · Rp 120–300 ribu · Rp 1–2 juta per unit) berasal dari infografis klien dan
 BELUM ada di dokumen mana pun di repo ini. Skrip presentasi PKP2 menyebut Meshtastic "Rp1–3 juta", bukan
