@@ -75,7 +75,7 @@ KAMUS = {
     "Banjir Aqqala dari udara": "Aqqala flood from the air",
 
     # ── 02 gagasan ────────────────────────────────────────────────────────
-    "02 — Gagasan": "02 — Approach",
+    "03 — Gagasan": "03 — Approach",
     "Jaringan yang dibawa sendiri oleh tim.": "A network the team carries in with them.",
     "Tanpa operator": "No carrier",
     "Begitu dinyalakan, tiap unit langsung membentuk jaringan radio mandiri bersama unit lain di sekitarnya. Tidak ada kartu SIM, tidak ada pendaftaran, tidak ada server. Setiap unit sekaligus pengirim, penerima, dan penerus pesan.":
@@ -100,7 +100,7 @@ KAMUS = {
     "Pembuktian tautan berjenjang": "Tiered link proof",
 
     # ── 03 cara kerja ─────────────────────────────────────────────────────
-    "03 — Cara kerja": "03 — How it works",
+    "04 — Cara kerja": "04 — How it works",
     "Tiga peran, satu jaringan.": "Three roles, one network.",
     "Perangkat kerasnya sama; yang membedakan hanya peran yang diberikan firmware. Ketiganya bicara dalam protokol identik, jadi setiap unit bisa menjadi penerus bagi unit lain tanpa pengaturan tambahan.":
         "The hardware is identical; the only difference is the role the firmware gives it. All three speak the same protocol, so any unit can relay for any other with no extra configuration.",
@@ -134,7 +134,7 @@ KAMUS = {
         "Each node records the last sequence number from every sender. A copy that arrives later by a different path is discarded.",
 
     # ── 04 anatomi ────────────────────────────────────────────────────────
-    "04 — Anatomi": "04 — Anatomy",
+    "05 — Anatomi": "05 — Anatomy",
     "Bongkar sendiri, lapis demi lapis.": "Take it apart yourself, layer by layer.",
     "Model di bawah adalah rakitan lengkap 17 part — casing dari berkas OBJ hasil cetak, part lainnya dimodelkan sesuai ukuran aslinya. Jalur tembaga PCB sengaja tidak ditampilkan.":
         "The model below is the complete 17-part assembly — the case from the printed OBJ file, every other part modelled at its real size. The PCB's copper routing is deliberately left out.",
@@ -158,7 +158,7 @@ KAMUS = {
     "Menyiapkan model 3D — 17 part": "Preparing the 3D model — 17 parts",
 
     # ── 05 prototipe ──────────────────────────────────────────────────────
-    "05 — Prototipe": "05 — Prototype",
+    "06 — Prototipe": "06 — Prototype",
     "Bukan render.": "Not a render.",
     "Sudah berdiri di meja.": "It already sits on the bench.",
     "Unit yang sama inilah yang dibawa berjalan menjauhi gateway sampai sinyalnya habis.":
@@ -171,7 +171,7 @@ KAMUS = {
         "Small enough to hold, or to clip onto a vest",
 
     # ── 06 dashboard ──────────────────────────────────────────────────────
-    "06 — Posko": "06 — Command post",
+    "07 — Posko": "07 — Command post",
     "Seluruh jaringan, dalam satu layar.": "The whole network, on one screen.",
     "Node gateway menuangkan tiap paket yang terdengar ke komputer posko. Konsol di bawah ini berjalan dengan data hasil rekaman":
         "The gateway node pours every packet it hears into the post's computer. The console below is running on recorded data from",
@@ -190,7 +190,7 @@ KAMUS = {
         "POINTRESCUE Gateway Dashboard · demonstration mode",
 
     # ── 07 pengujian ──────────────────────────────────────────────────────
-    "07 — Pengujian": "07 — Field data",
+    "08 — Pengujian": "08 — Field data",
     "Jarak terjauh per sesi, dipisah antara tautan langsung dan lewat relai":
         "Farthest distance per session, split between direct links and relayed links",
     "Delapan sesi, satu berkas rekaman.": "Eight sessions, one recording.",
@@ -270,7 +270,7 @@ KAMUS = {
         ". This page presents them; it does not recompute them.",
 
     # ── 08 aplikasi ───────────────────────────────────────────────────────
-    "08 — Genggam": "08 — In hand",
+    "09 — Genggam": "09 — In hand",
     "Aplikasi Point Rescue berjalan langsung di halaman ini, mode demo":
         "The Point Rescue app running live on this page, demo mode",
     "Posko yang ikut berjalan.": "A command post that walks with you.",
@@ -299,7 +299,7 @@ KAMUS = {
         "web build from the same Flutter code · demo mode, no node attached",
 
     # ── 09 HKI ────────────────────────────────────────────────────────────
-    "09 — Kekayaan intelektual": "09 — Intellectual property",
+    "10 — Kekayaan intelektual": "10 — Intellectual property",
     "Terdokumentasi sampai ke nomor barisnya.": "Documented down to the line number.",
     "Dua ciptaan Point Rescue disusun jadi dokumen pendaftaran HKI. Seluruh kutipan kode di dalamnya dibangkitkan langsung dari program yang didaftarkan, jadi dokumennya tidak mungkin melenceng dari perangkat lunaknya.":
         "Two Point Rescue works were assembled into copyright registration documents. Every code excerpt inside them is generated directly from the registered program, so the document cannot drift away from the software it describes.",
@@ -319,7 +319,7 @@ KAMUS = {
     "18.581 baris bernomor": "18,581 numbered lines",
 
     # ── 10 tim & penutup ──────────────────────────────────────────────────
-    "10 — Tim": "10 — Team",
+    "11 — Tim": "11 — Team",
     "PKM-KC Universitas Brawijaya 2026.": "PKM-KC Universitas Brawijaya 2026.",
     "Profil FILKOM UB": "FILKOM UB profile",
     "Ketua tim": "Team lead",
@@ -344,17 +344,78 @@ KAMUS = {
     "PKM-KC 2026 · FILKOM Universitas Brawijaya":
         "PKM-KC 2026 · Faculty of Computer Science, Universitas Brawijaya",
 
-    # ── jembatan ke halaman komparasi (akhir bagian 01) dan tautan di footer ──
-    "Handy Talky dan Meshtastic sudah ada. Lalu apa bedanya Point Rescue?":
-        "Handy Talky and Meshtastic already exist. So what sets Point Rescue apart?",
-    "Lihat komparasi sistem": "See the system comparison",
+    # ── 02 komparasi (tabel tiga alat) + tautan footer ───────────────────
+    # Kunci pendek yang rawan bentrok ("Ya", "Tidak", "Ada", "Alat", "Aktif") ditulis
+    # beserta tag pembungkusnya: pencocokan dilakukan di HTML mentah, jadi tag ikut
+    # jadi bagian kunci dan tidak ada risiko menimpa kata yang sama di tempat lain.
     "Komparasi Sistem": "System Comparison",
+    '<a href="#komparasi">Komparasi</a>': '<a href="#komparasi">Comparison</a>',
+    "02 — Komparasi": "02 — Comparison",
+    "Tiga alat, tiga hal yang menentukan.": "Three tools, three things that decide it.",
+    "Handy Talky dan Meshtastic sudah ada. Begini perbandingannya dengan Point Rescue pada tiga hal yang paling menentukan saat mencari korban di wilayah tanpa sinyal.":
+        "Handy Talky and Meshtastic already exist. Here is how they compare with Point Rescue on the three things that matter most when searching for victims where there is no signal.",
+    "Tabel perbandingan tiga alat pada tiga kriteria": "Comparison table of three tools on three criteria",
+    '<span class="vs__alat">Alat</span><span class="vs__fitur">Fitur</span>': '<span class="vs__alat">Tool</span><span class="vs__fitur">Feature</span>',
+    "Sistem kami": "Our system",
+    "Langsung aktif tanpa menu?": "Switches on with no menu?",
+    "Reed switch magnetik": "Magnetic reed switch",
+    "Tarik, langsung aktif": "Pull, and it is on",
+    "Saklar on-off biasa": "Ordinary on/off switch",
+    "Dashboard Pencarian": "Search Dashboard",
+    "Posisi korban terlihat di peta?": "Victim positions shown on a map?",
+    "Tracker visual koordinat GPS": "Visual tracker of GPS coordinates",
+    "Peta taktis dengan jejak gerak": "Tactical map with movement trails",
+    "Lihat dashboard-nya&nbsp;↓": "See the dashboard&nbsp;↓",
+    "Komunikasi radio saja": "Radio communication only",
+    "Posisi disebut manual lewat suara": "Positions are called out by voice",
+    "Aplikasi bawaan Meshtastic": "Meshtastic's built-in app",
+    "Dirancang untuk penggunaan umum": "Built for general use",
+    "Hemat Biaya": "Low Cost",
+    "Terjangkau untuk dibawa banyak orang?": "Affordable enough to carry in numbers?",
+    "&lt; Rp&nbsp;500 ribu": "&lt; Rp&nbsp;500 thousand",
+    "Rp&nbsp;120–300 ribu": "Rp&nbsp;120–300 thousand",
+    "Rp&nbsp;1–2 juta": "Rp&nbsp;1–2 million",
+    "perkiraan per unit": "estimated per unit",
+    "Kriteria terpenuhi": "Criteria met",
+    '<span class="vs__sr">Ya</span>': '<span class="vs__sr">Yes</span>',
+    '<span class="vs__sr">Tidak</span>': '<span class="vs__sr">No</span>',
+    "<span>Ada</span>": "<span>Yes</span>",
+    "<span>Tidak ada</span>": "<span>No</span>",
+    "Harga adalah perkiraan per unit.": "Prices are estimates per unit.",
+    "Seret perangkatnya untuk memutarnya.": "Drag a device to spin it.",
+    "Tarik, dan perangkat langsung menyala.": "Pull, and the unit switches on.",
+    "Pada node korban, sakelar magnetik jenis reed switch ditahan oleh magnet pada tali penarik. Selama magnet di tempatnya, perangkat diam dan hemat daya. Begitu tali ditarik, magnet menjauh dan perangkat langsung aktif serta memancarkan koordinatnya — tanpa menu, tanpa aplikasi, tanpa konfigurasi.":
+        "On the victim node, a magnetic reed switch is held by a magnet on a pull tab. While the magnet stays in place the unit sleeps and saves power. Pull the tab and the magnet moves away: the unit switches on at once and starts transmitting its coordinates — no menu, no app, no setup.",
+    "Ditahan magnet": "Held by the magnet",
+    "Perangkat diam, hemat daya": "Unit sleeps, saving power",
+    "Tali ditarik": "Tab pulled",
+    "Magnet menjauh dari sakelar": "Magnet leaves the switch",
+    "<b>Aktif</b>": "<b>Active</b>",
+    "Memancarkan koordinat": "Transmitting coordinates",
+    "Skema sederhana — bukan gambar teknik": "Simplified schematic — not an engineering drawing",
+    "Handy Talky dan Meshtastic dinyalakan dengan saklar on-off biasa. Dalam kondisi panik, tidak ada waktu untuk membuka menu.":
+        "A Handy Talky and Meshtastic are switched on with an ordinary on/off switch. In a panic there is no time to open a menu.",
+    '<p class="eyebrow">Hemat biaya</p>': '<p class="eyebrow">Low cost</p>',
+    "Cukup murah untuk dibawa banyak orang.": "Cheap enough to carry in numbers.",
+    "Perkiraan harga per unit pada satu skala. Unit yang murah bisa dibagikan ke lebih banyak personel — bahkan warga terdampak.":
+        "Estimated price per unit on one scale. A cheaper unit can be handed to more responders — even to affected residents.",
+    "Grafik rentang harga per unit, skala 0 sampai Rp 2 juta": "Chart of price ranges per unit, scale 0 to Rp 2 million",
+    '<span style="left:25%">500 rb</span>': '<span style="left:25%">500K</span>',
+    '<span style="left:50%">1 jt</span>': '<span style="left:50%">1M</span>',
+    '<span style="left:75%">1,5 jt</span>': '<span style="left:75%">1.5M</span>',
+    '<span style="left:100%">2 jt</span>': '<span style="left:100%">2M</span>',
+    "Rupiah per unit, skala 0 – 2 juta.": "Rupiah per unit, scale 0 – 2 million.",
+    "Batang POINTRESCUE menunjukkan batas atas: harganya kurang dari Rp&nbsp;500 ribu.":
+        "The POINTRESCUE bar shows an upper bound: it costs less than Rp&nbsp;500 thousand.",
+    "Perbandingan ini hanya pada tiga kriteria di atas dan bukan penilaian menyeluruh atas tiap alat. Gambar Handy Talky dan Meshtastic adalah ilustrasi 3D generik, bukan foto produk tertentu. Harga adalah perkiraan per unit dan dapat berbeda menurut merek, tempat membeli, dan waktu. Nama dan merek pembanding milik pemiliknya masing-masing; POINTRESCUE tidak berafiliasi dengan mereka.":
+        "This comparison covers only the three criteria above and is not a full assessment of each tool. The Handy Talky and Meshtastic images are generic 3D illustrations, not photos of a specific product. Prices are estimates per unit and can differ by brand, shop and time. The names and brands of the other tools belong to their owners; POINTRESCUE is not affiliated with them.",
 }
 
 # atribut alt / title / aria-label
 ATRIBUT = {
-    # halaman komparasi dua bahasa memilih bahasa lewat ?lang= — tautan dari halaman Inggris minta yang Inggris
-    "komparasi/?lang=id": "komparasi/?lang=en",
+    "Model 3D Point Rescue, bisa diseret untuk memutarnya": "Point Rescue 3D model — drag to spin it",
+    "Model 3D Handy Talky generik, bisa diseret untuk memutarnya": "Generic Handy Talky 3D model — drag to spin it",
+    "Model 3D node mesh generik, bisa diseret untuk memutarnya": "Generic mesh-node 3D model — drag to spin it",
     "Perangkat Point Rescue digenggam, antena terpasang":
         "A Point Rescue unit held in the hand, antenna fitted",
     "Model 3D Point Rescue berputar": "The Point Rescue 3D model, rotating",

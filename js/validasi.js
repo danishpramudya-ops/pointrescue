@@ -1,5 +1,5 @@
 /* ==========================================================================
-   validasi.js — bagian 07, digambar dari rekaman lapangan yang sebenarnya
+   validasi.js — bagian 08, digambar dari rekaman lapangan yang sebenarnya
 
    Sumbernya assets/validasi.js: keluaran tools/anchorpulse.py atas rekaman
    serial gateway delapan sesi, disusun tools/susun_validasi.py. Berkas itu

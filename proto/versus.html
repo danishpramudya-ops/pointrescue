@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Point Rescue · perangkat 3D</title>
+<link rel="icon" href="data:,">
+<!--
+  Embed untuk tabel komparasi (bagian 02 situs): SATU perangkat di atas bidang
+  transparan, berputar pelan, bisa diseret untuk memutarnya. Tanpa zoom dan
+  tanpa geser — dan sudut vertikalnya dikunci, jadi yang bisa diputar hanya
+  poros tegak, seperti memutar benda di telapak tangan.
+
+      ?m=pr     Point Rescue    — rakitan 17 part milik tim, pose berdiri seperti hero
+      ?m=ht     Handy Talky     — model generik, proto/versus-model.js
+      ?m=mesh   node mesh       — model generik, proto/versus-model.js
+
+  Panggungnya proto/three-d-stage.js milik tim (tidak diubah): cahaya, kamera,
+  dan kontrol orbit-nya yang sama dengan hero dan render PNG, jadi poster PNG
+  di tabel dan model hidup ini tampil sama persis saat yang satu memudar ke
+  yang lain.
+
+  Dikendalikan halaman induk lewat postMessage (js/versus.js):
+      { pr:'versus', lihat:bool, gerak:bool }   masuk/keluar layar, sakelar animasi
+  dan memberi tahu balik:
+      { pr:'versus-siap', m:'pr|ht|mesh' }      model pertama sudah tergambar
+-->
+<script type="importmap">
+{
+  "imports": {
+    "three": "../vendor/three/build/three.module.min.js",
+    "three/addons/controls/OrbitControls.js": "../vendor/three/examples/jsm/controls/OrbitControls.js",
+    "three/addons/loaders/OBJLoader.js": "../vendor/three/examples/jsm/loaders/OBJLoader.js",
+    "three/addons/exporters/OBJExporter.js": "../vendor/three/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "../vendor/three/examples/jsm/exporters/GLTFExporter.js"
+  }
+}
+</script>
+<style>
+  html,body{ height:100%; margin:0; background:transparent; overflow:hidden; }
+  three-d-stage{ display:block; width:100%; height:100%; cursor:grab; }
+  three-d-stage:active{ cursor:grabbing; }
+  three-d-stage:not(:defined){ visibility:hidden; }
+</style>
+</head>
+<body>
+
+<three-d-stage id="stage" name="versus" background="transparent"></three-d-stage>
+
+<!-- assembly-model masih membaca id ini, sama seperti hero.html -->
+<script type="application/json" id="pcb-data">{}</script>
+
+<script src="./three-d-stage.js"></script>
+<script type="module">
+  const q = new URLSearchParams(location.search);
+  const M = ['pr', 'ht', 'mesh'].includes(q.get('m')) ? q.get('m') : 'pr';
+
+  const stage = document.getElementById('stage');
+  const { THREE } = await stage.ready;
+
+  let model, pose, isi = Number(q.get('isi')) || 1, key = 2.7;
+
+  if (M === 'pr') {
+    const { buildAssembly } = await import('./assembly-model.js');
+    const D = await fetch('./pcb-data.json').then((r) => r.json());
+    document.getElementById('pcb-data').textContent = JSON.stringify(D);
+    const { model: unit } = await buildAssembly(D, { guides: false });
+    /* pose berdiri miring yang sama dengan sorotan hero */
+    unit.rotation.set(-0.10, 0, -0.62);
+    model = new THREE.Group();
+    model.add(unit);
+    /* casing aslinya nyaris hitam — diangkat ke slate kebiruan seperti di hero */
+    const SLATE = new THREE.Color('#5d7d9f');
+    const angkat = (m) => { const c = m.clone(); if (c.color) c.color.lerp(SLATE, 0.34); return c; };
+    model.traverse((o) => {
+      if (!o.isMesh || !o.material) return;
+      o.material = Array.isArray(o.material) ? o.material.map(angkat) : angkat(o.material);
+    });
+    pose = { cx: 0.62, cy: 0.5 };
+    key = 2.9;
+  } else {
+    const { buat } = await import('./versus-model.js');
+    const F = buat(THREE);
+    model = new THREE.Group();
+    model.add(F[M]());
+    pose = F.POSE[M];
+    model.rotation.set(pose.rx, pose.ry, pose.rz);
+  }
+
+  stage.setObject(model);
+
+  /* toolbar unduh dan keterangan orbit milik stage, serta bayangan lantainya:
+     semuanya di shadow DOM stage, jadi disentuh dari luar tanpa mengubah berkasnya */
+  ['.toolbar', '.note'].forEach((sel) => {
+    const n = stage.shadowRoot && stage.shadowRoot.querySelector(sel);
+    if (n) n.remove();
+  });
+  if (stage._ground) stage._ground.visible = false;
+  if (stage._key) stage._key.intensity = key;
+
+  /* Kamera mengelilingi sumbu tegak lewat pusat model, jadi bingkai harus muat di SEMUA sudut
+     putar. Bola pembatas aman tapi boros (antena panjang membuat bolanya besar, bodinya kecil di
+     bingkai). Di sini diukur dari titik-titik modelnya: tinggi di layar sebuah titik = |y|·cos(e)
+     + jaraknya dari sumbu·sin(e), dengan e = sudut pandang kamera; lebarnya paling banyak jarak
+     dari sumbu itu. Yang terbesar dari semua titik menentukan seberapa jauh kamera mundur. */
+  model.updateMatrixWorld(true);
+  const kotak = new THREE.Box3().setFromObject(model);
+  const pusat = kotak.getCenter(new THREE.Vector3());
+  const arah = new THREE.Vector3(pose.cx, pose.cy, 1).normalize();
+  const e = Math.asin(arah.y);
+  const cosE = Math.cos(e), sinE = Math.sin(e);
+  const v = new THREE.Vector3();
+  let tinggi = 0, lebar = 0;
+  model.traverse((o) => {
+    if (!o.isMesh || !o.geometry.attributes.position) return;
+    const p = o.geometry.attributes.position;
+    const langkah = p.count > 20000 ? 3 : 1;           /* model Point Rescue besar: cukup tiap 3 titik */
+    for (let i = 0; i < p.count; i += langkah) {
+      v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld);
+      const dy = Math.abs(v.y - pusat.y), r = Math.hypot(v.x - pusat.x, v.z - pusat.z);
+      tinggi = Math.max(tinggi, dy * cosE + r * sinE);
+      lebar = Math.max(lebar, r);
+    }
+  });
+  const cam = stage._camera;
+  const tg = Math.tan((cam.fov * Math.PI) / 360);
+  const aspek = (stage.clientWidth || 1) / (stage.clientHeight || 1);
+  /* 1,12 = cadangan untuk perspektif: bagian yang sedang menghadap kamera tampak lebih besar */
+  const jarak = Math.max(tinggi / tg, lebar / (tg * aspek)) * 1.12 * isi;
+  cam.position.copy(pusat).add(arah.multiplyScalar(jarak));
+  cam.near = jarak / 100; cam.far = jarak * 100;
+  cam.updateProjectionMatrix();
+
+  const ctr = stage._controls;
+  ctr.target.copy(pusat);
+  ctr.enableZoom = false;                       /* roda tetap menggulir halaman induk */
+  ctr.enablePan = false;
+  ctr.enableDamping = true;
+  ctr.dampingFactor = 0.08;
+  ctr.rotateSpeed = 0.7;
+  ctr.autoRotateSpeed = 2.4;
+  ctr.update();
+  /* sudut vertikal dikunci di sekitar sudut awal: yang bisa diputar hanya poros tegak */
+  const kutub = ctr.getPolarAngle();
+  ctr.minPolarAngle = kutub - 0.2;
+  ctr.maxPolarAngle = kutub + 0.2;
+  /* OrbitControls menyetel touch-action:none; usapan vertikal harus tetap menggulir halaman induk */
+  if (stage._renderer) stage._renderer.domElement.style.touchAction = 'pan-y';
+
+  /* ── putaran sendiri, berhenti saat disentuh, lanjut setelah diam sebentar ── */
+  let terlihat = true, gerak = true, seret = false, diam;
+  function atur() {
+    ctr.autoRotate = terlihat && gerak && !seret;
+    if (stage._renderer) stage._renderer.setAnimationLoop(terlihat ? stage._loop : null);
+  }
+  ctr.addEventListener('start', () => { seret = true; clearTimeout(diam); atur(); });
+  ctr.addEventListener('end', () => { seret = false; clearTimeout(diam); diam = setTimeout(atur, 2200); });
+
+  addEventListener('message', (e) => {
+    if (e.origin !== location.origin || !e.data || e.data.pr !== 'versus') return;
+    terlihat = !!e.data.lihat;
+    gerak = !!e.data.gerak;
+    atur();
+  });
+  atur();
+
+  try { parent.postMessage({ pr: 'versus-siap', m: M }, location.origin); } catch (e) {}
+  document.title = 'siap';
+</script>
+</body>
+</html>

@@ -224,7 +224,7 @@ html[data-motion="off"] .gnav__hop,
   background:var(--blue); padding:9px 14px; border-radius:99px; transition:transform .25s var(--ease), background .25s;
 }
 .nav__cta:hover{ transform:translateY(-2px); background:var(--blue-lt); }
-@media (max-width:1120px){ .nav__links{ display:none; } .nav__cta{ margin-left:auto; } }
+@media (max-width:1160px){ .nav__links{ display:none; } .nav__cta{ margin-left:auto; } }
 
 .scrollbar{ position:fixed; top:0; left:0; right:0; height:2px; z-index:61; background:transparent; }
 .scrollbar i{ display:block; height:100%; width:0; background:linear-gradient(90deg,var(--blue),var(--orange)); }
@@ -411,6 +411,32 @@ html[data-motion="off"] .tape--alt .tape__strip{ animation:none; }
 .mtoggle[aria-pressed="true"] .mtoggle__dot{ animation:blink 1.6s infinite; }
 .mtoggle[aria-pressed="false"] .mtoggle__dot{ background:rgba(210,228,250,.35); }
 @media (max-width:640px){ .mtoggle__txt{ display:none; } .mtoggle{ padding:8px; } }
+
+/* Sebelas tautan (sejak bagian Komparasi) tidak muat di layar laptop dengan jarak
+   aslinya — kolom CTA terdorong keluar layar. Dirapatkan bertahap, dan label dilarang
+   patah baris ("Cara kerja" sempat terbelah dua di dalam pil gooey).              */
+@media (max-width:1500px){
+  .nav{ gap:20px; }
+  .nav__links{ gap:15px; }
+  .nav__links a{ letter-spacing:.05em; white-space:nowrap; }
+}
+@media (max-width:1380px){
+  .nav{ gap:18px; }
+  .nav__links{ gap:13px; }
+  .nav__links a{ letter-spacing:.03em; }
+  .mtoggle__txt{ display:none; } .mtoggle{ padding:8px; }
+}
+@media (max-width:1260px){
+  .nav{ gap:16px; }
+  .nav__links{ gap:11px; }
+  .nav__links a{ letter-spacing:.02em; font-size:11px; }
+  .nav__lang{ padding:8px 9px; letter-spacing:.08em; }
+}
+/* label Inggris lebih panjang ("How it works", "Copyright"): tautannya mengalah lebih awal */
+@media (max-width:1230px){
+  html[lang="en"] .nav__links{ display:none; }
+  html[lang="en"] .nav__cta{ margin-left:auto; }
+}
 
 /* animasi berjalan sendiri yang harus ikut berhenti saat sakelar dimatikan */
 html[data-motion="off"] .tape__strip,
@@ -604,11 +630,251 @@ html[data-motion="off"] .fc::before{ transition:none; }
   font-family:var(--f-disp); font-weight:600; font-variation-settings:"wdth" 92;
   font-size:clamp(20px,2.6vw,32px); line-height:1.32; max-width:30ch; color:rgba(230,242,255,.9); }
 .quote b{ color:var(--blue-lt); font-weight:800; }
-/* jembatan ke halaman komparasi, tepat setelah kutipan penutup bagian 01 */
-.bridge{ display:flex; align-items:center; flex-wrap:wrap; gap:16px 28px; margin:30px 0 0; }
-.bridge p{ margin:0; max-width:38ch; font:500 17px/1.5 var(--f-body); color:rgba(215,232,250,.78); }
 
-/* ═══ 02 GAGASAN — track horizontal ══════════════════════════════════════ */
+/* ═══ 02 KOMPARASI — tiga alat, tiga hal yang menentukan ════════════════════
+   Tabelnya <table> sungguhan, bukan susunan div; di ponsel tiap baris menjadi
+   kartu (display:block menghapus semantik tabel di sebagian peramban, jadi
+   role="table|row|cell" ditulis eksplisit di HTML). Kepala kolomnya model 3D
+   yang bisa diseret — iframe proto/versus.html, dimuat lambat oleh
+   js/versus.js — dan PNG-nya jadi poster sampai modelnya tergambar.
+
+   Transisinya: kolom masuk dari tiga arah (Handy Talky dari kiri, Meshtastic
+   dari kanan, Point Rescue naik dari bawah), label baris menyusul, lalu tanda
+   ✓/✗ "dicap" satu per satu dan angka skornya berhitung naik. Pemicunya
+   kelas .vs-in dari js/versus.js, BUKAN .in milik seksi: seksinya tinggi, dan
+   tabel yang masih di bawah layar tidak boleh selesai beranimasi sebelum
+   sempat terlihat. Keadaan awal (tersembunyi) hanya berlaku kalau JS hidup —
+   kelas .vs-js — jadi tanpa JavaScript semuanya langsung terbaca.            */
+#komparasi{
+  --kaca:linear-gradient(rgba(120,180,255,.085), rgba(120,180,255,.035)), #061f3d;
+  --biru:linear-gradient(135deg, rgba(41,114,205,.98), rgba(15,68,137,.98)), #0f4489;
+}
+#komparasi svg{ fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.vs__sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+
+/* ── tabel ─────────────────────────────────────────────────────────────── */
+.vs{ position:relative; margin:0 -12px; }                 /* ruang border-spacing ikut keluar: tepi ubin sejajar .wrap */
+.vs__tbl{ width:100%; border-collapse:separate; border-spacing:12px; table-layout:fixed; }
+.vs__tbl col:first-child{ width:22%; }
+.vs__tbl th, .vs__tbl td{ padding:0; text-align:left; vertical-align:middle; font-weight:400; }
+.vs__tbl td:nth-child(2){ --cc:0; } .vs__tbl td:nth-child(3){ --cc:1; } .vs__tbl td:nth-child(4){ --cc:2; }
+
+.vs__pojok{
+  position:relative; height:262px; border-radius:22px; border:1px solid var(--line-d);
+  background:
+    linear-gradient(to top right, transparent calc(50% - 1px), rgba(140,190,255,.3) calc(50% - 1px), rgba(140,190,255,.3) calc(50% + 1px), transparent calc(50% + 1px)),
+    rgba(5,26,51,.45);
+}
+.vs__pojok span{ position:absolute; font:700 11.5px/1 var(--f-mono); letter-spacing:.2em; text-transform:uppercase; color:rgba(190,214,245,.72); }
+.vs__alat{ right:22px; top:22px; } .vs__fitur{ left:22px; bottom:22px; }
+
+.vs__sis{ position:relative; height:262px; border-radius:22px; background:var(--kaca); border:1px solid var(--line-d); overflow:hidden; }
+.vs__sis:not(.vs__sis--pr){ background:radial-gradient(60% 50% at 50% 38%, rgba(111,176,255,.2), transparent 72%), var(--kaca); }
+.vs__in{ position:relative; height:260px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:8px; padding:14px 14px 18px; text-align:center; }
+.vs__nama{ position:relative; z-index:3; display:flex; align-items:center; justify-content:center; gap:8px; font:800 22px/1 var(--f-disp); font-variation-settings:"wdth" 88; letter-spacing:-.01em; color:#fff; }
+.vs__nama img{ height:26px; width:auto; }
+.vs__tag{ position:absolute; z-index:4; left:14px; top:14px; padding:6px 9px 5px; border-radius:7px; background:rgba(3,16,31,.55);
+  font:700 9.5px/1 var(--f-mono); letter-spacing:.18em; text-transform:uppercase; color:#fff; }
+.vs__sis--pr{
+  border-color:rgba(160,205,255,.6);
+  background:
+    radial-gradient(62% 54% at 50% 40%, rgba(160,205,255,.55), rgba(47,127,224,0) 72%),
+    linear-gradient(165deg, #2c78d6, #0d3f80 78%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 30px 60px -30px rgba(47,127,224,.95);
+}
+.vs__sis--pr::after{          /* kilau yang melintas sekali */
+  content:""; position:absolute; inset:0; z-index:5; pointer-events:none;
+  background:linear-gradient(105deg, transparent 38%, rgba(255,255,255,.28) 50%, transparent 62%);
+  transform:translateX(-130%);
+}
+.vs.vs-in .vs__sis--pr::after{ animation:vsKilau 1.5s var(--ease) 1.1s 1 both; }
+@keyframes vsKilau{ to{ transform:translateX(130%); } }
+
+/* kotak model 3D: poster PNG di bawah, iframe di atas yang memudar masuk saat siap */
+.vs__3d{ position:relative; flex:1; width:100%; min-height:0; display:grid; place-items:center; }
+.vs__3d img{ position:relative; z-index:1; height:min(100%, 172px); width:auto; max-width:92%; object-fit:contain; filter:drop-shadow(0 12px 16px rgba(0,0,0,.45)); transition:opacity .9s var(--ease); }
+.vs__3d iframe{ position:absolute; inset:0; z-index:2; width:100%; height:100%; border:0; background:transparent; opacity:0; transition:opacity .9s var(--ease); }
+.vs__3d.is-3d iframe{ opacity:1; }
+.vs__3d.is-3d img{ opacity:0; }
+
+/* label baris: ubin oranye redup, gema ubin persik di infografis klien */
+.vs__krit-in{ display:flex; align-items:center; gap:14px; min-height:100px; padding:14px 18px; border-radius:18px; background:rgba(228,90,7,.10); border:1px solid rgba(228,90,7,.32); }
+.vs__ik{ flex:0 0 44px; width:44px; height:44px; border-radius:12px; display:grid; place-items:center; background:rgba(228,90,7,.2); color:#ff9248; }
+.vs__ik svg{ width:24px; height:24px; }
+.vs__rp{ font:800 15px/1 var(--f-mono); font-style:normal; letter-spacing:-.02em; }
+.vs__krit b{ display:block; font:800 18px/1.15 var(--f-disp); font-variation-settings:"wdth" 88; letter-spacing:-.01em; color:#fff; }
+.vs__krit small{ display:block; margin-top:5px; font:400 12.5px/1.4 var(--f-body); color:rgba(255,226,206,.74); }
+.vs__krit--skor .vs__krit-in{ min-height:80px; background:rgba(5,26,51,.5); border-color:var(--line-d); }
+.vs__krit--skor small{ color:rgba(200,222,255,.6); }
+
+/* sel isi */
+.vs__isi{ position:relative; display:flex; align-items:center; gap:14px; min-height:100px; padding:14px 18px; border-radius:18px; background:var(--kaca); border:1px solid var(--line-d);
+  transition:border-color .3s, box-shadow .3s; }
+.vs__sel:hover .vs__isi{ border-color:rgba(111,176,255,.5); }
+.vs__isi b{ display:block; font:700 16px/1.25 var(--f-body); color:#fff; text-wrap:balance; }
+.vs__isi small{ display:block; margin-top:3px; font:400 12.5px/1.4 var(--f-body); color:rgba(200,222,255,.68); text-wrap:balance; }
+.vs__tn{ display:none; }
+.vs__sel--pr .vs__isi{ background:var(--biru); border-color:rgba(160,205,255,.5); box-shadow:inset 0 1px 0 rgba(255,255,255,.24), 0 22px 44px -28px rgba(47,127,224,.95); }
+.vs__sel--pr .vs__isi small{ color:rgba(236,246,255,.88); }
+.vs__sel--pr:hover .vs__isi{ border-color:rgba(200,228,255,.85); }
+.vs__tautan{ display:inline-block; margin-top:7px; font:600 11.5px/1.3 var(--f-mono); letter-spacing:.05em; color:#fff; text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(255,255,255,.5); }
+.vs__tautan:hover{ text-decoration-color:#fff; }
+
+.vs__tanda{ flex:0 0 36px; width:36px; height:36px; border-radius:50%; display:grid; place-items:center; }
+.vs__tanda svg{ width:20px; height:20px; stroke-width:3.2; }
+.vs__tanda--ya{ background:rgba(111,176,255,.14); color:var(--blue-lt); box-shadow:inset 0 0 0 1.5px rgba(111,176,255,.55); }
+.vs__sel--pr .vs__tanda--ya{ background:#fff; color:var(--navy-600); box-shadow:0 8px 16px -8px rgba(0,0,0,.55); }
+.vs__tanda--tdk{ background:var(--red); color:#fff; box-shadow:0 8px 16px -8px rgba(211,14,16,.85); }
+@keyframes vsCap{ 0%{ transform:scale(0) rotate(-30deg); } 55%{ transform:scale(1.2) rotate(6deg); } 100%{ transform:none; } }
+
+.vs__skor .vs__isi{ min-height:80px; justify-content:center; }
+.vs__skor strong{ font:800 32px/1 var(--f-disp); font-variation-settings:"wdth" 84; letter-spacing:-.02em; color:rgba(215,232,250,.82); font-variant-numeric:tabular-nums; }
+.vs__skor strong b{ font:inherit; color:inherit; display:inline; }
+.vs__skor strong em{ font-size:.55em; color:inherit; opacity:.6; margin-left:2px; }
+.vs__sel--pr.vs__skor strong{ color:#fff; }
+
+.vs__legenda{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 18px; margin:16px 12px 0; font:500 12.5px/1.4 var(--f-body); color:rgba(200,222,255,.7); }
+.vs__legenda i{ display:inline-flex; align-items:center; gap:8px; font-style:normal; }
+.vs__legenda .vs__tanda{ flex:0 0 22px; width:22px; height:22px; transform:none; animation:none; }
+.vs__legenda .vs__tanda svg{ width:13px; height:13px; }
+.vs__petunjuk{ display:none; margin-left:auto; font:600 11px/1.3 var(--f-mono); letter-spacing:.1em; text-transform:uppercase; color:rgba(190,214,245,.6); }
+.vs.has-3d .vs__petunjuk{ display:inline; }
+
+/* ── penjelasan: dua kartu ─────────────────────────────────────────────── */
+.vs__bukti{ display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:clamp(16px,2.2vw,28px); margin-top:clamp(28px,4vw,52px); }
+.vs__kartu{ padding:clamp(22px,2.6vw,34px); border-radius:24px; background:var(--kaca); border:1px solid var(--line-d); }
+.vs__kartu .eyebrow{ margin:0 0 14px; font:700 11px/1 var(--f-mono); letter-spacing:.26em; text-transform:uppercase; color:var(--blue-lt); }
+.vs__kartu h3{ margin:0; font:800 clamp(24px,2.5vw,32px)/1.1 var(--f-disp); font-variation-settings:"wdth" 86; letter-spacing:-.02em; color:#fff; text-wrap:balance; }
+.vs__kartu > p{ margin:14px 0 0; max-width:58ch; font-size:16px; line-height:1.62; color:rgba(225,236,250,.8); }
+.vs__kartu > p.eyebrow{ margin:0 0 14px; max-width:none; font:700 11px/1 var(--f-mono); color:var(--blue-lt); }
+.vs__kartu > p.vs__banding{ font-size:14.5px; color:rgba(200,222,255,.66); padding-left:14px; border-left:2px solid rgba(111,176,255,.4); }
+.vs__kartu > p.vs__ket2{ margin:10px 4px 0; max-width:none; font:500 10.5px/1.5 var(--f-mono); letter-spacing:.12em; text-transform:uppercase; color:rgba(190,214,245,.64); }
+
+/* langkah Pull & Play — urutannya sungguhan, jadi bernomor */
+.vs__langkah{ list-style:none; margin:22px 0 0; padding:0; counter-reset:n; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.vs__langkah li{ counter-increment:n; position:relative; padding:12px 12px 16px; border-radius:18px; background:rgba(5,26,51,.55); border:1px solid var(--line-d); }
+.vs__langkah li::before{ content:counter(n); position:absolute; left:12px; top:12px; width:24px; height:24px; border-radius:50%; display:grid; place-items:center;
+  font:700 12px/1 var(--f-mono); background:var(--blue); color:#fff; }
+.vs__langkah li:nth-child(3){ border-color:rgba(160,205,255,.5); background:var(--biru); }
+.vs__langkah svg.vs__skema{ display:block; width:100%; height:auto; color:#bcd9fb; }
+.vs__langkah b{ display:block; margin-top:6px; font:700 14.5px/1.25 var(--f-body); color:#fff; }
+.vs__langkah span{ display:block; margin-top:3px; font:400 12.5px/1.4 var(--f-body); color:rgba(200,222,255,.7); }
+.vs__langkah li:nth-child(3) span{ color:rgba(236,246,255,.88); }
+.vs__skema .badan{ fill:rgba(111,176,255,.1); stroke:currentColor; stroke-width:2.6; }
+.vs__skema .ant{ stroke:currentColor; stroke-width:5; }
+.vs__skema .reed{ stroke:var(--orange); fill:rgba(228,90,7,.18); stroke-width:2.4; }
+.vs__skema .mg-n{ fill:var(--orange); stroke:none; } .vs__skema .mg-s{ fill:var(--blue-lt); stroke:none; }
+.vs__skema .tali{ stroke:currentColor; stroke-width:2.2; }
+.vs__skema .hantu{ stroke:currentColor; stroke-width:2; stroke-dasharray:4 4; opacity:.5; fill:none; }
+.vs__skema .arah, .vs__skema .busur{ stroke:#fff; stroke-width:2.6; }
+.vs__skema .led{ fill:var(--orange); stroke:none; }
+
+/* grafik harga — satu skala, rentang digambar sebagai batang mengambang.
+   Mengubah harga: ganti teksnya di tabel DAN di sini, lalu --min / --max pada
+   batang (satuan ribu rupiah; sumbu 0 … --skala).                           */
+.vs__harga{ --skala:2000; margin:22px 0 0; padding:20px 20px 14px; border-radius:20px; background:rgba(5,26,51,.55); border:1px solid var(--line-d); }
+.vs__harga-isi{ position:relative; display:grid; gap:20px; }
+.vs__grid{ position:absolute; inset:0; pointer-events:none; }
+.vs__grid i{ position:absolute; top:-6px; bottom:-6px; width:1px; background:rgba(140,190,255,.15); left:calc(var(--k) * 25%); }
+.vs__hr{ position:relative; z-index:1; }
+.vs__hr-kepala{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:8px; }
+.vs__hr-kepala b{ font:700 15px/1.2 var(--f-body); color:#fff; }
+.vs__hr-kepala span{ font:600 13px/1.2 var(--f-mono); color:#cfe3ff; text-align:right; }
+.vs__trek{ position:relative; height:16px; border-radius:8px; background:rgba(120,180,255,.08); }
+.vs__batang{ position:absolute; top:0; bottom:0; border-radius:8px;
+  left:calc(var(--min) / var(--skala) * 100%); width:calc((var(--max) - var(--min)) / var(--skala) * 100%); background:rgba(111,176,255,.55); }
+.vs__hr--pr .vs__batang{ background:linear-gradient(90deg, rgba(47,127,224,.1), var(--blue)); border-right:3px solid #cfe6ff; border-radius:8px 4px 4px 8px; }
+.vs__sumbu{ position:relative; height:14px; margin-top:14px; font:500 11px/1 var(--f-mono); color:rgba(190,214,245,.6); }
+.vs__sumbu > span{ position:absolute; top:0; transform:translateX(-50%); white-space:nowrap; }
+.vs__sumbu > span:first-child{ transform:none; } .vs__sumbu > span:last-child{ transform:translateX(-100%); }
+.vs__kartu .vs__ket3{ margin:12px 0 0; max-width:none; font:400 12px/1.5 var(--f-body); color:rgba(200,222,255,.58); }
+
+.vs__kaki{ margin:clamp(26px,3.4vw,44px) 0 0; max-width:82ch; font:400 12.5px/1.6 var(--f-body); color:rgba(190,214,245,.55); }
+
+/* ── masuk: tiga arah, lalu tanda dicap ────────────────────────────────── */
+.vs-js .vs .vs__pojok{ opacity:0; }
+.vs-js .vs .vs__in{ opacity:0; transform:translateY(56px); }
+.vs-js .vs .vs__sis--ht .vs__in{ transform:translateX(-96px); }
+.vs-js .vs .vs__sis--mesh .vs__in{ transform:translateX(96px); }
+.vs-js .vs .vs__krit-in{ opacity:0; transform:translateX(-34px); }
+.vs-js .vs .vs__isi{ opacity:0; transform:translateY(16px) scale(.97); }
+.vs-js .vs .vs__tanda{ transform:scale(0); }
+.vs-js .vs.vs-in .vs__pojok{ opacity:1; transition:opacity .8s var(--ease); }
+.vs-js .vs.vs-in .vs__in{ opacity:1; transform:none; transition:opacity .9s var(--ease), transform 1.2s var(--ease); transition-delay:calc(var(--c,0) * 170ms); }
+.vs-js .vs.vs-in .vs__krit-in{ opacity:1; transform:none; transition:opacity .8s var(--ease), transform 1s var(--ease); transition-delay:calc(.7s + var(--r,0) * 200ms); }
+.vs-js .vs.vs-in .vs__isi{ opacity:1; transform:none; transition:opacity .8s var(--ease), transform .9s var(--ease), border-color .3s, box-shadow .3s;
+  transition-delay:calc(.85s + var(--r,0) * 200ms + var(--cc,0) * 90ms), calc(.85s + var(--r,0) * 200ms + var(--cc,0) * 90ms), 0s, 0s; }
+.vs-js .vs.vs-in .vs__tanda{ animation:vsCap .75s var(--ease) both; animation-delay:calc(1.1s + var(--n,0) * 120ms); }
+.vs-js .vs.vs-in .vs__legenda .vs__tanda{ animation:none; transform:none; }
+.vs-js .vs__bukti .vs__kartu{ opacity:0; transform:translateY(40px); }
+.vs-js .vs__bukti.vs-in .vs__kartu{ opacity:1; transform:none; transition:opacity .9s var(--ease), transform 1s var(--ease); }
+.vs-js .vs__bukti.vs-in .vs__kartu:nth-child(2){ transition-delay:.14s; }
+/* sakelar animasi di nav dimatikan: semuanya langsung ada */
+html.vs-js[data-motion="off"] .vs .vs__pojok, html.vs-js[data-motion="off"] .vs .vs__in, html.vs-js[data-motion="off"] .vs .vs__krit-in,
+html.vs-js[data-motion="off"] .vs .vs__isi, html.vs-js[data-motion="off"] .vs .vs__tanda, html.vs-js[data-motion="off"] .vs__bukti .vs__kartu{
+  opacity:1; transform:none; transition:none; animation:none; }
+html[data-motion="off"] .vs__sis--pr::after{ display:none; }
+html[data-motion="off"] .vs__ping i{ animation:none; }
+
+/* ── ponsel dan tablet: tiap kriteria jadi satu kartu ─────────────────── */
+.vs__trio{ display:none; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:0 0 28px; }
+.vs__trio figure{ position:relative; margin:0; padding:14px 6px 12px; border-radius:18px; overflow:hidden; text-align:center;
+  background:radial-gradient(60% 52% at 50% 36%, rgba(111,176,255,.2), transparent 72%), var(--kaca); border:1px solid var(--line-d); }
+.vs__trio img{ position:relative; z-index:2; display:block; width:100%; height:124px; object-fit:contain; filter:drop-shadow(0 10px 14px rgba(0,0,0,.45)); }
+.vs__trio figcaption{ position:relative; z-index:2; margin-top:10px; font:800 clamp(10.5px,3.3vw,13px)/1.1 var(--f-disp); font-variation-settings:"wdth" 88; letter-spacing:-.01em; color:#fff; }
+.vs__trio figure.vs__trio-pr{ border-color:rgba(160,205,255,.6); box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 24px 44px -26px rgba(47,127,224,.95);
+  background:radial-gradient(62% 54% at 50% 38%, rgba(160,205,255,.5), rgba(47,127,224,0) 72%), linear-gradient(165deg, #2c78d6, #0d3f80 78%); }
+.vs__trio-pr em{ color:#ffb27a; }
+.vs__ping i{ position:absolute; left:50%; top:44%; width:90px; height:90px; margin:-45px 0 0 -45px; border-radius:50%;
+  border:1.5px solid rgba(190,224,255,.5); opacity:0; animation:vsPing 5s var(--ease) infinite; animation-delay:calc(var(--n) * 1.6s); }
+.vs__ping i:nth-child(1){ --n:0; } .vs__ping i:nth-child(2){ --n:1; }
+@keyframes vsPing{ 0%{ transform:scale(.4); opacity:.85; } 100%{ transform:scale(2.2); opacity:0; } }
+
+@media (min-width:861px) and (max-width:1000px){
+  .vs__ik{ display:none; }                         /* kolom label sempit: ikonnya mengalah, teksnya tidak */
+  .vs__krit-in{ padding:14px; }
+}
+@media (max-width:1060px){ .vs__bukti{ grid-template-columns:minmax(0,1fr); } }
+@media (max-width:860px){
+  .vs{ margin:0; }
+  .vs__trio{ display:grid; }
+  .vs__tbl, .vs__tbl tbody, .vs__tbl tfoot, .vs__tbl tr, .vs__tbl th, .vs__tbl td{ display:block; }
+  .vs__tbl{ border-spacing:0; }
+  .vs__tbl colgroup{ display:none; }
+  .vs__tbl thead{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+  .vs__tbl tbody{ display:grid; gap:14px; }
+  .vs__tbl tr{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:12px; border-radius:22px; background:rgba(5,26,51,.5); border:1px solid var(--line-d); }
+  .vs__tbl tr > .vs__krit{ grid-column:1 / -1; }
+  .vs__tbl tfoot{ margin-top:14px; }
+  .vs__tbl tfoot tr{ gap:8px; }
+  .vs__krit-in{ min-height:0; padding:11px 12px; }
+  .vs__krit--skor .vs__krit-in{ min-height:0; padding:9px 12px; }
+  .vs__isi{ min-height:0; padding:12px 14px; }
+  .vs__tn{ display:block; margin-bottom:3px; font:700 10px/1 var(--f-mono); font-style:normal; letter-spacing:.16em; text-transform:uppercase; color:rgba(190,214,245,.62); }
+  .vs__sel--pr .vs__tn{ color:rgba(255,255,255,.9); }
+  .vs__skor .vs__isi{ flex-direction:column; justify-content:center; gap:6px; text-align:center; min-height:0; padding:12px 6px; }
+  .vs__skor .vs__tn{ margin:0; }
+  .vs__skor strong{ font-size:28px; }
+  .vs__legenda{ margin:14px 4px 0; }
+  .vs__petunjuk{ display:none !important; }
+  /* kartu berbaris pakai animasi masuk yang lebih sederhana: yang menumpuk itu kartunya, bukan kolomnya */
+  .vs-js .vs .vs__in, .vs-js .vs .vs__sis--ht .vs__in, .vs-js .vs .vs__sis--mesh .vs__in{ transform:none; }
+}
+@media (min-width:561px) and (max-width:860px){
+  .vs__trio img{ height:176px; }
+  .vs__trio figcaption{ font-size:15px; }
+}
+@media (max-width:560px){
+  .vs__tbl tbody tr{ grid-template-columns:minmax(0,1fr); }     /* ponsel: tiga sistem ditumpuk */
+  .vs__langkah{ grid-template-columns:minmax(0,1fr); }
+  .vs__langkah li{ display:grid; grid-template-columns:132px minmax(0,1fr); gap:0 14px; align-items:center; padding:12px 12px 12px 44px; }
+  .vs__langkah li::before{ top:50%; margin-top:-12px; }
+  .vs__langkah li > div{ min-width:0; }
+  .vs__langkah b{ margin-top:0; }
+  .vs__harga{ padding:18px 16px 14px; }
+}
+
+/* ═══ 03 GAGASAN — track horizontal ══════════════════════════════════════ */
 .track{ position:relative; height:420vh; color:var(--ink);
   background:radial-gradient(128% 40% at 50% 0%, #f6f9fc, var(--paper) 55%); }
 /* Konturnya dipasang pada panel sticky-nya, bukan pada .track: seksi ini
@@ -641,7 +907,7 @@ html[data-motion="off"] .fc::before{ transition:none; }
 .track__bar{ width:min(100% - 48px,var(--wrap)); margin:clamp(24px,4vw,44px) auto 0; height:2px; background:rgba(9,50,97,.14); }
 .track__bar i{ display:block; height:100%; width:0; background:var(--blue); }
 
-/* ═══ 03 CARA KERJA — SVG draw ═══════════════════════════════════════════ */
+/* ═══ 04 CARA KERJA — SVG draw ═══════════════════════════════════════════ */
 .mesh{ display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); gap:clamp(28px,4vw,60px); align-items:center; }
 .meshsvg{ width:100%; height:auto; }
 .meshsvg__links path{ fill:none; stroke-width:2; stroke-dasharray:var(--len,400); stroke-dashoffset:var(--len,400);
@@ -675,7 +941,7 @@ html[data-motion="off"] .fc::before{ transition:none; }
   font:700 12px/1 var(--f-mono); color:var(--blue); border:1px solid var(--line-l); border-radius:99px; padding:7px 8px; }
 @media (max-width:900px){ .mesh{ grid-template-columns:1fr; } }
 
-/* ═══ 04 ANATOMI — viewer interaktif ═════════════════════════════════════ */
+/* ═══ 05 ANATOMI — viewer interaktif ═════════════════════════════════════ */
 /* Viewer diberi lebar penuh: label part digambar di kolom kiri & kanan model,
    dan pada kolom sempit label-label itu tumpah keluar bingkai. */
 .wrap--wide{ width:min(100% - 40px, 1560px); }
@@ -717,7 +983,7 @@ html[data-motion="off"] .anat__wait::before{ animation:none; }
 .anat__viewer iframe{ display:block; width:100%; height:min(92vh,1000px); min-height:560px; border:0; }
 @media (max-width:1000px){ .anat__viewer iframe{ height:min(76vh,620px); } }
 
-/* ═══ 05 PROTOTIPE — zoom ════════════════════════════════════════════════ */
+/* ═══ 06 PROTOTIPE — zoom ════════════════════════════════════════════════ */
 .proto{ position:relative; background:rgba(3,16,31,.90); }
 .proto__sticky{ position:relative; height:170vh; }
 .proto__bleed{ position:sticky; top:0; height:100svh; overflow:hidden; }
@@ -732,7 +998,7 @@ html[data-motion="off"] .anat__wait::before{ animation:none; }
 .proto__strip img{ width:100%; border-radius:16px; border:1px solid var(--line-d); }
 .proto__strip figcaption{ margin-top:12px; font:500 12.5px/1.5 var(--f-body); color:rgba(200,222,255,.55); }
 
-/* ═══ 06 LAPTOP POSKO ════════════════════════════════════════════════════
+/* ═══ 07 LAPTOP POSKO ════════════════════════════════════════════════════
    Dashboard ASLI berjalan di dalam layar laptop. Iframe dirender pada
    1440×900 lalu di-scale oleh js/devices.js — kalau iframe-nya langsung
    dikecilkan, dashboardnya masuk breakpoint ponsel dan tata letaknya beda. */
@@ -828,7 +1094,7 @@ html[data-motion="off"] .anat__wait::before{ animation:none; }
   .laptop__brand{ font-size:9px; bottom:6px; }
 }
 
-/* ═══ 07 PENGUJIAN — validasi lapangan ═══════════════════════════════════ */
+/* ═══ 08 PENGUJIAN — validasi lapangan ═══════════════════════════════════ */
 .vkpi{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
   gap:1px; background:var(--line-l); border:1px solid var(--line-l);
   border-radius:18px; overflow:hidden; margin-bottom:clamp(28px,3.4vw,44px); }
@@ -909,7 +1175,7 @@ html[data-motion="off"] .anat__wait::before{ animation:none; }
 .findings p{ margin:0; font-size:15px; color:var(--slate); }
 .findings article{ padding-top:20px; border-top:2px solid var(--line-l); }
 
-/* ═══ 08 APLIKASI — ponsel berisi layar aplikasi SUNGGUHAN ═══════════════
+/* ═══ 09 APLIKASI — ponsel berisi layar aplikasi SUNGGUHAN ═══════════════
    Gambarnya tangkapan dari tool/tangkap_hki.dart: aplikasi Flutter dijalankan
    dengan keadaan mesh disuntikkan. Tab bar sudah ada DI DALAM gambar, jadi
    jangan menggambar tab bar sendiri di atasnya. */
@@ -990,7 +1256,7 @@ html[data-motion="off"] .phone__wait i{ animation:none; }
 .phone__dots button.is-on{ width:22px; background:var(--blue-lt); }
 @media (max-width:900px){ .app{ grid-template-columns:1fr; } }
 
-/* ═══ 09 HKI — tumpukan ══════════════════════════════════════════════════ */
+/* ═══ 10 HKI — tumpukan ══════════════════════════════════════════════════ */
 .hki{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.85fr); gap:clamp(28px,4vw,60px); align-items:center; }
 .hki__cards{ display:grid; gap:18px; perspective:1200px; }
 .doc{ padding:30px 28px; border-radius:18px; background:#fff; border:1px solid var(--line-l);
@@ -1006,7 +1272,7 @@ html[data-motion="off"] .phone__wait i{ animation:none; }
 .doc dd{ margin:0; font:700 14px var(--f-mono); color:var(--navy-600); text-align:right; }
 @media (max-width:900px){ .hki{ grid-template-columns:1fr; } }
 
-/* ═══ 10 TIM — flip ══════════════════════════════════════════════════════ */
+/* ═══ 11 TIM — flip ══════════════════════════════════════════════════════ */
 .team{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:clamp(14px,2vw,22px); perspective:1500px; }
 .team figure{ margin:0; transform:rotateY(38deg) translateZ(-60px); opacity:0; transform-origin:0% 50%;
   transition:transform 1s var(--ease), opacity .8s var(--ease); transition-delay:calc(var(--r,0)*95ms); }
@@ -1067,7 +1333,7 @@ html.has-tilt .team figure:hover .team__kartu::after{ opacity:1; }
   border-radius:99px; font:700 9.5px/1 var(--f-mono); letter-spacing:.1em;
   text-transform:uppercase; white-space:nowrap; }
 
-/* ═══ 11 OUTRO ═══════════════════════════════════════════════════════════ */
+/* ═══ 12 OUTRO ═══════════════════════════════════════════════════════════ */
 .outro{ position:relative; padding:clamp(100px,14vw,190px) 0; text-align:center;
   /* scrim di dalamnya melebar 14% ke samping — pada layar 390 px itu membuat
      halaman bisa digulir mendatar. Dikliping di sini; tidak ada isi penutup

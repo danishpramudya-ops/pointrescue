@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=21">
+<link rel="stylesheet" href="css/style.css?v=22">
 <!-- tanpa JavaScript, intro tidak akan pernah dibuka: lepaskan kuncinya -->
 <noscript><style>body.is-intro{overflow:auto;height:auto}.intro{display:none}</style></noscript>
 <link rel="alternate" hreflang="id" href="./index.html">
@@ -59,6 +59,7 @@
        data-particle-distance-inner="10" data-particle-r="100"
        data-animation-time="600" data-time-variance="300">
     <a href="#masalah">Masalah</a>
+    <a href="#komparasi">Komparasi</a>
     <a href="#gagasan">Gagasan</a>
     <a href="#sistem">Cara kerja</a>
     <a href="#anatomi">Anatomi</a>
@@ -116,7 +117,7 @@
 
     <figure class="hero__shot" data-r="3">
       <!-- Model 3D rakitan 17 part, berputar sendiri dan sengaja TIDAK bisa
-           disentuh — di sini cuma sorotan. Yang bisa dibongkar ada di 04.
+           disentuh — di sini cuma sorotan. Yang bisa dibongkar ada di 05.
            Fotonya tetap dipakai sebagai poster sampai modelnya siap. -->
       <div class="shot__frame" id="heroShot">
         <img src="assets/photo/proto-hand.jpg" alt="Perangkat Point Rescue digenggam, antena terpasang">
@@ -209,12 +210,6 @@
       <b>jangan pernah bergantung pada infrastruktur yang paling mungkin ikut hancur.</b>
     </blockquote>
 
-    <!-- jembatan ke halaman komparasi, di tempat pertanyaannya paling mungkin muncul -->
-    <div class="bridge" data-r="5">
-      <p>Handy Talky dan Meshtastic sudah ada. Lalu apa bedanya Point Rescue?</p>
-      <a class="btn btn--ghost" href="komparasi/?lang=id">Lihat komparasi sistem</a>
-    </div>
-
     <div class="docnote">
       <div>
         <h4>Sumber gambar latar</h4>
@@ -239,11 +234,259 @@
   <span class="tape__strip tape__strip--b"></span>
 </div>
 
-<!-- ══════════ 02 GAGASAN — track horizontal ══════════ -->
+<!-- ══════════ 02 KOMPARASI — tabel tiga alat; tanda-tandanya muncul satu per satu ══════════ -->
+<section class="sec sec--dark g-b" id="komparasi" data-anim="versus">
+  <!-- ikon tabel: digambar sendiri (garis), tanpa pustaka -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="vs-ok" viewBox="0 0 24 24"><path d="M5.5 12.8l4.2 4.2L18.5 8"/></symbol>
+      <symbol id="vs-no" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></symbol>
+      <symbol id="vs-power" viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6.9 6.9a8 8 0 1 0 10.2 0"/></symbol>
+      <symbol id="vs-pin" viewBox="0 0 24 24"><path d="M12 21.5s7-6 7-11.7A7 7 0 0 0 5 9.8c0 5.7 7 11.7 7 11.7z"/><circle cx="12" cy="9.8" r="2.6"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="wrap">
+    <header class="head">
+      <p class="head__num" data-r="1">02 — Komparasi</p>
+      <h2 class="head__title" data-split>Tiga alat, tiga hal yang menentukan.</h2>
+      <p class="head__lead" data-r="2">
+        Handy Talky dan Meshtastic sudah ada. Begini perbandingannya dengan Point Rescue pada tiga
+        hal yang paling menentukan saat mencari korban di wilayah tanpa sinyal.
+      </p>
+    </header>
+
+    <!-- tiga perangkat berjajar — hanya di layar sempit, tempat kepala kolom tabelnya disembunyikan -->
+    <div class="vs__trio" aria-hidden="true">
+      <figure class="vs__trio-pr"><span class="vs__ping"><i></i><i></i></span><img src="assets/img/komparasi-unit.png" alt="" width="427" height="600" loading="lazy"><figcaption>POINT<em>RESCUE</em></figcaption></figure>
+      <figure><img src="assets/img/komparasi-ht.png" alt="" width="368" height="640" loading="lazy"><figcaption>Handy Talky</figcaption></figure>
+      <figure><img src="assets/img/komparasi-mesh.png" alt="" width="554" height="640" loading="lazy"><figcaption>Meshtastic</figcaption></figure>
+    </div>
+
+    <div class="vs" data-vs>
+      <table class="vs__tbl" role="table">
+        <caption class="vs__sr">Tabel perbandingan tiga alat pada tiga kriteria</caption>
+        <colgroup><col><col><col><col></colgroup>
+        <thead>
+          <tr role="row">
+            <th class="vs__pojok" scope="col" role="columnheader">
+              <span class="vs__alat">Alat</span><span class="vs__fitur">Fitur</span>
+            </th>
+            <th class="vs__sis vs__sis--pr" scope="col" role="columnheader" style="--c:1">
+              <div class="vs__in">
+                <span class="vs__tag">Sistem kami</span>
+                <div class="vs__3d" data-m="pr" aria-hidden="true">
+                  <img src="assets/img/komparasi-unit.png" alt="" width="427" height="600" loading="lazy">
+                  <iframe data-src="proto/versus.html?m=pr&amp;isi=0.92&amp;v=22" tabindex="-1" title="Model 3D Point Rescue, bisa diseret untuk memutarnya"></iframe>
+                </div>
+                <span class="vs__nama"><img src="assets/img/logo-mark.png" alt="" width="22" height="26"><span>POINT<em>RESCUE</em></span></span>
+              </div>
+            </th>
+            <th class="vs__sis vs__sis--ht" scope="col" role="columnheader" style="--c:0">
+              <div class="vs__in">
+                <div class="vs__3d" data-m="ht" aria-hidden="true">
+                  <img src="assets/img/komparasi-ht.png" alt="" width="368" height="640" loading="lazy">
+                  <iframe data-src="proto/versus.html?m=ht&amp;isi=0.92&amp;v=22" tabindex="-1" title="Model 3D Handy Talky generik, bisa diseret untuk memutarnya"></iframe>
+                </div>
+                <span class="vs__nama">Handy Talky</span>
+              </div>
+            </th>
+            <th class="vs__sis vs__sis--mesh" scope="col" role="columnheader" style="--c:2">
+              <div class="vs__in">
+                <div class="vs__3d" data-m="mesh" aria-hidden="true">
+                  <img src="assets/img/komparasi-mesh.png" alt="" width="554" height="640" loading="lazy">
+                  <iframe data-src="proto/versus.html?m=mesh&amp;isi=0.92&amp;v=22" tabindex="-1" title="Model 3D node mesh generik, bisa diseret untuk memutarnya"></iframe>
+                </div>
+                <span class="vs__nama">Meshtastic</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- 1 · Pull & Play -->
+          <tr role="row" style="--r:0">
+            <th class="vs__krit" scope="row" role="rowheader">
+              <div class="vs__krit-in">
+                <span class="vs__ik"><svg aria-hidden="true"><use href="#vs-power"/></svg></span>
+                <span><b>Pull &amp; Play</b><small>Langsung aktif tanpa menu?</small></span>
+              </div>
+            </th>
+            <td class="vs__sel vs__sel--pr" role="cell"><div class="vs__isi">
+              <span class="vs__tanda vs__tanda--ya" style="--n:0"><svg aria-hidden="true"><use href="#vs-ok"/></svg><span class="vs__sr">Ya</span></span>
+              <span><i class="vs__tn">POINTRESCUE</i><b>Reed switch magnetik</b><small>Tarik, langsung aktif</small></span>
+            </div></td>
+            <td class="vs__sel" role="cell"><div class="vs__isi">
+              <span class="vs__tanda vs__tanda--tdk" style="--n:1"><svg aria-hidden="true"><use href="#vs-no"/></svg><span class="vs__sr">Tidak</span></span>
+              <span><i class="vs__tn">Handy Talky</i><b>Saklar on-off biasa</b></span>
+            </div></td>
+            <td class="vs__sel" role="cell"><div class="vs__isi">
+              <span class="vs__tanda vs__tanda--tdk" style="--n:2"><svg aria-hidden="true"><use href="#vs-no"/></svg><span class="vs__sr">Tidak</span></span>
+              <span><i class="vs__tn">Meshtastic</i><b>Saklar on-off biasa</b></span>
+            </div></td>
+          </tr>
+
+          <!-- 2 · Dashboard pencarian -->
+          <tr role="row" style="--r:1">
+            <th class="vs__krit" scope="row" role="rowheader">
+              <div class="vs__krit-in">
+                <span class="vs__ik"><svg aria-hidden="true"><use href="#vs-pin"/></svg></span>
+                <span><b>Dashboard Pencarian</b><small>Posisi korban terlihat di peta?</small></span>
+              </div>
+            </th>
+            <td class="vs__sel vs__sel--pr" role="cell"><div class="vs__isi">
+              <span class="vs__tanda vs__tanda--ya" style="--n:3"><svg aria-hidden="true"><use href="#vs-ok"/></svg><span class="vs__sr">Ya</span></span>
+              <span><i class="vs__tn">POINTRESCUE</i><b>Tracker visual koordinat GPS</b><small>Peta taktis dengan jejak gerak</small><a class="vs__tautan" href="#dashboard">Lihat dashboard-nya&nbsp;↓</a></span>
+            </div></td>
+            <td class="vs__sel" role="cell"><div class="vs__isi">
+              <span class="vs__tanda vs__tanda--tdk" style="--n:4"><svg aria-hidden="true"><use href="#vs-no"/></svg><span class="vs__sr">Tidak</span></span>
+              <span><i class="vs__tn">Handy Talky</i><b>Komunikasi radio saja</b><small>Posisi disebut manual lewat suara</small></span>
+            </div></td>
+            <td class="vs__sel" role="cell"><div class="vs__isi">
+              <span class="vs__tanda vs__tanda--ya" style="--n:5"><svg aria-hidden="true"><use href="#vs-ok"/></svg><span class="vs__sr">Ya</span></span>
+              <span><i class="vs__tn">Meshtastic</i><b>Aplikasi bawaan Meshtastic</b><small>Dirancang untuk penggunaan umum</small></span>
+            </div></td>
+          </tr>
+
+          <!-- 3 · Hemat biaya — angka sama dengan grafik di bawah -->
+          <tr role="row" style="--r:2">
+            <th class="vs__krit" scope="row" role="rowheader">
+              <div class="vs__krit-in">
+                <span class="vs__ik"><i class="vs__rp">Rp</i></span>
+                <span><b>Hemat Biaya</b><small>Terjangkau untuk dibawa banyak orang?</small></span>
+              </div>
+            </th>
+            <td class="vs__sel vs__sel--pr" role="cell"><div class="vs__isi">
+              <span class="vs__tanda vs__tanda--ya" style="--n:6"><svg aria-hidden="true"><use href="#vs-ok"/></svg><span class="vs__sr">Ya</span></span>
+              <span><i class="vs__tn">POINTRESCUE</i><b>&lt; Rp&nbsp;500 ribu</b><small>perkiraan per unit</small></span>
+            </div></td>
+            <td class="vs__sel" role="cell"><div class="vs__isi">
+              <span class="vs__tanda vs__tanda--ya" style="--n:7"><svg aria-hidden="true"><use href="#vs-ok"/></svg><span class="vs__sr">Ya</span></span>
+              <span><i class="vs__tn">Handy Talky</i><b>Rp&nbsp;120–300 ribu</b><small>perkiraan per unit</small></span>
+            </div></td>
+            <td class="vs__sel" role="cell"><div class="vs__isi">
+              <span class="vs__tanda vs__tanda--tdk" style="--n:8"><svg aria-hidden="true"><use href="#vs-no"/></svg><span class="vs__sr">Tidak</span></span>
+              <span><i class="vs__tn">Meshtastic</i><b>Rp&nbsp;1–2 juta</b><small>perkiraan per unit</small></span>
+            </div></td>
+          </tr>
+        </tbody>
+
+        <!-- jumlah ✓ per kolom di atas -->
+        <tfoot>
+          <tr role="row" style="--r:3">
+            <th class="vs__krit vs__krit--skor" scope="row" role="rowheader"><div class="vs__krit-in"><span><b>Kriteria terpenuhi</b></span></div></th>
+            <td class="vs__sel vs__sel--pr vs__skor" role="cell"><div class="vs__isi"><i class="vs__tn">POINTRESCUE</i><strong><b data-count="3">3</b><em>/3</em></strong></div></td>
+            <td class="vs__sel vs__skor" role="cell"><div class="vs__isi"><i class="vs__tn">Handy Talky</i><strong><b data-count="1">1</b><em>/3</em></strong></div></td>
+            <td class="vs__sel vs__skor" role="cell"><div class="vs__isi"><i class="vs__tn">Meshtastic</i><strong><b data-count="1">1</b><em>/3</em></strong></div></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <p class="vs__legenda">
+        <i><span class="vs__tanda vs__tanda--ya"><svg aria-hidden="true"><use href="#vs-ok"/></svg></span><span>Ada</span></i>
+        <i><span class="vs__tanda vs__tanda--tdk"><svg aria-hidden="true"><use href="#vs-no"/></svg></span><span>Tidak ada</span></i>
+        <span class="vs__ket">Harga adalah perkiraan per unit.</span>
+        <span class="vs__petunjuk">Seret perangkatnya untuk memutarnya.</span>
+      </p>
+    </div>
+
+    <!-- dua penjelasan: yang paling membedakan, dan angka biayanya -->
+    <div class="vs__bukti" data-vs>
+      <article class="vs__kartu">
+        <p class="eyebrow">Pull &amp; Play</p>
+        <h3>Tarik, dan perangkat langsung menyala.</h3>
+        <p>
+          Pada node korban, sakelar magnetik jenis reed switch ditahan oleh magnet pada tali penarik.
+          Selama magnet di tempatnya, perangkat diam dan hemat daya. Begitu tali ditarik, magnet
+          menjauh dan perangkat langsung aktif serta memancarkan koordinatnya — tanpa menu, tanpa
+          aplikasi, tanpa konfigurasi.
+        </p>
+        <ol class="vs__langkah">
+          <li>
+            <svg class="vs__skema" viewBox="0 -6 200 116" aria-hidden="true">
+              <rect class="badan" x="14" y="40" width="90" height="60" rx="11"/><path class="ant" d="M86 40L96 22"/>
+              <rect class="reed" x="70" y="64" width="26" height="9" rx="4.5"/>
+              <path class="mg-n" d="M109 58h8v21h-8a3 3 0 0 1-3-3V61a3 3 0 0 1 3-3z"/><path class="mg-s" d="M117 58h8a3 3 0 0 1 3 3v15a3 3 0 0 1-3 3h-8z"/>
+              <path class="tali" d="M128 68.5h24"/><circle class="tali" cx="158" cy="68.5" r="6"/>
+            </svg>
+            <div><b>Ditahan magnet</b><span>Perangkat diam, hemat daya</span></div>
+          </li>
+          <li>
+            <svg class="vs__skema" viewBox="0 -6 200 116" aria-hidden="true">
+              <rect class="badan" x="14" y="40" width="90" height="60" rx="11"/><path class="ant" d="M86 40L96 22"/>
+              <rect class="reed" x="70" y="64" width="26" height="9" rx="4.5"/>
+              <rect class="hantu" x="106" y="58" width="22" height="21" rx="3"/>
+              <path class="arah" d="M131 68.5h9M137 62.5l6 6-6 6"/>
+              <path class="mg-n" d="M149 58h8v21h-8a3 3 0 0 1-3-3V61a3 3 0 0 1 3-3z"/><path class="mg-s" d="M157 58h8a3 3 0 0 1 3 3v15a3 3 0 0 1-3 3h-8z"/>
+              <path class="tali" d="M168 68.5h10"/><circle class="tali" cx="184" cy="68.5" r="6"/>
+            </svg>
+            <div><b>Tali ditarik</b><span>Magnet menjauh dari sakelar</span></div>
+          </li>
+          <li>
+            <svg class="vs__skema" viewBox="0 -6 200 116" aria-hidden="true">
+              <rect class="badan" x="14" y="40" width="90" height="60" rx="11"/><path class="ant" d="M86 40L96 22"/>
+              <path class="busur" d="M98.3 13.3a9 9 0 0 1 6.4 6.4"/><path class="busur" d="M100.1 6.6a16 16 0 0 1 11.3 11.3"/><path class="busur" d="M102 -0.2a23 23 0 0 1 16.2 16.2"/>
+              <circle class="led" cx="32" cy="58" r="5"/>
+              <rect class="reed" x="70" y="64" width="26" height="9" rx="4.5"/>
+            </svg>
+            <div><b>Aktif</b><span>Memancarkan koordinat</span></div>
+          </li>
+        </ol>
+        <p class="vs__ket2">Skema sederhana — bukan gambar teknik</p>
+        <p class="vs__banding">Handy Talky dan Meshtastic dinyalakan dengan saklar on-off biasa. Dalam kondisi panik, tidak ada waktu untuk membuka menu.</p>
+      </article>
+
+      <article class="vs__kartu">
+        <p class="eyebrow">Hemat biaya</p>
+        <h3>Cukup murah untuk dibawa banyak orang.</h3>
+        <p>
+          Perkiraan harga per unit pada satu skala. Unit yang murah bisa dibagikan ke lebih banyak
+          personel — bahkan warga terdampak.
+        </p>
+        <figure class="vs__harga" style="--skala:2000">
+          <figcaption class="vs__sr">Grafik rentang harga per unit, skala 0 sampai Rp 2 juta</figcaption>
+          <div class="vs__harga-isi">
+            <div class="vs__grid" aria-hidden="true"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i></div>
+            <div class="vs__hr vs__hr--pr">
+              <div class="vs__hr-kepala"><b>POINTRESCUE</b><span>&lt; Rp&nbsp;500 ribu</span></div>
+              <div class="vs__trek"><i class="vs__batang" style="--min:0;--max:500"></i></div>
+            </div>
+            <div class="vs__hr">
+              <div class="vs__hr-kepala"><b>Handy Talky</b><span>Rp&nbsp;120–300 ribu</span></div>
+              <div class="vs__trek"><i class="vs__batang" style="--min:120;--max:300"></i></div>
+            </div>
+            <div class="vs__hr">
+              <div class="vs__hr-kepala"><b>Meshtastic</b><span>Rp&nbsp;1–2 juta</span></div>
+              <div class="vs__trek"><i class="vs__batang" style="--min:1000;--max:2000"></i></div>
+            </div>
+          </div>
+          <div class="vs__sumbu" aria-hidden="true">
+            <span style="left:0%">0</span>
+            <span style="left:25%">500 rb</span>
+            <span style="left:50%">1 jt</span>
+            <span style="left:75%">1,5 jt</span>
+            <span style="left:100%">2 jt</span>
+          </div>
+          <p class="vs__ket3">Rupiah per unit, skala 0 – 2 juta.</p>
+        </figure>
+        <p class="vs__banding">Batang POINTRESCUE menunjukkan batas atas: harganya kurang dari Rp&nbsp;500 ribu.</p>
+      </article>
+    </div>
+
+    <p class="vs__kaki">
+      Perbandingan ini hanya pada tiga kriteria di atas dan bukan penilaian menyeluruh atas tiap alat.
+      Gambar Handy Talky dan Meshtastic adalah ilustrasi 3D generik, bukan foto produk tertentu. Harga
+      adalah perkiraan per unit dan dapat berbeda menurut merek, tempat membeli, dan waktu. Nama dan
+      merek pembanding milik pemiliknya masing-masing; POINTRESCUE tidak berafiliasi dengan mereka.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════ 03 GAGASAN — track horizontal ══════════ -->
 <section class="track" id="gagasan" data-anim="track">
   <div class="track__sticky">
     <div class="track__head">
-      <p class="head__num">02 — Gagasan</p>
+      <p class="head__num">03 — Gagasan</p>
       <h2 class="head__title">Jaringan yang dibawa sendiri oleh tim.</h2>
     </div>
     <div class="track__rail" id="rail">
@@ -287,11 +530,11 @@
   </div>
 </section>
 
-<!-- ══════════ 03 CARA KERJA — SVG draw ══════════ -->
+<!-- ══════════ 04 CARA KERJA — SVG draw ══════════ -->
 <section class="sec" id="sistem" data-anim="draw">
   <div class="wrap">
     <header class="head">
-      <p class="head__num" data-r="1">03 — Cara kerja</p>
+      <p class="head__num" data-r="1">04 — Cara kerja</p>
       <h2 class="head__title" data-split>Tiga peran, satu jaringan.</h2>
       <p class="head__lead" data-r="2">
         Perangkat kerasnya sama; yang membedakan hanya peran yang diberikan firmware. Ketiganya
@@ -366,11 +609,11 @@
   <span class="tape__strip tape__strip--b"></span>
 </div>
 
-<!-- ══════════ 04 ANATOMI — viewer interaktif penuh ══════════ -->
+<!-- ══════════ 05 ANATOMI — viewer interaktif penuh ══════════ -->
 <section class="sec sec--dark g-b" id="anatomi" data-anim="anat">
   <div class="wrap wrap--wide">
     <header class="head">
-      <p class="head__num" data-r="1">04 — Anatomi</p>
+      <p class="head__num" data-r="1">05 — Anatomi</p>
       <h2 class="head__title" data-split>Bongkar sendiri, lapis demi lapis.</h2>
     </header>
 
@@ -408,12 +651,12 @@
   </div>
 </section>
 
-<!-- ══════════ 05 PROTOTIPE — zoom full-bleed ══════════ -->
+<!-- ══════════ 06 PROTOTIPE — zoom full-bleed ══════════ -->
 <section class="proto" id="prototipe" data-anim="zoom">
   <div class="proto__sticky">
     <div class="proto__bleed"><img src="assets/photo/proto-inside.jpg" alt="Isi perangkat: ESP32, LoRa, GPS, charger, dan sel 18650"></div>
     <div class="proto__caption">
-      <p class="head__num">05 — Prototipe</p>
+      <p class="head__num">06 — Prototipe</p>
       <h2>Bukan render.<br>Sudah berdiri di meja.</h2>
       <p>Unit yang sama inilah yang dibawa berjalan menjauhi gateway sampai sinyalnya habis.</p>
     </div>
@@ -428,11 +671,11 @@
   </div>
 </section>
 
-<!-- ══════════ 06 DASHBOARD — console + dashboard asli ══════════ -->
+<!-- ══════════ 07 DASHBOARD — console + dashboard asli ══════════ -->
 <section class="sec sec--dark g-b" id="dashboard" data-anim="console">
   <div class="wrap">
     <header class="head">
-      <p class="head__num" data-r="1">06 — Posko</p>
+      <p class="head__num" data-r="1">07 — Posko</p>
       <h2 class="head__title" data-split>Seluruh jaringan, dalam satu layar.</h2>
       <p class="head__lead" data-r="2">
         Node gateway menuangkan tiap paket yang terdengar ke komputer posko. Konsol di bawah ini
@@ -496,11 +739,11 @@
   <span class="tape__strip tape__strip--b"></span>
 </div>
 
-<!-- ══════════ 07 PENGUJIAN — grafik gambar sendiri ══════════ -->
+<!-- ══════════ 08 PENGUJIAN — grafik gambar sendiri ══════════ -->
 <section class="sec" id="pengujian" data-anim="chart">
   <div class="wrap">
     <header class="head">
-      <p class="head__num" data-r="1">07 — Pengujian</p>
+      <p class="head__num" data-r="1">08 — Pengujian</p>
       <h2 class="head__title" data-split>Delapan sesi, satu berkas rekaman.</h2>
       <p class="head__lead" data-r="2">
         Seluruh angka di bawah ini ditarik dari rekaman serial gateway pada delapan sesi lapangan —
@@ -624,11 +867,11 @@
   <span class="tape__strip tape__strip--b"></span>
 </div>
 
-<!-- ══════════ 08 APLIKASI ══════════ -->
+<!-- ══════════ 09 APLIKASI ══════════ -->
 <section class="sec sec--dark g-c" id="aplikasi" data-anim="phone">
   <div class="wrap app">
     <div class="app__copy">
-      <p class="head__num" data-r="1">08 — Genggam</p>
+      <p class="head__num" data-r="1">09 — Genggam</p>
       <h2 class="head__title" data-split>Posko yang ikut berjalan.</h2>
       <p class="head__lead" data-r="2">
         Aplikasi Android tersambung ke node SAR lewat Bluetooth Low Energy. Lima wilayah kerja —
@@ -671,11 +914,11 @@
   <span class="tape__strip tape__strip--b"></span>
 </div>
 
-<!-- ══════════ 09 HKI — tumpukan dokumen ══════════ -->
+<!-- ══════════ 10 HKI — tumpukan dokumen ══════════ -->
 <section class="sec" id="hki" data-anim="stack">
   <div class="wrap hki">
     <div class="hki__copy">
-      <p class="head__num" data-r="1">09 — Kekayaan intelektual</p>
+      <p class="head__num" data-r="1">10 — Kekayaan intelektual</p>
       <h2 class="head__title" data-split>Terdokumentasi sampai ke nomor barisnya.</h2>
       <p class="head__lead" data-r="2">
         Dua ciptaan Point Rescue disusun jadi dokumen pendaftaran HKI. Seluruh kutipan kode di
@@ -705,11 +948,11 @@
   <span class="tape__strip tape__strip--b"></span>
 </div>
 
-<!-- ══════════ 10 TIM — kartu flip ══════════ -->
+<!-- ══════════ 11 TIM — kartu flip ══════════ -->
 <section class="sec sec--dark g-b" id="tim" data-anim="flip">
   <div class="wrap">
     <header class="head">
-      <p class="head__num" data-r="1">10 — Tim</p>
+      <p class="head__num" data-r="1">11 — Tim</p>
       <h2 class="head__title" data-split>PKM-KC Universitas Brawijaya 2026.</h2>
     </header>
     <svg class="team__ikon" aria-hidden="true"><defs>
@@ -812,7 +1055,7 @@
   </div>
 </section>
 
-<!-- ══════════ 11 PENUTUP — logo dirakit ulang ══════════ -->
+<!-- ══════════ 12 PENUTUP — logo dirakit ulang ══════════ -->
 <section class="outro" id="pkm" data-anim="outro">
   <!-- Bola rangka — 12 simpul, 30 rusuk. Visualnya diambil dari komponen
        <WireframeBall /> React Bits Pro, ditulis ulang di WebGL mentah karena
@@ -844,7 +1087,7 @@
       <img src="assets/img/logo-mark.png" alt="">
       <p><b>POINT RESCUE</b><span>PKM-KC 2026 · FILKOM Universitas Brawijaya</span></p>
     </div>
-    <a class="foot__lnk" href="komparasi/?lang=id">Komparasi Sistem</a>
+    <a class="foot__lnk" href="#komparasi">Komparasi Sistem</a>
     <a class="foot__ig" href="https://instagram.com/pointrescue" target="_blank" rel="noopener">@pointrescue</a>
   </div>
 </footer>
@@ -877,5 +1120,6 @@
 <script src="js/devices.js?v=20"></script>
 <script src="js/gooey-nav.js?v=20"></script>
 <script src="js/tilted-card.js?v=20"></script>
+<script src="js/versus.js?v=22"></script>
 </body>
 </html>

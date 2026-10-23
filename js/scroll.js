@@ -107,7 +107,7 @@
     if (floor) floor.style.setProperty('--py', (y * 0.2).toFixed(1) + 'px');
     if (shot && y < vh * 1.4) shot.style.setProperty('--sy', (y * -0.05).toFixed(1) + 'px');
 
-    /* 02 — rel horizontal */
+    /* 03 — rel horizontal */
     if (track && rail) {
       var r = track.getBoundingClientRect();
       if (r.top < vh && r.bottom > 0) {

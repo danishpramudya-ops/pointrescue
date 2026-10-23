@@ -34,15 +34,18 @@ js/sim.js          simulasi visual Gagasan & Cara kerja
 js/i18n.js         teks yang digambar JS (label grafik, simulasi, sakelar)
 js/gooey-nav.js    port vanilla <GooeyNav /> React Bits, bertema sinyal
 js/tilted-card.js  port vanilla <TiltedCard /> React Bits, kartu tim
+js/versus.js       bagian 02: pemicu masuk tabel + pemuat model 3D di kepala kolomnya
 js/wireframe-ball.js bola rangka WebGL di penutup
 js/validasi.js     lima grafik bagian 07, dari rekaman lapangan asli
 assets/validasi.js data 8 sesi uji — salinan apa adanya dari repo tim
 app/               `flutter build web` aplikasi tim, jalan di dalam ponsel
 proto/             mesin 3D milik tim (three-d-stage, assembly-model, parts/)
 proto/hero.html    sorotan 3D di hero — berputar sendiri, tidak bisa disentuh
+proto/versus.html  satu perangkat 3D yang bisa diseret (?m=pr|ht|mesh) — kepala kolom tabel bagian 02
+proto/versus-model.js  model generik Handy Talky + node mesh (satu kode untuk poster PNG dan model hidup)
 en/index.html      versi bahasa Inggris, dibangkitkan tools/buat-en.py
 link/              halaman tautan resmi (pengganti Linktree), dua bahasa
-komparasi/         halaman "Komparasi Sistem" (Point Rescue · Handy Talky · Meshtastic), dua bahasa
+komparasi/         pengalih ke #komparasi (bagian 02) — jaga agar tautan yang sudah dibagikan tetap hidup
 qr/                kode QR resmi — situs + halaman tautan; SVG untuk cetak
 dash/              dashboard operator asli + shim.js + replay.json
 assets/photo/      foto prototipe (sudah di-grade ke arah biru)
@@ -67,14 +70,19 @@ tools/sanitasi-validasi.py bulatkan koordinat gateway di data uji
 
 ## Urutan bagian
 
-Intro logo → Hero → 01 Masalah → 02 Gagasan → 03 Cara kerja → 04 Anatomi 3D →
-05 Prototipe → 06 Posko/Dashboard → 07 Pengujian → 08 Aplikasi → 09 HKI →
-10 Tim → 11 Penutup.
+Intro logo → Hero → 01 Masalah → 02 Komparasi → 03 Gagasan → 04 Cara kerja →
+05 Anatomi 3D → 06 Prototipe → 07 Posko/Dashboard → 08 Pengujian → 09 Aplikasi →
+10 HKI → 11 Tim → 12 Penutup.
 
 Bagian "Elektronik" (dulu 05) dihapus pada 23 Okt 2026 atas permintaan tim —
 materi desain papan tidak untuk dipublikasikan. Bagian sesudahnya naik satu
 nomor, jadi "bagian 08" di catatan lama kini berarti bagian 07 (Pengujian),
 dan seterusnya. Transisi `layers` (silang-pudar lapisan) ikut hilang bersamanya.
+
+Lalu Komparasi disisipkan sebagai 02 (23 Okt 2026), sehingga semua bagian ≥ 02 bergeser satu
+nomor lagi. **Catatan lama di README ini yang menyebut "bagian NN" memakai penomoran sebelum
+penyisipan itu: untuk NN ≥ 02, nomor sekarang = NN + 1** (mis. "bagian 04" untuk viewer 3D kini
+05, "bagian 07" untuk validasi lapangan kini 08).
 
 ## Transisi per bagian
 
@@ -86,15 +94,16 @@ Tiap bagian sengaja dibuat berbeda, digerakkan dari satu loop rAF di
 | Intro       | cincin sinyal memancar, logo naik, wordmark ter-*wipe*        |
 | Hero        | baris judul naik dari mask, angka berhitung, grid parallax    |
 | 01 Masalah  | **ScrollExpand** — bingkai membuka jadi full-bleed, film mulai |
-| 02 Gagasan  | rel horizontal — gulir tegak digeser jadi gerak mendatar      |
-| 03 Cara kerja | garis mesh menggambar dirinya + titik paket berjalan        |
-| 04 Anatomi  | viewer 3D interaktif penuh (iframe), penjelasan di sampingnya |
-| 05 Prototipe | foto full-bleed keluar dari zoom (1.35 → 1.0)                |
-| 06 Posko    | dashboard asli berjalan di dalam layar laptop                  |
-| 07 Pengujian | 754 titik ukur asli mengendap, batang jangkauan tumbuh       |
-| 08 Aplikasi | ponsel berputar; layar aplikasi berganti sendiri               |
-| 09 HKI      | kartu dokumen bangkit dari tumpukan                           |
-| 10 Tim      | kartu membuka seperti kartu remi, lalu miring mengikuti kursor |
+| 02 Komparasi | tiga kolom masuk dari tiga arah, lalu tanda ✓/✗ "dicap" satu per satu dan skor berhitung naik |
+| 03 Gagasan  | rel horizontal — gulir tegak digeser jadi gerak mendatar      |
+| 04 Cara kerja | garis mesh menggambar dirinya + titik paket berjalan        |
+| 05 Anatomi  | viewer 3D interaktif penuh (iframe), penjelasan di sampingnya |
+| 06 Prototipe | foto full-bleed keluar dari zoom (1.35 → 1.0)                |
+| 07 Posko    | dashboard asli berjalan di dalam layar laptop                  |
+| 08 Pengujian | 754 titik ukur asli mengendap, batang jangkauan tumbuh       |
+| 09 Aplikasi | ponsel berputar; layar aplikasi berganti sendiri               |
+| 10 HKI      | kartu dokumen bangkit dari tumpukan                           |
+| 11 Tim      | kartu membuka seperti kartu remi, lalu miring mengikuti kursor |
 
 Semua menghormati `prefers-reduced-motion`: kalau menyala, animasi mati dan
 isi tetap terbaca penuh.
@@ -1129,51 +1138,73 @@ berhenti. Pakai varian `-polos` (tanpa logo) bila QR dicetak lebih kecil dari ±
 sama dengan situs, foto prototipe asli, logo, dan police line. `og:description` halaman Inggris diterjemahkan
 lewat kamus yang sama dengan isi halaman.
 
-## Halaman komparasi (`komparasi/`)
+## Bagian 02 — Komparasi
 
-Permintaan klien: infografis "Komparasi Sistem" (Point Rescue, Handy Talky, Meshtastic pada tiga kriteria:
-Pull & Play, Dashboard Pencarian, Hemat Biaya) dijadikan halaman tersendiri. Dibangun ulang sebagai HTML,
-bukan gambar infografisnya ditempel, supaya bisa dibaca pembaca layar, mengikuti lebar layar, dan punya
-versi Inggris.
+Permintaan klien: infografis "Komparasi Sistem" (Point Rescue, Handy Talky, Meshtastic pada tiga
+kriteria — Pull & Play, Dashboard Pencarian, Hemat Biaya) jadi bagian situs. Mula-mula dibuat sebagai
+halaman tersendiri, lalu — atas permintaan tim — **digabung ke situs utama sebagai bagian 02**, tepat
+setelah Masalah: "yang sudah ada belum cukup" jadi jembatan alami ke Gagasan. Dibangun ulang sebagai
+HTML, bukan gambar infografisnya ditempel, supaya terbaca pembaca layar, mengikuti lebar layar, dan
+punya versi Inggris. `komparasi/index.html` kini hanya **pengalih** ke `#komparasi` (bahasa dipilih
+dari `?lang=`, pilihan terakhir di halaman tautan, atau bahasa peramban) supaya tautan yang sudah
+terlanjur dibagikan tetap hidup; kartu pratinjau WhatsApp-nya (`og-komparasi.jpg`) dipertahankan di sana.
 
-**Satu berkas, dua bahasa.** Seperti `link/`: tiap teks punya `<span lang="id">` dan `<span lang="en">`.
-Bahasa dipilih lewat `?lang=id|en`, kalau tidak ada lewat pilihan terakhir pengunjung (kunci
-`localStorage` yang sama dengan halaman tautan), kalau tidak ada ikut bahasa peramban; tanpa JavaScript
-halaman berbahasa Indonesia. Tautan dari `index.html` membawa `?lang=id`; `tools/buat-en.py` mengubahnya jadi
-`../komparasi/?lang=en` di `en/index.html` (lihat `komparasi/` di regex jalur dan satu entri `ATRIBUT`).
+**Tabelnya tabel sungguhan** (`<table>` dengan `<th scope>`), bukan susunan `div`. Di layar ≤ 860 px
+tiap baris menjadi kartu — `display:block` menghapus semantik tabel di sebagian peramban, jadi
+`role="table|row|cell|…"` ditulis eksplisit. Tanda ✓/✗ punya teks tersembunyi ("Ya"/"Tidak") untuk
+pembaca layar; skor "Kriteria terpenuhi" dihitung dari tabel itu, bukan angka terpisah. Di bawah 860 px
+kepala kolomnya (model 3D) disembunyikan dan diganti jajaran tiga perangkat (`.vs__trio`) di bawah
+judul; antara 861–1000 px ikon label baris mengalah supaya teksnya tidak patah.
 
-**Tabelnya tabel sungguhan** (`<table>` dengan `<th scope>`), bukan susunan `div`. Di ponsel tiap baris
-menjadi kartu — `display:block` menghapus semantik tabel di sebagian peramban, jadi `role="table|row|cell|…"`
-ditulis eksplisit. Tanda ✓/✗ punya teks tersembunyi ("Ya"/"Tidak") untuk pembaca layar; jumlah ✓ per
-kolom ("Kriteria terpenuhi") dihitung dari tabel itu, bukan angka terpisah.
-
-**Gambar yang dipakai semuanya milik tim atau buatan sendiri**: render 3D unit (`assets/img/komparasi-unit.png`,
-dari `tools/render/poster-berdiri.png`), tangkapan layar dashboard asli (`assets/img/komparasi-dashboard.jpg`,
-atribusi OpenStreetMap ikut terlihat di petanya), dan layar aplikasi asli (`assets/app/app-2.jpg`).
+**Kepala kolom = model 3D yang bisa diseret.** Tiga iframe `proto/versus.html?m=pr|ht|mesh` (Point
+Rescue memakai rakitan 17 part milik tim dalam pose berdiri seperti hero; dua lainnya model generik).
+Yang bisa diputar hanya poros tegak (sudut vertikal dikunci ±0,2 rad), tanpa zoom dan tanpa geser —
+roda tetap menggulir halaman. Beratnya sama dengan viewer bagian 05, jadi `js/versus.js` memperlakukannya
+sama: **dimuat lambat** (baru ketika tabel mendekat ke layar), **tidak dimuat di layar sempit** atau
+saat penghemat data menyala, **berhenti menggambar** begitu keluar layar, **berhenti berputar sendiri**
+saat sakelar animasi (`PRMotion`) dimatikan, dan PNG-nya jadi poster sampai modelnya tergambar.
+Kamera dibingkai dari titik-titik modelnya (bukan bola pembatas), jadi pas di SEMUA sudut putar —
+sudah diuji tanpa satu piksel pun menyentuh tepi bingkai.
 
 **Handy Talky dan Meshtastic adalah model 3D GENERIK buatan sendiri**, bukan foto dan bukan tiruan produk:
-dibangun dari kotak membulat dan silinder di `tools/pembanding-3d.html` (tanpa logo, tanpa tulisan, ukuran
-hanya perkiraan jenisnya), dirender `python tools/render-pembanding.py` (butuh `python serve.py` di port 8130)
-oleh mesin 3D tim yang sama dengan render Point Rescue — cahaya dan kameranya identik, jadi ketiganya
-serumpun. Foto di infografis aslinya tidak jelas lisensinya, maka tidak dipakai; halaman menyebut gambarnya
-"ilustrasi 3D generik". Kalau tim ingin foto asli, pakai yang tim punya haknya atau yang berlisensi bebas
-(Wikimedia Commons) dan catat sumbernya seperti blok "Sumber gambar latar" di bagian 01. Mengubah pose atau
-warna: parameter `--qs "rz=-0.5&ry=0.4"` pada skrip render, atau palet `W` di halaman modelnya.
+dibangun dari kotak membulat dan silinder di `proto/versus-model.js` (tanpa logo, tanpa tulisan, ukuran
+hanya perkiraan jenisnya) dan digambar oleh panggung 3D tim yang sama dengan hero, jadi ketiganya
+serumpun. Kode yang SAMA dipakai poster PNG (`python serve.py` di port 8130, lalu
+`python tools/render-pembanding.py` → `assets/img/komparasi-ht.png`, `komparasi-mesh.png`; modelnya
+ditampilkan oleh `tools/pembanding-3d.html`) dan model hidup, jadi keduanya tak mungkin berbeda. Foto di
+infografis aslinya tidak jelas lisensinya, maka tidak dipakai; situs menyebut gambarnya "ilustrasi 3D
+generik". Kalau tim ingin foto asli, pakai yang tim punya haknya atau yang berlisensi bebas (Wikimedia
+Commons) dan catat sumbernya seperti blok "Sumber gambar latar" di bagian 01. Mengubah pose atau warna:
+`--qs "rz=-0.5&ry=0.4"` pada skrip render, atau palet `W` di `proto/versus-model.js`.
+
+**Transisinya** dipicu `js/versus.js` (kelas `.vs-in` pada tiap blok `[data-vs]`), BUKAN `.in` milik
+seksi: seksinya tinggi, dan tabel yang masih di bawah layar tidak boleh selesai beranimasi sebelum
+terlihat. Keadaan awal yang tersembunyi hanya berlaku kalau JS hidup (kelas `.vs-js`), jadi tanpa
+JavaScript semuanya langsung terbaca; sakelar animasi di nav mematikan semuanya.
 
 **Angka harga** (< Rp 500 ribu · Rp 120–300 ribu · Rp 1–2 juta per unit) berasal dari infografis klien dan
 BELUM ada di dokumen mana pun di repo ini. Skrip presentasi PKP2 menyebut Meshtastic "Rp1–3 juta", bukan
-"1–2 juta" — samakan salah satunya sebelum tampil. Mengubah harga: ganti teks di tabel, di grafik, DAN
-variabel `--min` / `--max` pada batang grafik (satuan ribu rupiah; sumbu 0 … `--skala`).
+"1–2 juta" — samakan salah satunya sebelum tampil. **Mengubah harga ada di empat tempat**: teks di tabel
+dan di grafik (`index.html`), variabel `--min` / `--max` pada batang grafik (satuan ribu rupiah; sumbu
+0 … `--skala`), dan kunci kamus Inggris di `tools/kamus-en.py` (kuncinya teks Indonesia persis) — lalu
+`python tools/buat-en.py`. Skrip itu hanya memperingatkan kunci yang tak terpakai; ia TIDAK menangkap
+kalimat baru yang belum diterjemahkan, jadi setelah mengubah teks periksa halaman Inggrisnya.
+
+**Terjemahan Inggris lewat kamus, bukan dua bahasa dalam satu berkas** (beda dengan halaman tautan).
+Kunci pendek yang rawan bentrok ("Ya", "Tidak", "Ada", "Alat", "Aktif") ditulis beserta tag pembungkusnya:
+pencocokan dilakukan di HTML mentah, jadi tag ikut jadi bagian kunci dan tak bisa menimpa kata yang sama
+di tempat lain.
 
 **Teks pembanding hanya memuat yang ada di materi tim** (artikel Kompasiana dan skrip PKP2): mekanisme
 reed switch + magnet pada tali penarik, dashboard posko yang berjalan tanpa internet, Handy Talky "hanya
-suara", Meshtastic "dirancang untuk penggunaan umum". Catatan kaki halaman menyebut bahwa perbandingannya
-hanya pada tiga kriteria dan bahwa merek pembanding milik pemiliknya.
+suara", Meshtastic "dirancang untuk penggunaan umum". Catatan kaki menyebut bahwa perbandingannya hanya
+pada tiga kriteria dan bahwa merek pembanding milik pemiliknya.
 
-**Pintu masuk**: jembatan di akhir bagian 01 (`.bridge` — "Handy Talky dan Meshtastic sudah ada. Lalu apa
-bedanya Point Rescue?"), tautan di footer, dan satu baris di halaman tautan. Sengaja TIDAK dimasukkan ke
-`.nav__links`: `js/scroll.js` memanggil `querySelector(href)` untuk tiap tautan di sana, dan `komparasi/`
-bukan selektor yang sah — satu tautan non-hash akan mematikan seluruh mesin gulir.
+**Nav sekarang sebelas tautan** dan tidak muat di layar laptop dengan jarak aslinya (CTA terdorong keluar
+layar). Dirapatkan bertahap di `css/style.css` (≤ 1500 / 1380 / 1260 px), label dilarang patah baris, tautan
+disembunyikan di bawah 1160 px (1230 px untuk bahasa Inggris, labelnya lebih panjang). **Jangan menambah
+tautan non-hash ke `.nav__links`**: `js/scroll.js` memanggil `querySelector(href)` untuk tiap tautan di sana,
+dan jalur seperti `komparasi/` bukan selektor yang sah — satu tautan akan mematikan seluruh mesin gulir.
 
 ## Keamanan
 

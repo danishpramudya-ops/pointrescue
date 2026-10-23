@@ -136,7 +136,7 @@
 })();
 
 /* --------------------------------------------------------------------------
-   3. VIEWER 3D (bagian 04) — iframe-nya lazy dan berat: three.js, OBJ casing,
+   3. VIEWER 3D (bagian 05) — iframe-nya lazy dan berat: three.js, OBJ casing,
       lalu 17 part dirakit. Selama beberapa detik itu kotaknya hitam polos
       setinggi 920 px tanpa penjelasan apa pun. Placeholder di bawahnya baru
       disingkirkan setelah halaman di dalam iframe benar-benar selesai dimuat.
@@ -160,7 +160,7 @@
 })();
 
 /* --------------------------------------------------------------------------
-   4. SOROTAN 3D DI HERO — model yang sama dengan bagian 04, tapi berputar
+   4. SOROTAN 3D DI HERO — model yang sama dengan bagian 05, tapi berputar
       sendiri dan tidak bisa disentuh. Fotonya tetap jadi poster sampai
       modelnya benar-benar tergambar, jadi hero tidak pernah kosong.
    ------------------------------------------------------------------------ */

@@ -14,7 +14,7 @@
   'use strict';
 
   var EN = {
-    /* ---- grafik bagian 07 ---- */
+    /* ---- grafik bagian 08 ---- */
     'jarak dari posko (m) · skala akar': 'distance from the post (m) · square-root scale',
     'paket terlemah yang masih terbaca · −126 dBm': 'weakest packet still decoded · −126 dBm',
     'semua': 'all',
@@ -49,7 +49,7 @@
     'Statis': 'Static',
     'Animasi menyala — klik untuk mematikan': 'Motion is on — click to turn it off',
     'Animasi mati — klik untuk menyalakan': 'Motion is off — click to turn it on',
-    /* ---- simulasi SVG bagian 02 & 03 ---- */
+    /* ---- simulasi SVG bagian 03 & 04 ---- */
     'MENARA SELULER': 'CELL TOWER',
     'JARINGAN SENDIRI': 'OWN NETWORK',
     'DASBOR POSKO': 'POST DASHBOARD',
